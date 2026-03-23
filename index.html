@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Save the Date - Birthday Baseball</title>
+    <style>
+      :root {
+        --giants-orange: #fd5a1e;
+        --giants-black: #111111;
+        --giants-cream: #f7f3e8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--giants-black);
+        color: var(--giants-cream);
+        line-height: 1.5;
+      }
+
+      .page {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 2rem 1rem 3rem;
+      }
+
+      .hero {
+        border: 3px solid var(--giants-orange);
+        background: #1d1d1d;
+        padding: 1.5rem;
+        border-radius: 14px;
+        text-align: center;
+      }
+
+      .tag {
+        display: inline-block;
+        background: var(--giants-orange);
+        color: var(--giants-black);
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 0.4rem 0.8rem;
+        border-radius: 999px;
+        margin-bottom: 0.7rem;
+      }
+
+      h1 {
+        margin: 0.2rem 0 0.4rem;
+        font-size: clamp(2rem, 4vw, 3rem);
+        line-height: 1.1;
+      }
+
+      .date {
+        margin: 0;
+        color: var(--giants-orange);
+        font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+        font-weight: 700;
+      }
+
+      .welcome {
+        margin: 1.2rem auto 0;
+        max-width: 50ch;
+        font-size: 1.08rem;
+      }
+
+      .schedule {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        margin-top: 1.4rem;
+      }
+
+      .card {
+        border: 2px solid var(--giants-orange);
+        border-radius: 12px;
+        background: #191919;
+        padding: 1.1rem;
+      }
+
+      .card h2 {
+        margin: 0;
+        color: var(--giants-orange);
+        font-size: 1.4rem;
+      }
+
+      .time {
+        margin: 0.35rem 0 0.55rem;
+        font-weight: 700;
+        font-size: 1.05rem;
+      }
+
+      .detail {
+        margin: 0 0 1rem;
+      }
+
+      .calendar-btn {
+        border: 2px dashed var(--giants-orange);
+        color: var(--giants-cream);
+        background: transparent;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        padding: 0.65rem 0.9rem;
+        width: 100%;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      .note {
+        margin-top: 1.2rem;
+        padding: 0.95rem 1rem;
+        border-left: 6px solid var(--giants-orange);
+        background: #222222;
+        border-radius: 8px;
+        font-size: 1.05rem;
+      }
+
+      .note strong {
+        color: var(--giants-orange);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <div class="tag">Save the Date</div>
+        <h1>Birthday Baseball Day</h1>
+        <p class="date">Saturday, May 9, 2026</p>
+        <p class="welcome">
+          Two-part celebration in Giants colors - come hang out before first
+          pitch and/or join for the game.
+        </p>
+      </section>
+
+      <section class="schedule" aria-label="Event schedule">
+        <article class="card">
+          <h2>A Park Hang</h2>
+          <p class="time">Starts at 2:00 PM</p>
+          <p class="detail">
+            Casual pregame meet-up in the park to chill, snack, and enjoy the
+            day together.
+          </p>
+          <button class="calendar-btn" type="button">
+            Add to Calendar (Park Hang Placeholder)
+          </button>
+        </article>
+
+        <article class="card">
+          <h2>The Game</h2>
+          <p class="time">Giants vs. Pirates at 6:05 PM</p>
+          <p class="detail">
+            Head to the ballpark for first pitch and birthday baseball energy.
+          </p>
+          <button class="calendar-btn" type="button">
+            Add to Calendar (Game Placeholder)
+          </button>
+        </article>
+      </section>
+
+      <p class="note">
+        <strong>Come for either or both:</strong> You are absolutely welcome at
+        the park hang, the game, or both parts of the day.
+      </p>
+    </main>
+  </body>
+</html>
