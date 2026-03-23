@@ -7,7 +7,8 @@
     orange: "#FD5A1E",
     black: "#111111",
     cream: "#F7F3E8",
-    dark: "#27251F",
+    grass: "#2d5a27",
+    dirt: "#c2b280",
   };
 
   const { Engine, Render, Runner, World, Bodies, Body, Constraint, Events } =
@@ -28,6 +29,7 @@
   let pitchTimer = null;
   let gameStarted = false;
   let canSwing = true;
+  let isSwinging = false;
 
   const gameState = {
     score: 0,
@@ -70,7 +72,7 @@
         width: BOARD_WIDTH,
         height: BOARD_HEIGHT,
         wireframes: false,
-        background: GiantsTheme.dark,
+        background: GiantsTheme.grass,
       },
     });
 
@@ -141,10 +143,11 @@
 
   function createTargets() {
     const targetDefs = [
-      { label: "Single", x: 70, y: 90, width: 90, height: 28, type: "single" },
-      { label: "Double", x: 165, y: 125, width: 90, height: 28, type: "double" },
-      { label: "Triple", x: 260, y: 90, width: 90, height: 28, type: "triple" },
-      { label: "Home Run", x: 330, y: 140, width: 110, height: 30, type: "homerun" },
+      // Keep the center lane clear so every pitch reaches the bat.
+      { label: "Single", x: 60, y: 70, width: 90, height: 28, type: "single" },
+      { label: "Double", x: 120, y: 160, width: 95, height: 28, type: "double" },
+      { label: "Triple", x: 280, y: 160, width: 95, height: 28, type: "triple" },
+      { label: "Home Run", x: 340, y: 70, width: 110, height: 30, type: "homerun" },
     ];
 
     return targetDefs.map((target) => {
@@ -165,7 +168,7 @@
 
   function spawnBall() {
     if (!engine) return;
-    const startX = 140 + Math.random() * 120;
+    const startX = BOARD_WIDTH / 2 + (Math.random() - 0.5) * 20;
     const ball = Bodies.circle(startX, 28, 11, {
       label: "baseball",
       restitution: 0.55,
@@ -181,29 +184,31 @@
 
     activeBalls.add(ball.id);
     World.add(engine.world, ball);
-    Body.setVelocity(ball, { x: (Math.random() - 0.5) * 2.4, y: 3.4 + Math.random() * 0.8 });
+    Body.setVelocity(ball, { x: (Math.random() - 0.5) * 1.1, y: 4 + Math.random() * 0.6 });
     updateOverlay("Pitch delivered!");
   }
 
   function swingBat() {
     if (!bat || !canSwing) return;
     canSwing = false;
+    isSwinging = true;
 
     // Fast upward snap, then release and re-center.
-    Body.setAngularVelocity(bat, -1.55);
-    Body.setAngle(bat, -0.35);
+    Body.setAngularVelocity(bat, -2.6);
+    Body.setAngle(bat, -0.55);
 
     setTimeout(() => {
       if (!bat) return;
-      Body.setAngularVelocity(bat, 1.05);
-    }, 110);
+      Body.setAngularVelocity(bat, 1.45);
+    }, 95);
 
     setTimeout(() => {
       if (!bat) return;
       Body.setAngle(bat, 0);
       Body.setAngularVelocity(bat, 0);
+      isSwinging = false;
       canSwing = true;
-    }, 260);
+    }, 280);
   }
 
   function advanceRunners(basesEarned) {
@@ -269,11 +274,28 @@
     return null;
   }
 
+  function boostHitBall(ballBody) {
+    const upSpeed = 11 + Math.random() * 2.5;
+    const sideSpeed = (Math.random() - 0.5) * 7.2;
+    Body.setVelocity(ballBody, { x: sideSpeed, y: -upSpeed });
+    Body.setAngularVelocity(ballBody, (Math.random() - 0.5) * 1.2);
+  }
+
   function onCollisionStart(event) {
     if (!engine) return;
     event.pairs.forEach((pair) => {
+      const batAndBall =
+        (pair.bodyA === bat && pair.bodyB.label === "baseball" && pair.bodyB) ||
+        (pair.bodyB === bat && pair.bodyA.label === "baseball" && pair.bodyA);
+      if (batAndBall && isSwinging) {
+        boostHitBall(batAndBall);
+        updateOverlay("Crack! Drive it to the targets!");
+      }
+
       const hit = getBallAndTarget(pair.bodyA, pair.bodyB);
       if (!hit) return;
+      // Only count balls hit back up toward the top targets.
+      if (hit.ball.velocity.y > -0.75) return;
       const targetType = hit.target.label.split(":")[1];
       handleTargetHit(targetType);
       removeBall(hit.ball);
@@ -296,6 +318,18 @@
   function drawTargetLabels() {
     const context = render.context;
     context.save();
+    context.fillStyle = GiantsTheme.dirt;
+    context.beginPath();
+    context.moveTo(BOARD_WIDTH / 2, BOARD_HEIGHT - 230);
+    context.lineTo(BOARD_WIDTH - 30, BOARD_HEIGHT - 30);
+    context.lineTo(30, BOARD_HEIGHT - 30);
+    context.closePath();
+    context.fill();
+
+    context.beginPath();
+    context.arc(BOARD_WIDTH / 2, BOARD_HEIGHT - 185, 38, 0, Math.PI * 2);
+    context.fill();
+
     context.font = "bold 12px Arial";
     context.textAlign = "center";
     context.textBaseline = "middle";
@@ -355,9 +389,12 @@
     }
   });
 
-  document.addEventListener("pointerdown", (event) => {
+  function trySwing(event) {
     if (!gameStarted || gameModal.style.display === "none") return;
     if (event.target === closeGameBtn) return;
     swingBat();
-  });
+  }
+
+  document.addEventListener("pointerdown", trySwing);
+  document.addEventListener("click", trySwing);
 })();
