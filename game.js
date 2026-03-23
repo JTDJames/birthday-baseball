@@ -2,6 +2,12 @@
   const BOARD_WIDTH = 400;
   const BOARD_HEIGHT = 600;
   const PITCH_INTERVAL_MS = 3000;
+  const PITCH_WARNING_MS = 700;
+  const PITCH_ORIGIN_X = BOARD_WIDTH / 2;
+  const PITCH_ORIGIN_Y = 208;
+  const BAT_REST_ANGLE = 0.22;
+  const BAT_MIN_ANGLE = BAT_REST_ANGLE - Math.PI / 4;
+  const BAT_MAX_ANGLE = BAT_REST_ANGLE + 0.12;
 
   const GiantsTheme = {
     orange: "#FD5A1E",
@@ -27,6 +33,7 @@
   let render = null;
   let runner = null;
   let pitchTimer = null;
+  let pendingPitchTimeout = null;
   let gameStarted = false;
   let canSwing = true;
   let isSwinging = false;
@@ -115,6 +122,7 @@
       render: { fillStyle: GiantsTheme.orange },
       chamfer: { radius: 8 },
     });
+    Body.setAngle(bat, BAT_REST_ANGLE);
 
     const batPivot = Constraint.create({
       bodyA: bat,
@@ -138,16 +146,16 @@
     ]);
 
     Events.on(engine, "collisionStart", onCollisionStart);
-    Events.on(engine, "beforeUpdate", cleanupMissedBalls);
+    Events.on(engine, "beforeUpdate", beforeUpdateWorld);
   }
 
   function createTargets() {
     const targetDefs = [
-      // Keep the center lane clear so every pitch reaches the bat.
-      { label: "Single", x: 60, y: 70, width: 90, height: 28, type: "single" },
-      { label: "Double", x: 120, y: 160, width: 95, height: 28, type: "double" },
-      { label: "Triple", x: 280, y: 160, width: 95, height: 28, type: "triple" },
-      { label: "Home Run", x: 340, y: 70, width: 110, height: 30, type: "homerun" },
+      // Difficulty arc around the mound: single easiest, then double, triple, HR hardest.
+      { label: "Single", x: 200, y: 108, width: 82, height: 24, type: "single" },
+      { label: "Double", x: 142, y: 90, width: 64, height: 20, type: "double" },
+      { label: "Triple", x: 258, y: 90, width: 56, height: 20, type: "triple" },
+      { label: "Home Run", x: 308, y: 72, width: 46, height: 18, type: "homerun" },
     ];
 
     return targetDefs.map((target) => {
@@ -166,10 +174,20 @@
     });
   }
 
-  function spawnBall() {
+  function getPitchProfile() {
+    const profiles = [
+      { name: "Floater", xVel: 0.1, yVel: 1.95 },
+      { name: "Changeup", xVel: 0.2, yVel: 2.2 },
+      { name: "Two-Seam", xVel: 0.35, yVel: 2.45 },
+      { name: "Heater", xVel: 0.45, yVel: 2.8 },
+    ];
+    return profiles[Math.floor(Math.random() * profiles.length)];
+  }
+
+  function spawnBall(profile) {
     if (!engine) return;
-    const startX = BOARD_WIDTH / 2 + (Math.random() - 0.5) * 20;
-    const ball = Bodies.circle(startX, 28, 11, {
+    const startX = PITCH_ORIGIN_X + (Math.random() - 0.5) * 10;
+    const ball = Bodies.circle(startX, PITCH_ORIGIN_Y, 11, {
       label: "baseball",
       restitution: 0.55,
       friction: 0.002,
@@ -184,8 +202,27 @@
 
     activeBalls.add(ball.id);
     World.add(engine.world, ball);
-    Body.setVelocity(ball, { x: (Math.random() - 0.5) * 1.1, y: 4 + Math.random() * 0.6 });
-    updateOverlay("Pitch delivered!");
+    const driftDirection = Math.random() < 0.5 ? -1 : 1;
+    Body.setVelocity(ball, {
+      x: driftDirection * profile.xVel * (0.6 + Math.random() * 0.5),
+      y: profile.yVel + Math.random() * 0.2,
+    });
+    updateOverlay(`${profile.name} delivered!`);
+  }
+
+  function queuePitch() {
+    if (!gameStarted || !engine) return;
+    if (pendingPitchTimeout) {
+      window.clearTimeout(pendingPitchTimeout);
+      pendingPitchTimeout = null;
+    }
+
+    const pitchProfile = getPitchProfile();
+    updateOverlay(`And the windup... ${pitchProfile.name}`);
+    pendingPitchTimeout = window.setTimeout(() => {
+      pendingPitchTimeout = null;
+      spawnBall(pitchProfile);
+    }, PITCH_WARNING_MS);
   }
 
   function swingBat() {
@@ -193,22 +230,19 @@
     canSwing = false;
     isSwinging = true;
 
-    // Fast upward snap, then release and re-center.
-    Body.setAngularVelocity(bat, -2.6);
-    Body.setAngle(bat, -0.55);
+    // Pinball-style flipper snap within fixed angle limits.
+    Body.setAngularVelocity(bat, -3.3);
 
     setTimeout(() => {
       if (!bat) return;
-      Body.setAngularVelocity(bat, 1.45);
-    }, 95);
+      Body.setAngularVelocity(bat, 1.5);
+    }, 82);
 
     setTimeout(() => {
       if (!bat) return;
-      Body.setAngle(bat, 0);
-      Body.setAngularVelocity(bat, 0);
       isSwinging = false;
       canSwing = true;
-    }, 280);
+    }, 250);
   }
 
   function advanceRunners(basesEarned) {
@@ -315,19 +349,39 @@
     });
   }
 
+  function constrainBatMotion() {
+    if (!bat) return;
+
+    if (bat.angle < BAT_MIN_ANGLE) {
+      Body.setAngle(bat, BAT_MIN_ANGLE);
+      if (bat.angularVelocity < 0) Body.setAngularVelocity(bat, 0);
+    } else if (bat.angle > BAT_MAX_ANGLE) {
+      Body.setAngle(bat, BAT_MAX_ANGLE);
+      if (bat.angularVelocity > 0) Body.setAngularVelocity(bat, 0);
+    }
+
+    if (!isSwinging) {
+      const angleError = BAT_REST_ANGLE - bat.angle;
+      const settleVelocity = bat.angularVelocity * 0.7 + angleError * 0.6;
+      Body.setAngularVelocity(bat, settleVelocity);
+    }
+  }
+
+  function beforeUpdateWorld() {
+    cleanupMissedBalls();
+    constrainBatMotion();
+  }
+
   function drawTargetLabels() {
     const context = render.context;
     context.save();
     context.fillStyle = GiantsTheme.dirt;
     context.beginPath();
-    context.moveTo(BOARD_WIDTH / 2, BOARD_HEIGHT - 230);
-    context.lineTo(BOARD_WIDTH - 30, BOARD_HEIGHT - 30);
-    context.lineTo(30, BOARD_HEIGHT - 30);
-    context.closePath();
+    context.arc(PITCH_ORIGIN_X, PITCH_ORIGIN_Y + 120, 150, Math.PI, 0);
     context.fill();
 
     context.beginPath();
-    context.arc(BOARD_WIDTH / 2, BOARD_HEIGHT - 185, 38, 0, Math.PI * 2);
+    context.arc(PITCH_ORIGIN_X, PITCH_ORIGIN_Y, 20, 0, Math.PI * 2);
     context.fill();
 
     context.font = "bold 12px Arial";
@@ -344,7 +398,11 @@
   function startGame() {
     if (gameStarted) {
       gameModal.style.display = "flex";
-      updateOverlay("Game resumed.");
+      if (!pitchTimer) {
+        queuePitch();
+        pitchTimer = window.setInterval(queuePitch, PITCH_INTERVAL_MS);
+      }
+      updateOverlay("Game resumed. Watch for the pitch cue.");
       return;
     }
 
@@ -360,16 +418,22 @@
     Render.run(render);
     Runner.run(runner, engine);
 
-    // Immediate opening pitch, then every 3 seconds.
-    spawnBall();
-    pitchTimer = window.setInterval(spawnBall, PITCH_INTERVAL_MS);
-
     gameStarted = true;
-    updateOverlay("Play ball!");
+    updateOverlay("Play ball! Watch for the pitch cue.");
+    queuePitch();
+    pitchTimer = window.setInterval(queuePitch, PITCH_INTERVAL_MS);
   }
 
   function stopGame() {
     gameModal.style.display = "none";
+    if (pitchTimer) {
+      window.clearInterval(pitchTimer);
+      pitchTimer = null;
+    }
+    if (pendingPitchTimeout) {
+      window.clearTimeout(pendingPitchTimeout);
+      pendingPitchTimeout = null;
+    }
   }
 
   function pitchNowFromButton() {
@@ -377,7 +441,7 @@
       startGame();
       return;
     }
-    spawnBall();
+    queuePitch();
   }
 
   playBallBtn.addEventListener("click", pitchNowFromButton);
@@ -396,5 +460,4 @@
   }
 
   document.addEventListener("pointerdown", trySwing);
-  document.addEventListener("click", trySwing);
 })();
