@@ -956,18 +956,35 @@
           img.alt = "";
           img.loading = idx < 2 ? "eager" : "lazy";
           img.decoding = "async";
+          img.addEventListener("error", () => {
+            img.remove();
+          });
           if (idx === 0) img.classList.add("is-active");
           carouselContainer.appendChild(img);
           return img;
         });
 
+        const ensureActiveSlide = () => {
+          const connectedSlides = slideElements.filter((img) => img.isConnected);
+          const hasActiveSlide = connectedSlides.some((img) => img.classList.contains("is-active"));
+          if (!hasActiveSlide && connectedSlides.length > 0) {
+            connectedSlides[0].classList.add("is-active");
+          }
+          return connectedSlides;
+        };
+
+        ensureActiveSlide();
+
         if (canAnimateCarousel) {
           let activeIndex = 0;
           const intervalMs = 5500;
           window.setInterval(() => {
-            const nextIndex = (activeIndex + 1) % slideElements.length;
-            slideElements[activeIndex].classList.remove("is-active");
-            slideElements[nextIndex].classList.add("is-active");
+            const connectedSlides = ensureActiveSlide();
+            if (connectedSlides.length <= 1) return;
+            const currentIndex = activeIndex % connectedSlides.length;
+            const nextIndex = (currentIndex + 1) % connectedSlides.length;
+            connectedSlides[currentIndex].classList.remove("is-active");
+            connectedSlides[nextIndex].classList.add("is-active");
             activeIndex = nextIndex;
           }, intervalMs);
         }
