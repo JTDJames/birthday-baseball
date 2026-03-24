@@ -693,7 +693,7 @@
         <h1>JJ Birthday Baseball Day</h1>
         <p class="date">Saturday, May 9, 2026</p>
         <p class="welcome">
-          Two-part celebration in Giants colors - come hang out before first
+          Two-part day in Giants colors - come hang out before first
           pitch and/or join for the game.
         </p>
         <section class="interest" aria-labelledby="interest-heading">
@@ -951,35 +951,42 @@
           [shuffledImagePaths[i], shuffledImagePaths[j]] = [shuffledImagePaths[j], shuffledImagePaths[i]];
         }
 
-        const loadSlide = (path, idx) =>
-          new Promise((resolve) => {
-            const img = new Image();
-            img.className = "bg-carousel-slide";
-            img.alt = "";
-            img.loading = idx < 2 ? "eager" : "lazy";
-            img.decoding = "async";
-            img.onload = () => resolve(img);
-            img.onerror = () => resolve(null);
-            img.src = encodeURI(path);
-          });
+        const slideElements = [];
+        let activeIndex = 0;
+        let rotationStarted = false;
 
-        Promise.all(shuffledImagePaths.map((path, idx) => loadSlide(path, idx))).then((loadedSlides) => {
-          const slideElements = loadedSlides.filter(Boolean);
-          if (slideElements.length === 0) return;
+        const startRotationIfReady = () => {
+          if (!canAnimateCarousel || rotationStarted || slideElements.length < 2) return;
+          rotationStarted = true;
+          const intervalMs = 5500;
+          window.setInterval(() => {
+            if (slideElements.length < 2) return;
+            const nextIndex = (activeIndex + 1) % slideElements.length;
+            slideElements[activeIndex].classList.remove("is-active");
+            slideElements[nextIndex].classList.add("is-active");
+            activeIndex = nextIndex;
+          }, intervalMs);
+        };
 
-          slideElements[0].classList.add("is-active");
-          slideElements.forEach((img) => carouselContainer.appendChild(img));
-
-          if (canAnimateCarousel && slideElements.length > 1) {
-            let activeIndex = 0;
-            const intervalMs = 5500;
-            window.setInterval(() => {
-              const nextIndex = (activeIndex + 1) % slideElements.length;
-              slideElements[activeIndex].classList.remove("is-active");
-              slideElements[nextIndex].classList.add("is-active");
-              activeIndex = nextIndex;
-            }, intervalMs);
-          }
+        shuffledImagePaths.forEach((path, idx) => {
+          const img = new Image();
+          img.className = "bg-carousel-slide";
+          img.alt = "";
+          img.decoding = "async";
+          img.onload = () => {
+            if (idx < 2) img.loading = "eager";
+            else img.loading = "lazy";
+            carouselContainer.appendChild(img);
+            slideElements.push(img);
+            if (slideElements.length === 1) {
+              img.classList.add("is-active");
+            }
+            startRotationIfReady();
+          };
+          img.onerror = () => {
+            // Skip broken/unsupported files without showing icon artifacts.
+          };
+          img.src = encodeURI(path);
         });
       }
     </script>
