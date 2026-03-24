@@ -121,34 +121,39 @@
       .party-item {
         position: absolute;
         user-select: none;
-        opacity: 0.6;
-        filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+        opacity: 0.3;
+        filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.22));
+        animation-delay: 0s, var(--blink-delay, 0s);
       }
 
       .party-item.ball {
         font-size: 1.25rem;
-        animation: spinBall 8.5s linear infinite;
+        animation: spinBall 8.5s linear infinite, borderBlink 2.4s steps(1, end) infinite;
       }
 
       .party-item.beer {
         font-size: 1.2rem;
-        animation: clinkBeer 1.6s ease-in-out infinite;
+        animation: clinkBeer 1.6s ease-in-out infinite, borderBlink 2.4s steps(1, end) infinite;
       }
 
       .party-item.fries {
         font-size: 1.25rem;
-        animation: shakeFries 0.95s ease-in-out infinite;
+        animation: shakeFries 0.95s ease-in-out infinite, borderBlink 2.4s steps(1, end) infinite;
       }
 
       .party-item.cannon {
         font-size: 1.2rem;
-        animation: squirtCannon 2.4s ease-in-out infinite;
+        animation: squirtCannon 2.4s ease-in-out infinite, borderBlink 2.4s steps(1, end) infinite;
       }
 
       .party-item.mitt {
         font-size: 1.25rem;
-        animation: wiggleMitt 2.1s ease-in-out infinite;
+        animation: wiggleMitt 2.1s ease-in-out infinite, borderBlink 2.4s steps(1, end) infinite;
       }
+
+      .flash-1 { --blink-delay: 0s; }
+      .flash-2 { --blink-delay: 0.8s; }
+      .flash-3 { --blink-delay: 1.6s; }
 
       .b1 { top: 8px; left: 18px; }
       .b2 { top: 8px; left: 50%; transform: translateX(-50%); }
@@ -258,6 +263,11 @@
         0% { transform: rotate(-10deg); }
         50% { transform: rotate(10deg); }
         100% { transform: rotate(-10deg); }
+      }
+
+      @keyframes borderBlink {
+        0%, 40%, 100% { opacity: 0.24; }
+        50%, 90% { opacity: 0.52; }
       }
 
       @keyframes pennantWave {
@@ -618,7 +628,7 @@
 
       @media (max-width: 720px) {
         .party-item {
-          opacity: 0.4;
+          opacity: 0.22;
           font-size: 1rem !important;
         }
 
@@ -668,24 +678,24 @@
           </div>
         </div>
         <div class="party-border" aria-hidden="true">
-          <span class="party-item ball b1">⚾</span>
-          <span class="party-item beer b2">🍻</span>
-          <span class="party-item mitt b3">🥎</span>
-          <span class="party-item fries b4">🍟</span>
-          <span class="party-item cannon b5">💦</span>
-          <span class="party-item ball b6">⚾</span>
+          <span class="party-item ball b1 flash-1">⚾</span>
+          <span class="party-item beer b2 flash-2">🍻</span>
+          <span class="party-item mitt b3 flash-3">🥎</span>
+          <span class="party-item fries b4 flash-1">🍟</span>
+          <span class="party-item cannon b5 flash-2">💦</span>
+          <span class="party-item ball b6 flash-3">⚾</span>
 
-          <span class="party-item cannon l1">💦</span>
-          <span class="party-item fries l2">🍟</span>
-          <span class="party-item ball l3">⚾</span>
-          <span class="party-item mitt l4">🥎</span>
-          <span class="party-item beer l5">🍻</span>
+          <span class="party-item cannon l1 flash-1">💦</span>
+          <span class="party-item fries l2 flash-2">🍟</span>
+          <span class="party-item ball l3 flash-3">⚾</span>
+          <span class="party-item mitt l4 flash-1">🥎</span>
+          <span class="party-item beer l5 flash-2">🍻</span>
 
-          <span class="party-item mitt r1">🥎</span>
-          <span class="party-item ball r2">⚾</span>
-          <span class="party-item cannon r3">💦</span>
-          <span class="party-item beer r4">🍻</span>
-          <span class="party-item fries r5">🍟</span>
+          <span class="party-item beer r1 flash-3">🍻</span>
+          <span class="party-item ball r2 flash-1">⚾</span>
+          <span class="party-item cannon r3 flash-2">💦</span>
+          <span class="party-item fries r4 flash-3">🍟</span>
+          <span class="party-item mitt r5 flash-1">🥎</span>
         </div>
         <div class="hero-fun" aria-hidden="true">
           <span class="floating-ball ball-1">⚾</span>
