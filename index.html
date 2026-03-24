@@ -376,39 +376,41 @@
           Two-part celebration in Giants colors - come hang out before first
           pitch and/or join for the game.
         </p>
-        <p class="splash-banner" aria-live="polite">
-          Splashes: <span id="splashCount" class="splash-num">0</span>
-          <span style="font-weight: 600; font-size: 0.92em;"> (interest submissions)</span>
-        </p>
-
-        <div class="rusty-video">
-          <h2>Rusty cam</h2>
-          <div class="ratio">
-            <iframe
-              id="rustyYoutube"
-              title="Rusty video"
-              src="https://www.youtube-nocookie.com/embed/-OF2Toly2KI?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1&loop=1&playlist=-OF2Toly2KI"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen
-            ></iframe>
-          </div>
-          <p class="rusty-caption">
-            Plays muted automatically (tap the video to unmute). If it doesn’t start,
-            tap once to play.
+        <section class="interest" aria-labelledby="interest-heading">
+          <h2 id="interest-heading">I'm interested!</h2>
+          <p class="interest-lede">
+            Drop your full name and number so we can follow up about the day.
           </p>
-          <p class="rusty-memorial">RIP Rusty.</p>
-        </div>
-
-        <div class="trivia-callout">
-          <p class="trivia-callout-label">Giants trivia</p>
-          <p class="trivia-callout-sub">
-            Warm up before first pitch—questions from easy to very hard.
+          <!-- Optional: set data-rsvp-email so Submit opens the guest's mail app addressed to you. Otherwise we copy text to the clipboard. -->
+          <form id="interestForm" data-rsvp-email="" novalidate>
+            <label for="interest-name">Full name</label>
+            <input
+              id="interest-name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              required
+              maxlength="120"
+              placeholder="Your full name"
+            />
+            <label for="interest-phone">Phone</label>
+            <input
+              id="interest-phone"
+              name="phone"
+              type="tel"
+              inputmode="tel"
+              autocomplete="tel"
+              required
+              maxlength="32"
+              placeholder="(555) 555-5555"
+            />
+            <button type="submit">Submit</button>
+          </form>
+          <p class="interest-hint" id="interestHint">
+            Submit saves your name and phone so the host can follow up.
           </p>
-          <button id="giantsTriviaBtn" type="button" class="trivia-btn">
-            Play Giants Trivia!
-          </button>
-        </div>
+          <p class="interest-status" id="interestStatus" role="status" aria-live="polite"></p>
+        </section>
 
         <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center;">
           <button id="playBallBtn" type="button" class="btn btn-google" style="background-color: #000; border: 2px solid var(--giants-orange); color: var(--giants-cream); padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 700;">
@@ -420,41 +422,39 @@
         </div>
       </section>
 
-      <section class="interest" aria-labelledby="interest-heading">
-        <h2 id="interest-heading">I'm interested!</h2>
-        <p class="interest-lede">
-          Drop your full name and number so we can follow up about the day.
+      <p class="splash-banner" aria-live="polite">
+        Splashes: <span id="splashCount" class="splash-num">0</span>
+        <span style="font-weight: 600; font-size: 0.92em;"> (interest submissions)</span>
+      </p>
+
+      <div class="rusty-video">
+        <h2>Rusty cam</h2>
+        <div class="ratio">
+          <iframe
+            id="rustyYoutube"
+            title="Rusty video"
+            src="https://www.youtube-nocookie.com/embed/-OF2Toly2KI?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1&loop=1&playlist=-OF2Toly2KI"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <p class="rusty-caption">
+          Plays muted automatically (tap the video to unmute). If it doesn’t start,
+          tap once to play.
         </p>
-        <!-- Optional: set data-rsvp-email so Submit opens the guest's mail app addressed to you. Otherwise we copy text to the clipboard. -->
-        <form id="interestForm" data-rsvp-email="" novalidate>
-          <label for="interest-name">Full name</label>
-          <input
-            id="interest-name"
-            name="name"
-            type="text"
-            autocomplete="name"
-            required
-            maxlength="120"
-            placeholder="Your full name"
-          />
-          <label for="interest-phone">Phone</label>
-          <input
-            id="interest-phone"
-            name="phone"
-            type="tel"
-            inputmode="tel"
-            autocomplete="tel"
-            required
-            maxlength="32"
-            placeholder="(555) 555-5555"
-          />
-          <button type="submit">Submit</button>
-        </form>
-        <p class="interest-hint" id="interestHint">
-          Submit saves your name and phone so the host can follow up.
+        <p class="rusty-memorial">RIP Rusty.</p>
+      </div>
+
+      <div class="trivia-callout">
+        <p class="trivia-callout-label">Giants trivia</p>
+        <p class="trivia-callout-sub">
+          Warm up before first pitch—questions from easy to very hard.
         </p>
-        <p class="interest-status" id="interestStatus" role="status" aria-live="polite"></p>
-      </section>
+        <button id="giantsTriviaBtn" type="button" class="trivia-btn">
+          Play Giants Trivia!
+        </button>
+      </div>
 
       <section class="schedule" aria-label="Event schedule">
         <article class="card">
