@@ -1,0 +1,11 @@
+{
+  "name": "birthday-baseball",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "seed:trivia": "node scripts/seed-trivia.mjs"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.6.0"
+  }
+}

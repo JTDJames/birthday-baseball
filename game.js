@@ -55,7 +55,7 @@
     dirt: "#c2b280",
   };
 
-  const { Engine, Render, Runner, World, Bodies, Body, Events, Sleeping } = Matter;
+  const { Engine, Render, Runner, World, Bodies, Body, Events, Sleeping, Constraint } = Matter;
 
   const LEADERBOARD_KEY = "bbPinballLeaderboardV1";
   const LEGACY_HIGH_KEY = "bbPinballHighScore";
@@ -226,6 +226,10 @@
     perfectHits: 0,
   };
 
+  /** Static hinge point the flipper constraint attaches to (world space). */
+  let batPivotBody = null;
+  let batPivotConstraint = null;
+
   let overlay = null;
   /** Bump when field art changes so the bitmap rebuilds (no stale brown fan, etc.). */
   const INF_FIELD_CACHE_VERSION = 4;
@@ -378,6 +382,7 @@
     engine.enableSleeping = false;
     engine.positionIterations = 12;
     engine.velocityIterations = 12;
+    if (typeof engine.constraintIterations === "number") engine.constraintIterations = 8;
 
     render = Render.create({
       element: gameContainer,
@@ -455,18 +460,35 @@
     batAnchor = { x: pivotX, y: pivotY };
 
     /**
-     * Kinematic flipper: isStatic so the solver doesn’t fight per-frame position/angle fixes
-     * (dynamic + constraint caused rapid micro-bounces with the ball at rest).
+     * Dynamic flipper + world hinge (Constraint): static bat never imparted velocity to the ball
+     * correctly; a constrained dynamic body matches pinball-style impulse transfer.
      */
-    bat = Bodies.rectangle(batX, batY, batLength, batThickness, {
+    batPivotBody = Bodies.circle(pivotX, pivotY, 6, {
       isStatic: true,
-      friction: 0.92,
-      restitution: 0.1,
+      isSensor: true,
+      render: { visible: false },
+    });
+
+    bat = Bodies.rectangle(batX, batY, batLength, batThickness, {
+      density: 0.012,
+      friction: 0.55,
+      restitution: 0.12,
+      frictionAir: 0.12,
       render: { fillStyle: GiantsTheme.orange },
-      chamfer: { radius: 8 },
+      chamfer: { radius: 6 },
     });
     Body.setAngle(bat, BAT_REST_ANGLE);
     batTargetAngle = BAT_REST_ANGLE;
+
+    batPivotConstraint = Constraint.create({
+      bodyA: bat,
+      pointA: { x: -batLength / 2, y: 0 },
+      bodyB: batPivotBody,
+      pointB: { x: 0, y: 0 },
+      stiffness: 1,
+      length: 0,
+      render: { visible: false },
+    });
 
     targetSensors = createTargets();
 
@@ -545,7 +567,9 @@
       rightDrainGuide,
       leftBumper,
       rightBumper,
+      batPivotBody,
       bat,
+      batPivotConstraint,
       ...targetSensors.map((t) => t.body),
     ]);
 
@@ -597,10 +621,10 @@
     const startX = PITCH_ORIGIN_X + (Math.random() - 0.5) * 4;
     const ball = Bodies.circle(startX, holeY, BALL_RADIUS, {
       label: "baseball",
-      restitution: 0.32,
-      friction: 0.06,
-      frictionAir: 0.0012,
-      density: 0.0016,
+      restitution: 0.38,
+      friction: 0.1,
+      frictionAir: 0.0015,
+      density: 0.002,
       render: {
         fillStyle: "#FFFFFF",
         strokeStyle: GiantsTheme.black,
@@ -926,18 +950,27 @@
   }
 
   function constrainBatMotion() {
-    if (!bat || !batAnchor) return;
+    if (!bat || !batAnchor || !engine) return;
 
-    const constrainedTarget = Math.min(BAT_MAX_ANGLE, Math.max(BAT_MIN_ANGLE, batTargetAngle));
-    const nextAngle = bat.angle + (constrainedTarget - bat.angle) * (isSwinging ? 0.55 : 0.28);
-    const clampedAngle = Math.min(BAT_MAX_ANGLE, Math.max(BAT_MIN_ANGLE, nextAngle));
-    const cos = Math.cos(clampedAngle);
-    const sin = Math.sin(clampedAngle);
-    Body.setPosition(bat, {
-      x: batAnchor.x + cos * BAT_PIVOT_TO_CENTER,
-      y: batAnchor.y + sin * BAT_PIVOT_TO_CENTER,
+    const target = Math.min(BAT_MAX_ANGLE, Math.max(BAT_MIN_ANGLE, batTargetAngle));
+    let diff = target - bat.angle;
+    while (diff > Math.PI) diff -= Math.PI * 2;
+    while (diff < -Math.PI) diff += Math.PI * 2;
+
+    const drive = isSwinging ? 16 : 11;
+    const blend = isSwinging ? 0.42 : 0.32;
+    const desiredAv = diff * drive;
+    const nextAv = bat.angularVelocity * (1 - blend) + desiredAv * blend;
+    Body.setAngularVelocity(bat, nextAv);
+
+    const gy = engine.gravity.y;
+    Body.applyForce(bat, bat.position, { x: 0, y: -bat.mass * gy });
+
+    const linDamp = 0.35;
+    Body.setVelocity(bat, {
+      x: bat.velocity.x * linDamp,
+      y: bat.velocity.y * linDamp,
     });
-    Body.setAngle(bat, clampedAngle);
   }
 
   /**
@@ -963,7 +996,7 @@
       if (localY < surfaceLocalY - 5 || localY > surfaceLocalY + 12) return;
       const speed = Math.hypot(ball.velocity.x, ball.velocity.y);
       if (speed > 13) return;
-      const slip = 0.00045 * (ball.mass || 1);
+      const slip = 0.00022 * (ball.mass || 1);
       // Downhill along the bat: gravity (0,1) projected onto tangent (tx,ty) toward tip.
       const gDot = ty;
       const dir = gDot >= 0 ? 1 : -1;
@@ -1345,17 +1378,31 @@
     if (shouldIgnoreSwingTarget(event)) return;
     if (initialsOpen) return;
     ensureAudioContext();
-    addSwingHoldPointer();
+    const started = addSwingHoldPointer();
+    if (started && event.pointerId != null && gameContainer.setPointerCapture) {
+      try {
+        gameContainer.setPointerCapture(event.pointerId);
+      } catch (e) {
+        /* ignore */
+      }
+    }
   }
 
   function trySwingPointerUp(event) {
     if (event.button !== 0 && event.pointerType === "mouse") return;
+    if (event.pointerId != null && gameContainer.releasePointerCapture) {
+      try {
+        gameContainer.releasePointerCapture(event.pointerId);
+      } catch (e) {
+        /* ignore */
+      }
+    }
     releaseSwingHoldPointer();
   }
 
-  document.addEventListener("pointerdown", trySwingPointerDown);
-  document.addEventListener("pointerup", trySwingPointerUp);
-  document.addEventListener("pointercancel", trySwingPointerUp);
+  gameModal.addEventListener("pointerdown", trySwingPointerDown, true);
+  gameModal.addEventListener("pointerup", trySwingPointerUp, true);
+  gameModal.addEventListener("pointercancel", trySwingPointerUp, true);
 
   document.addEventListener("keydown", (event) => {
     if (hsInitials && document.activeElement === hsInitials) return;

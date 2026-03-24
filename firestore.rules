@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /questions/{questionId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /challenges/{challengeId} {
+      allow create: if request.resource.data.status == 'open'
+        && request.resource.data.questionId is string
+        && request.resource.data.questionPrompt is string
+        && request.resource.data.questionPrompt.size() <= 4000
+        && request.resource.data.reason is string
+        && request.resource.data.reason.size() > 0
+        && request.resource.data.reason.size() <= 4000
+        && (!('contactEmail' in request.resource.data)
+            || (request.resource.data.contactEmail is string
+                && request.resource.data.contactEmail.size() <= 200))
+        && (!('claimedCorrectIndex' in request.resource.data)
+            || (request.resource.data.claimedCorrectIndex is int
+                && request.resource.data.claimedCorrectIndex >= 0
+                && request.resource.data.claimedCorrectIndex <= 3));
+      allow read, update, delete: if false;
+    }
+  }
+}

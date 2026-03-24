@@ -1,0 +1,122 @@
+[
+  {
+    "prompt": "What city do the San Francisco Giants play home games in?",
+    "choices": ["San Francisco", "Oakland", "San Jose", "Sacramento"],
+    "correctIndex": 0,
+    "category": "ballpark"
+  },
+  {
+    "prompt": "What are the Giants primary brand colors?",
+    "choices": ["Orange and black", "Blue and white", "Green and gold", "Purple and silver"],
+    "correctIndex": 0,
+    "category": "culture"
+  },
+  {
+    "prompt": "What is the name of the Giants mascot?",
+    "choices": ["Lou Seal", "Clawed", "Orbit", "The Phanatic"],
+    "correctIndex": 0,
+    "category": "culture"
+  },
+  {
+    "prompt": "What is the name of the water beyond right field where splash-hit home runs land?",
+    "choices": ["McCovey Cove", "Oracle Lake", "Bay Lagoon", "The Splash Zone"],
+    "correctIndex": 0,
+    "category": "ballpark"
+  },
+  {
+    "prompt": "Which league are the Giants in?",
+    "choices": ["National League", "American League", "Pacific Coast League", "Atlantic League"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "What is the Giants current home ballpark name (2020s)?",
+    "choices": ["Oracle Park", "Candlestick Park", "AT&T Park", "Pacific Bell Park"],
+    "correctIndex": 0,
+    "category": "ballpark"
+  },
+  {
+    "prompt": "What number is retired for Willie Mays in San Francisco?",
+    "choices": ["24", "25", "44", "14"],
+    "correctIndex": 0,
+    "category": "culture"
+  },
+  {
+    "prompt": "Which station is famously associated with Giants radio broadcasts in the Bay Area?",
+    "choices": ["KNBR", "KGO", "KPIX", "KRON"],
+    "correctIndex": 0,
+    "category": "culture"
+  },
+  {
+    "prompt": "Which bridge is often visible near Oracle Park in TV broadcasts?",
+    "choices": ["San Francisco–Oakland Bay Bridge", "Golden Gate Bridge", "Dumbarton Bridge", "Richmond Bridge"],
+    "correctIndex": 0,
+    "category": "ballpark"
+  },
+  {
+    "prompt": "The Giants have a historic rivalry with which NL West team?",
+    "choices": ["Los Angeles Dodgers", "San Diego Padres", "Arizona Diamondbacks", "Colorado Rockies"],
+    "correctIndex": 0,
+    "category": "culture"
+  },
+  {
+    "prompt": "How many World Series championships did the Giants win in San Francisco in 2010, 2012, and 2014 combined?",
+    "choices": ["3", "2", "4", "1"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "Where do the Giants play spring training games in Arizona?",
+    "choices": ["Scottsdale Stadium", "Salt River Fields", "Hohokam Stadium", "Sloan Park"],
+    "correctIndex": 0,
+    "category": "ballpark"
+  },
+  {
+    "prompt": "What is the Giants Triple-A affiliate (city/team)?",
+    "choices": ["Sacramento River Cats", "Fresno Grizzlies", "Las Vegas Aviators", "Reno Aces"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "What is the Giants Double-A affiliate (city/team)?",
+    "choices": ["Richmond Flying Squirrels", "Eugene Emeralds", "Hartford Yard Goats", "Akron RubberDucks"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "What is the Giants High-A affiliate (city/team)?",
+    "choices": ["Eugene Emeralds", "San Jose Giants", "Hillsboro Hops", "Tri-City Dust Devils"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "What is the Giants Single-A affiliate (city/team)?",
+    "choices": ["San Jose Giants", "Eugene Emeralds", "Stockton Ports", "Modesto Nuts"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "Which Ford C. Frick Award-winning broadcaster is long associated with Giants broadcasts?",
+    "choices": ["Jon Miller", "Vin Scully", "Joe Buck", "Al Michaels"],
+    "correctIndex": 0,
+    "category": "human story"
+  },
+  {
+    "prompt": "What food item is famously associated with garlic at Oracle Park?",
+    "choices": ["Garlic fries", "Garlic bread", "Garlic ice cream", "Garlic pretzels"],
+    "correctIndex": 0,
+    "category": "food"
+  },
+  {
+    "prompt": "What is the name of the Giants home dugout side at Oracle Park (first-base or third-base)?",
+    "choices": ["First-base side", "Third-base side", "Center-field side", "Behind home plate only"],
+    "correctIndex": 0,
+    "category": "ballpark"
+  },
+  {
+    "prompt": "What division do the Giants play in?",
+    "choices": ["NL West", "NL Central", "NL East", "AL West"],
+    "correctIndex": 0,
+    "category": "baseball"
+  }
+]

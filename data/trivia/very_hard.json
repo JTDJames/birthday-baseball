@@ -1,0 +1,122 @@
+[
+  {
+    "prompt": "What is the approximate official seating capacity of Oracle Park (commonly published)?",
+    "choices": ["About 41,000", "About 36,000", "About 48,000", "About 55,000"],
+    "correctIndex": 0,
+    "category": "ballpark"
+  },
+  {
+    "prompt": "What is the distance (in feet) down the right-field line at Oracle Park?",
+    "choices": ["309 feet", "325 feet", "302 feet", "330 feet"],
+    "correctIndex": 0,
+    "category": "ballpark"
+  },
+  {
+    "prompt": "What is the distance (in feet) down the left-field line at Oracle Park?",
+    "choices": ["339 feet", "330 feet", "315 feet", "345 feet"],
+    "correctIndex": 0,
+    "category": "ballpark"
+  },
+  {
+    "prompt": "What was the Giants franchise record for wins in a 162-game season (through the early 2020s)?",
+    "choices": ["107 wins (2021)", "103 wins", "100 wins", "105 wins"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "What was the Giants regular-season record in their 2010 World Series championship year?",
+    "choices": ["92–70", "86–76", "90–72", "94–68"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "What was the Giants regular-season record in their 2012 World Series championship year?",
+    "choices": ["94–68", "92–70", "86–76", "90–72"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "What was the Giants regular-season record in their 2014 World Series championship year?",
+    "choices": ["88–74", "92–70", "94–68", "86–76"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "Who did the Giants defeat in the 2010 World Series?",
+    "choices": ["Texas Rangers", "Detroit Tigers", "Kansas City Royals", "St. Louis Cardinals"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "Who did the Giants defeat in the 2012 World Series?",
+    "choices": ["Detroit Tigers", "Texas Rangers", "Kansas City Royals", "St. Louis Cardinals"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "Who did the Giants defeat in the 2014 World Series?",
+    "choices": ["Kansas City Royals", "Texas Rangers", "Detroit Tigers", "St. Louis Cardinals"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "Which Giant won 1989 NLCS MVP?",
+    "choices": ["Will Clark", "Kevin Mitchell", "Matt Williams", "Robby Thompson"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "Which Giant won 2002 NLCS MVP?",
+    "choices": ["Benito Santiago", "Jeff Kent", "Rich Aurilia", "Barry Bonds"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "Which Giant won 2010 NLCS MVP?",
+    "choices": ["Cody Ross", "Juan Uribe", "Tim Lincecum", "Buster Posey"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "Which Giant won 2012 NLCS MVP?",
+    "choices": ["Marco Scutaro", "Pablo Sandoval", "Buster Posey", "Matt Cain"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "Which Giant won 2014 NLCS MVP?",
+    "choices": ["Madison Bumgarner", "Buster Posey", "Pablo Sandoval", "Hunter Pence"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "What year did San Francisco host the MLB All-Star Game at Oracle Park (then AT&T Park)?",
+    "choices": ["2007", "2000", "2010", "2012"],
+    "correctIndex": 0,
+    "category": "ballpark"
+  },
+  {
+    "prompt": "What is Barry Bonds’ MLB-record walks total for a single season (2004)?",
+    "choices": ["232", "198", "177", "250"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "Which statement is true about the 1986 NL Rookie of the Year award?",
+    "choices": ["No Giant won; Todd Worrell (Cardinals) won the award", "Will Clark won", "Robby Thompson won", "Barry Bonds won"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "Who managed the Giants immediately before Bruce Bochy?",
+    "choices": ["Felipe Alou", "Dusty Baker", "Roger Craig", "Bob Brenly"],
+    "correctIndex": 0,
+    "category": "baseball"
+  },
+  {
+    "prompt": "Who managed the Giants immediately after Bruce Bochy (next full-time manager)?",
+    "choices": ["Gabe Kapler", "Bob Melvin", "Ron Wotus", "Scott Harris"],
+    "correctIndex": 0,
+    "category": "baseball"
+  }
+]
