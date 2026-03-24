@@ -86,7 +86,7 @@
       }
 
       .pennant-row.top { top: 4px; }
-      .pennant-row.bottom { bottom: 28px; }
+      .pennant-row.bottom { bottom: 8px; }
 
       .pennant {
         width: 0;
@@ -671,7 +671,6 @@
           <span class="party-item ball b1 flash-1">⚾</span>
           <span class="party-item mitt b3 flash-3">🥎</span>
           <span class="party-item fries b4 flash-1">🍟</span>
-          <span class="party-item cannon b5 flash-2">💦</span>
           <span class="party-item ball b6 flash-3">⚾</span>
 
           <span class="party-item cannon l1 flash-1">💦</span>
@@ -952,45 +951,36 @@
           [shuffledImagePaths[i], shuffledImagePaths[j]] = [shuffledImagePaths[j], shuffledImagePaths[i]];
         }
 
-        const slideElements = shuffledImagePaths.map((path, idx) => {
-          const img = document.createElement("img");
-          img.className = "bg-carousel-slide";
-          img.src = encodeURI(path);
-          img.alt = "";
-          img.loading = idx < 2 ? "eager" : "lazy";
-          img.decoding = "async";
-          img.addEventListener("error", () => {
-            img.remove();
+        const loadSlide = (path, idx) =>
+          new Promise((resolve) => {
+            const img = new Image();
+            img.className = "bg-carousel-slide";
+            img.alt = "";
+            img.loading = idx < 2 ? "eager" : "lazy";
+            img.decoding = "async";
+            img.onload = () => resolve(img);
+            img.onerror = () => resolve(null);
+            img.src = encodeURI(path);
           });
-          if (idx === 0) img.classList.add("is-active");
-          carouselContainer.appendChild(img);
-          return img;
-        });
 
-        const ensureActiveSlide = () => {
-          const connectedSlides = slideElements.filter((img) => img.isConnected);
-          const hasActiveSlide = connectedSlides.some((img) => img.classList.contains("is-active"));
-          if (!hasActiveSlide && connectedSlides.length > 0) {
-            connectedSlides[0].classList.add("is-active");
+        Promise.all(shuffledImagePaths.map((path, idx) => loadSlide(path, idx))).then((loadedSlides) => {
+          const slideElements = loadedSlides.filter(Boolean);
+          if (slideElements.length === 0) return;
+
+          slideElements[0].classList.add("is-active");
+          slideElements.forEach((img) => carouselContainer.appendChild(img));
+
+          if (canAnimateCarousel && slideElements.length > 1) {
+            let activeIndex = 0;
+            const intervalMs = 5500;
+            window.setInterval(() => {
+              const nextIndex = (activeIndex + 1) % slideElements.length;
+              slideElements[activeIndex].classList.remove("is-active");
+              slideElements[nextIndex].classList.add("is-active");
+              activeIndex = nextIndex;
+            }, intervalMs);
           }
-          return connectedSlides;
-        };
-
-        ensureActiveSlide();
-
-        if (canAnimateCarousel) {
-          let activeIndex = 0;
-          const intervalMs = 5500;
-          window.setInterval(() => {
-            const connectedSlides = ensureActiveSlide();
-            if (connectedSlides.length <= 1) return;
-            const currentIndex = activeIndex % connectedSlides.length;
-            const nextIndex = (currentIndex + 1) % connectedSlides.length;
-            connectedSlides[currentIndex].classList.remove("is-active");
-            connectedSlides[nextIndex].classList.add("is-active");
-            activeIndex = nextIndex;
-          }, intervalMs);
-        }
+        });
       }
     </script>
   </body>
