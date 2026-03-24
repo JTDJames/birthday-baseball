@@ -262,11 +262,14 @@
   let batAnchor = null;
   let activeBalls = new Set();
   let targetSensors = [];
+  let slingBumperBodies = [];
+  let popBumperBodies = [];
   let moundCueVisible = false;
   let moundCueText = "";
   let swingCueVisible = false;
   let feedbackText = "";
   let feedbackUntil = 0;
+  let homerunBurstUntil = 0;
   let pendingFinalScore = 0;
   let pendingPerfects = 0;
 
@@ -515,21 +518,49 @@
         [rightSlingVerts],
         slingCommon
       );
+      leftBumper.plugin = {
+        ...(leftBumper.plugin || {}),
+        bumperKind: "sling",
+        visualRadius: 0,
+        lastHitAt: 0,
+      };
+      rightBumper.plugin = {
+        ...(rightBumper.plugin || {}),
+        bumperKind: "sling",
+        visualRadius: 0,
+        lastHitAt: 0,
+      };
     } catch (err) {
       leftBumper = Bodies.polygon(SIDE_GUTTER_X + 34, slingY, 3, 26, slingCommon);
       Body.setAngle(leftBumper, Math.PI / 2 + 0.32);
       rightBumper = Bodies.polygon(BOARD_WIDTH - SIDE_GUTTER_X - 34, slingY, 3, 26, slingCommon);
       Body.setAngle(rightBumper, Math.PI / 2 - 0.32);
+      leftBumper.plugin = {
+        ...(leftBumper.plugin || {}),
+        bumperKind: "sling",
+        visualRadius: 0,
+        lastHitAt: 0,
+      };
+      rightBumper.plugin = {
+        ...(rightBumper.plugin || {}),
+        bumperKind: "sling",
+        visualRadius: 0,
+        lastHitAt: 0,
+      };
     }
-    const popBumpers = POP_BUMPER_LAYOUT.map((slot) =>
-      Bodies.circle(slot.x, slot.y, slot.r, {
+    slingBumperBodies = [leftBumper, rightBumper];
+    const popBumpers = POP_BUMPER_LAYOUT.map((slot) => {
+      const body = Bodies.circle(slot.x, slot.y, slot.r, {
         isStatic: true,
         friction: 0.04,
-        restitution: 1.28,
+        restitution: 1.42,
         label: "bumper",
         render: { fillStyle: GiantsTheme.orange, strokeStyle: "#2a1000", lineWidth: 1.5 },
-      })
-    );
+      });
+      body.plugin = { ...(body.plugin || {}), bumperKind: "pop", visualRadius: slot.r, lastHitAt: 0 };
+      return body;
+    });
+    popBumperBodies = popBumpers;
     const bx = BOARD_WIDTH / 2;
 
     const drainGuideOpts = {
@@ -793,6 +824,8 @@
       advanceRunners(4);
       gameState.hitStreak += 1;
       playSfx("homerun");
+      setFeedback("¡Adiós pelota!", 1200);
+      homerunBurstUntil = Date.now() + 900;
       let message = `Home Run! Streak ${gameState.hitStreak}`;
       if (ballBody && ballBody.plugin && ballBody.plugin.isSkillPitch) {
         gameState.score += 1;
@@ -903,10 +936,21 @@
         (b.label === "bumper" && a.label === "baseball")
       ) {
         const ball = a.label === "baseball" ? a : b;
-        const bump = 2.5 + Math.random() * 1.2;
+        const bumperBody = a.label === "bumper" ? a : b;
+        const bumperKind = bumperBody.plugin && bumperBody.plugin.bumperKind ? bumperBody.plugin.bumperKind : "generic";
+        if (bumperBody.plugin) bumperBody.plugin.lastHitAt = Date.now();
+        const isPopBumper = bumperKind === "pop";
+        const isSling = bumperKind === "sling";
+        const bump = isPopBumper
+          ? 3.9 + Math.random() * 1.9
+          : isSling
+            ? 3.15 + Math.random() * 1.6
+            : 2.7 + Math.random() * 1.3;
+        const vxScale = isPopBumper ? 1.26 : isSling ? 1.22 : 1.15;
+        const vyScale = isPopBumper ? 1.24 : isSling ? 1.2 : 1.1;
         Body.setVelocity(ball, {
-          x: ball.velocity.x * 1.15 + (Math.random() - 0.5) * bump,
-          y: ball.velocity.y * 1.1 - Math.abs(ball.velocity.y) * 0.15 - 0.2,
+          x: ball.velocity.x * vxScale + (Math.random() - 0.5) * bump,
+          y: ball.velocity.y * vyScale - Math.abs(ball.velocity.y) * 0.24 - 0.34,
         });
         playSfx("bumper");
       }
@@ -1255,6 +1299,54 @@
       }
     }
 
+    // Pop bumper pulse animation on hit (expand + retract).
+    const now = Date.now();
+    popBumperBodies.forEach((bumper) => {
+      const hitAt = bumper.plugin && bumper.plugin.lastHitAt ? bumper.plugin.lastHitAt : 0;
+      const elapsed = now - hitAt;
+      if (elapsed < 0 || elapsed > 210) return;
+      const t = elapsed / 210;
+      const pulse = Math.sin(t * Math.PI);
+      const cx = bumper.position.x;
+      const cy = bumper.position.y;
+      const baseR = (bumper.plugin && bumper.plugin.visualRadius) || 10;
+      const ringR = baseR + 1 + pulse * 6.5;
+
+      context.strokeStyle = `rgba(253,90,30,${0.58 * (1 - t)})`;
+      context.lineWidth = 2 + pulse * 1.2;
+      context.beginPath();
+      context.arc(cx, cy, ringR, 0, Math.PI * 2);
+      context.stroke();
+    });
+
+    // Triangle sling pulse animation on hit.
+    slingBumperBodies.forEach((bumper) => {
+      const hitAt = bumper.plugin && bumper.plugin.lastHitAt ? bumper.plugin.lastHitAt : 0;
+      const elapsed = now - hitAt;
+      if (elapsed < 0 || elapsed > 190) return;
+      const t = elapsed / 190;
+      const pulse = Math.sin(t * Math.PI);
+      const cx = bumper.position.x;
+      const cy = bumper.position.y;
+      const verts = bumper.vertices || [];
+      if (verts.length < 3) return;
+
+      context.strokeStyle = `rgba(253,90,30,${0.52 * (1 - t)})`;
+      context.lineWidth = 2.4 + pulse * 1.4;
+      context.beginPath();
+      verts.forEach((v, i) => {
+        const ox = v.x - cx;
+        const oy = v.y - cy;
+        const s = 1 + pulse * 0.18;
+        const px = cx + ox * s;
+        const py = cy + oy * s;
+        if (i === 0) context.moveTo(px, py);
+        else context.lineTo(px, py);
+      });
+      context.closePath();
+      context.stroke();
+    });
+
     targetSensors.forEach((target) => {
       const r = target.radius;
       context.fillStyle = "#1a1208";
@@ -1295,6 +1387,47 @@
       context.fillStyle = GiantsTheme.cream;
       context.font = "bold 14px Arial";
       context.fillText(feedbackText, BOARD_WIDTH / 2, BOARD_HEIGHT - 120);
+    }
+
+    // Comic-book homerun burst (separate from standard feedback line).
+    if (Date.now() < homerunBurstUntil) {
+      const remaining = Math.max(0, homerunBurstUntil - Date.now());
+      const duration = 900;
+      const t = 1 - remaining / duration;
+      const scale = 0.88 + Math.sin(Math.min(1, t) * Math.PI) * 0.24;
+      const alpha = 1 - t * 0.85;
+      const bx = BOARD_WIDTH / 2;
+      const by = BOARD_HEIGHT * 0.46;
+
+      context.save();
+      context.translate(bx, by);
+      context.scale(scale, scale);
+      context.globalAlpha = Math.max(0, alpha);
+
+      context.fillStyle = "rgba(253,90,30,0.22)";
+      context.beginPath();
+      const burstR = 54;
+      for (let i = 0; i < 12; i += 1) {
+        const a = (i / 12) * Math.PI * 2;
+        const r = i % 2 === 0 ? burstR : burstR * 0.62;
+        const x = Math.cos(a) * r;
+        const y = Math.sin(a) * r;
+        if (i === 0) context.moveTo(x, y);
+        else context.lineTo(x, y);
+      }
+      context.closePath();
+      context.fill();
+
+      context.lineWidth = 4;
+      context.strokeStyle = "rgba(17,17,17,0.95)";
+      context.fillStyle = GiantsTheme.orange;
+      context.font = "900 28px Arial Black, Impact, sans-serif";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      context.strokeText("¡ADIOS PELOTA!", 0, 0);
+      context.fillText("¡ADIOS PELOTA!", 0, 0);
+
+      context.restore();
     }
     if (isPaused) {
       context.fillStyle = GiantsTheme.cream;
