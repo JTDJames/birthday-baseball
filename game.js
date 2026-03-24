@@ -91,6 +91,9 @@
   let isPaused = false;
   let canSwing = true;
   let isSwinging = false;
+  /** Flipper held while click/touch or Space is active (tracked separately so global pointerup doesn’t cancel Space). */
+  let swingHoldPointer = false;
+  let swingHoldSpace = false;
   let batTargetAngle = BAT_REST_ANGLE;
   let pitchesThisInning = 0;
   let inningsLimit = MAX_INNINGS;
@@ -291,6 +294,7 @@
     if (shouldPause) {
       isPaused = true;
       Runner.stop(runner);
+      resetSwingHold();
       updateOverlay("Paused. Press P to resume.");
       return;
     }
@@ -640,19 +644,51 @@
     }, warningMs);
   }
 
-  function swingBat() {
-    if (!bat || !canSwing) return;
-    canSwing = false;
-    isSwinging = true;
-    batTargetAngle = BAT_MIN_ANGLE;
-
-    // Pinball-style flipper snap within fixed angle limits.
-    setTimeout(() => {
-      if (!bat) return;
+  function syncSwingHoldState() {
+    const held = swingHoldPointer || swingHoldSpace;
+    if (held) {
+      batTargetAngle = BAT_MIN_ANGLE;
+      isSwinging = true;
+      canSwing = false;
+    } else {
       batTargetAngle = BAT_REST_ANGLE;
       isSwinging = false;
       canSwing = true;
-    }, 135);
+    }
+  }
+
+  function addSwingHoldPointer() {
+    if (!bat || gameModal.style.display === "none" || isPaused) return;
+    if (swingHoldPointer) return;
+    if (!canSwing) return;
+    swingHoldPointer = true;
+    syncSwingHoldState();
+  }
+
+  function releaseSwingHoldPointer() {
+    if (!swingHoldPointer) return;
+    swingHoldPointer = false;
+    syncSwingHoldState();
+  }
+
+  function addSwingHoldSpace() {
+    if (!bat || gameModal.style.display === "none" || isPaused) return;
+    if (swingHoldSpace) return;
+    if (!swingHoldPointer && !canSwing) return;
+    swingHoldSpace = true;
+    syncSwingHoldState();
+  }
+
+  function releaseSwingHoldSpace() {
+    if (!swingHoldSpace) return;
+    swingHoldSpace = false;
+    syncSwingHoldState();
+  }
+
+  function resetSwingHold() {
+    swingHoldPointer = false;
+    swingHoldSpace = false;
+    syncSwingHoldState();
   }
 
   function advanceRunners(basesEarned) {
@@ -1232,6 +1268,7 @@
     pitchCueEndsAt = 0;
     isInningBreak = false;
     specialLit = false;
+    resetSwingHold();
   }
 
   function pitchNowFromButton() {
@@ -1293,20 +1330,44 @@
     }
   });
 
-  function trySwing(event) {
-    if (!gameStarted || gameModal.style.display === "none" || isPaused) return;
-    if (event.target === closeGameBtn) return;
-    if (event.target.closest && event.target.closest("#highScoreEntry")) return;
-    if (event.target.closest && event.target.closest("#leaderboardModal")) return;
-    if (initialsOpen) return;
-    ensureAudioContext();
-    swingBat();
+  function shouldIgnoreSwingTarget(event) {
+    if (event.target === closeGameBtn) return true;
+    if (event.target.closest && event.target.closest("#highScoreEntry")) return true;
+    if (event.target.closest && event.target.closest("#leaderboardModal")) return true;
+    if (event.target.closest && event.target.closest("#playBallBtn")) return true;
+    if (event.target.closest && event.target.closest("#leaderboardBtn")) return true;
+    return false;
   }
 
-  document.addEventListener("pointerdown", trySwing);
+  function trySwingPointerDown(event) {
+    if (!gameStarted || gameModal.style.display === "none" || isPaused) return;
+    if (event.button !== 0 && event.pointerType === "mouse") return;
+    if (shouldIgnoreSwingTarget(event)) return;
+    if (initialsOpen) return;
+    ensureAudioContext();
+    addSwingHoldPointer();
+  }
+
+  function trySwingPointerUp(event) {
+    if (event.button !== 0 && event.pointerType === "mouse") return;
+    releaseSwingHoldPointer();
+  }
+
+  document.addEventListener("pointerdown", trySwingPointerDown);
+  document.addEventListener("pointerup", trySwingPointerUp);
+  document.addEventListener("pointercancel", trySwingPointerUp);
+
   document.addEventListener("keydown", (event) => {
     if (hsInitials && document.activeElement === hsInitials) return;
     if (!gameStarted || gameModal.style.display === "none") return;
+    if (event.code === "Space" || event.key === " ") {
+      if (event.repeat) return;
+      event.preventDefault();
+      if (initialsOpen) return;
+      ensureAudioContext();
+      addSwingHoldSpace();
+      return;
+    }
     if (event.key === "p" || event.key === "P") {
       setPaused(!isPaused);
       return;
@@ -1319,6 +1380,13 @@
     if (event.key === "r" || event.key === "R") {
       reducedMotion = !reducedMotion;
       updateOverlay(`Reduced motion: ${reducedMotion ? "ON" : "OFF"}`);
+    }
+  });
+
+  document.addEventListener("keyup", (event) => {
+    if (event.code === "Space" || event.key === " ") {
+      event.preventDefault();
+      releaseSwingHoldSpace();
     }
   });
 })();
