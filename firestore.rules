@@ -6,6 +6,17 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    match /interest_submissions/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['fullName', 'phone', 'createdAt'])
+        && request.resource.data.fullName is string
+        && request.resource.data.fullName.size() > 0
+        && request.resource.data.fullName.size() <= 120
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() >= 10
+        && request.resource.data.phone.size() <= 40;
+      allow read, update, delete: if false;
+    }
+
     match /challenges/{challengeId} {
       allow create: if request.resource.data.status == 'open'
         && request.resource.data.questionId is string

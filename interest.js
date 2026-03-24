@@ -1,3 +1,10 @@
+import { db } from "./firebase-init.js";
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
 (function () {
   const form = document.getElementById("interestForm");
   const statusEl = document.getElementById("interestStatus");
@@ -29,17 +36,17 @@
     if (hintEl) {
       if (hostAddressed) {
         hintEl.textContent =
-          "Submit opens your email app with a message to the host. Nothing is stored on this site.";
+          "Submit saves your info for the host, then opens your email app so you can send a message too.";
       } else {
         hintEl.textContent =
-          "Submit copies your details so you can paste them into a text or message—nothing is stored on this site.";
+          "Submit saves your name and phone securely so the host can follow up.";
       }
     }
   }
 
   updateHint();
 
-  form.addEventListener("submit", function (e) {
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
     setStatus("");
 
@@ -64,6 +71,25 @@
     const body = buildMessage(name, phoneRaw);
     const hostEmail = (form.getAttribute("data-rsvp-email") || "").trim();
 
+    setStatus("Saving…");
+
+    try {
+      await addDoc(collection(db, "interest_submissions"), {
+        fullName: name,
+        phone: phoneRaw,
+        createdAt: serverTimestamp(),
+      });
+    } catch (err) {
+      console.error(err);
+      setStatus(
+        "Could not save right now. Check your connection or try again. You can still copy your details below."
+      );
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(body).catch(function () {});
+      }
+      return;
+    }
+
     if (hostEmail) {
       const subject = encodeURIComponent(
         "Interested — JJ Birthday Baseball Day"
@@ -76,32 +102,27 @@
         "&body=" +
         encodeURIComponent(body);
       window.location.href = mailto;
-      setStatus("If your mail app opened, send the message to finish. Thanks!");
+      setStatus(
+        "Got it — we saved your info. If your mail app opened, send the message to finish. Thanks!"
+      );
       form.reset();
       return;
     }
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(body).then(
-        function () {
-          setStatus(
-            "Copied to clipboard! Paste into a text, note, or message to the host. Thanks!"
-          );
-          form.reset();
-        },
-        function () {
-          setStatus(
-            "Could not copy automatically. Your details: " +
-              name +
-              " / " +
-              phoneRaw
-          );
-        }
-      );
+      try {
+        await navigator.clipboard.writeText(body);
+        setStatus(
+          "Thanks — your info is saved for the host. We also copied a note to your clipboard if you want to text them."
+        );
+      } catch {
+        setStatus(
+          "Thanks — your info is saved for the host."
+        );
+      }
     } else {
-      setStatus(
-        "Copy this: " + name + " — " + phoneRaw
-      );
+      setStatus("Thanks — your info is saved for the host.");
     }
+    form.reset();
   });
 })();
