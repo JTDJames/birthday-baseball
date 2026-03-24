@@ -259,6 +259,49 @@
         margin-bottom: 0.7rem;
       }
 
+      .tag-wrap {
+        position: relative;
+        display: inline-block;
+      }
+
+      .tag-lights {
+        position: absolute;
+        inset: -8px -14px;
+        pointer-events: none;
+      }
+
+      .tag-bulb {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ffd98a;
+        opacity: 0.4;
+        box-shadow: 0 0 8px rgba(255, 188, 80, 0.7);
+        animation: lightBlink 1.8s infinite;
+      }
+
+      .tag-bulb:nth-child(2n) {
+        background: var(--giants-cream);
+      }
+
+      .tag-bulb.b1 { left: 8%; top: 0; animation-delay: 0s; }
+      .tag-bulb.b2 { left: 24%; top: 0; animation-delay: 0.2s; }
+      .tag-bulb.b3 { left: 40%; top: 0; animation-delay: 0.4s; }
+      .tag-bulb.b4 { left: 56%; top: 0; animation-delay: 0.6s; }
+      .tag-bulb.b5 { left: 72%; top: 0; animation-delay: 0.8s; }
+      .tag-bulb.b6 { left: 88%; top: 0; animation-delay: 1s; }
+
+      .tag-bulb.b7 { left: 2%; top: 50%; animation-delay: 1.2s; }
+      .tag-bulb.b8 { right: 2%; top: 50%; animation-delay: 1.4s; }
+
+      .tag-bulb.b9 { left: 8%; bottom: 0; animation-delay: 1.6s; }
+      .tag-bulb.b10 { left: 24%; bottom: 0; animation-delay: 0.1s; }
+      .tag-bulb.b11 { left: 40%; bottom: 0; animation-delay: 0.3s; }
+      .tag-bulb.b12 { left: 56%; bottom: 0; animation-delay: 0.5s; }
+      .tag-bulb.b13 { left: 72%; bottom: 0; animation-delay: 0.7s; }
+      .tag-bulb.b14 { left: 88%; bottom: 0; animation-delay: 0.9s; }
+
       h1 {
         margin: 0.2rem 0 0.4rem;
         font-size: clamp(2rem, 4vw, 3rem);
@@ -638,7 +681,7 @@
         </div>
         <div class="party-border" aria-hidden="true">
           <span class="party-item ball b1 flash-1">⚾</span>
-          <span class="party-item beer b2 flash-2">🍻</span>
+          <span class="party-item fries b2 flash-2">🍟</span>
           <span class="party-item mitt b3 flash-3">🥎</span>
           <span class="party-item fries b4 flash-1">🍟</span>
           <span class="party-item cannon b5 flash-2">💦</span>
@@ -657,7 +700,12 @@
           <span class="party-item mitt r5 flash-1">🥎</span>
         </div>
         <div class="hero-content">
-        <div class="tag">Save the Date</div>
+        <div class="tag-wrap">
+          <div class="tag-lights" aria-hidden="true">
+            <span class="tag-bulb b1"></span><span class="tag-bulb b2"></span><span class="tag-bulb b3"></span><span class="tag-bulb b4"></span><span class="tag-bulb b5"></span><span class="tag-bulb b6"></span><span class="tag-bulb b7"></span><span class="tag-bulb b8"></span><span class="tag-bulb b9"></span><span class="tag-bulb b10"></span><span class="tag-bulb b11"></span><span class="tag-bulb b12"></span><span class="tag-bulb b13"></span><span class="tag-bulb b14"></span>
+          </div>
+          <div class="tag">Save the Date</div>
+        </div>
         <h1>JJ Birthday Baseball Day</h1>
         <p class="date">Saturday, May 9, 2026</p>
         <p class="welcome">
