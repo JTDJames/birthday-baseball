@@ -111,6 +111,20 @@
         cursor: pointer;
       }
 
+      .calendar-google-link {
+        display: block;
+        margin-top: 0.55rem;
+        text-align: center;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--giants-orange);
+        text-decoration: underline;
+      }
+
+      .calendar-google-link:hover {
+        filter: brightness(1.1);
+      }
+
       .note {
         margin-top: 1.2rem;
         padding: 0.95rem 1rem;
@@ -122,6 +136,86 @@
 
       .note strong {
         color: var(--giants-orange);
+      }
+
+      .interest {
+        margin-top: 1.25rem;
+        border: 2px solid var(--giants-orange);
+        border-radius: 12px;
+        background: #191919;
+        padding: 1.25rem 1.1rem;
+        max-width: 420px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .interest h2 {
+        margin: 0 0 0.35rem;
+        color: var(--giants-orange);
+        font-size: 1.35rem;
+        text-align: center;
+      }
+
+      .interest .interest-lede {
+        margin: 0 0 1rem;
+        text-align: center;
+        font-size: 0.98rem;
+        color: #ddd;
+      }
+
+      .interest label {
+        display: block;
+        margin-bottom: 0.3rem;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--giants-cream);
+      }
+
+      .interest input {
+        width: 100%;
+        padding: 0.65rem 0.75rem;
+        margin-bottom: 0.85rem;
+        border-radius: 8px;
+        border: 2px solid #444;
+        background: #111;
+        color: var(--giants-cream);
+        font-size: 1rem;
+      }
+
+      .interest input:focus {
+        outline: none;
+        border-color: var(--giants-orange);
+      }
+
+      .interest button[type="submit"] {
+        width: 100%;
+        margin-top: 0.25rem;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        border: 2px solid var(--giants-orange);
+        background: var(--giants-orange);
+        color: var(--giants-black);
+        font-weight: 800;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+
+      .interest button[type="submit"]:hover {
+        filter: brightness(1.08);
+      }
+
+      .interest .interest-hint,
+      .interest .interest-status {
+        margin: 0.75rem 0 0;
+        font-size: 0.85rem;
+        color: #aaa;
+        text-align: center;
+        line-height: 1.4;
+      }
+
+      .interest .interest-status {
+        color: var(--giants-cream);
+        font-weight: 600;
       }
     </style>
   </head>
@@ -135,9 +229,51 @@
           Two-part celebration in Giants colors - come hang out before first
           pitch and/or join for the game.
         </p>
-        <button id="playBallBtn" class="btn btn-google" style="margin-top: 16px; background-color: #000; border: 2px solid var(--giants-orange); color: var(--giants-cream); padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 700;">
-          ⚾ PLAY BALL (Mini-Game)
-        </button>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center;">
+          <button id="playBallBtn" type="button" class="btn btn-google" style="background-color: #000; border: 2px solid var(--giants-orange); color: var(--giants-cream); padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 700;">
+            ⚾ PLAY BALL (Mini-Game) <span style="opacity: 0.85; font-weight: 600;">(WIP)</span>
+          </button>
+          <button id="leaderboardBtn" type="button" style="background-color: #1a1a1a; border: 2px solid var(--giants-orange); color: var(--giants-cream); padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 700;">
+            View Leaderboard
+          </button>
+        </div>
+      </section>
+
+      <section class="interest" aria-labelledby="interest-heading">
+        <h2 id="interest-heading">I'm interested!</h2>
+        <p class="interest-lede">
+          Drop your full name and number so we can follow up about the day.
+        </p>
+        <!-- Optional: set data-rsvp-email so Submit opens the guest's mail app addressed to you. Otherwise we copy text to the clipboard. -->
+        <form id="interestForm" data-rsvp-email="" novalidate>
+          <label for="interest-name">Full name</label>
+          <input
+            id="interest-name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            required
+            maxlength="120"
+            placeholder="Your full name"
+          />
+          <label for="interest-phone">Phone</label>
+          <input
+            id="interest-phone"
+            name="phone"
+            type="tel"
+            inputmode="tel"
+            autocomplete="tel"
+            required
+            maxlength="32"
+            placeholder="(555) 555-5555"
+          />
+          <button type="submit">Submit</button>
+        </form>
+        <p class="interest-hint" id="interestHint">
+          Submit copies your details so you can paste them into a text or
+          message—nothing is stored on this site.
+        </p>
+        <p class="interest-status" id="interestStatus" role="status" aria-live="polite"></p>
       </section>
 
       <section class="schedule" aria-label="Event schedule">
@@ -148,20 +284,46 @@
             Casual pregame meet-up in the park to chill, snack, and enjoy the
             day together.
           </p>
-          <button class="calendar-btn" type="button">
-            Add to Calendar (Park Hang Placeholder)
+          <button
+            id="calendarParkHang"
+            class="calendar-btn"
+            type="button"
+            aria-label="Download park hang calendar file"
+          >
+            Download .ics (Apple / Outlook / etc.)
           </button>
+          <a
+            id="calendarParkHangGoogle"
+            class="calendar-google-link"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Add to Google Calendar</a
+          >
         </article>
 
         <article class="card">
           <h2>The Game</h2>
           <p class="time">Giants vs. Pirates at 6:05 PM</p>
           <p class="detail">
-            Head to the ballpark for first pitch and birthday baseball energy.
+            Head to the ballpark for first pitch and game-day energy.
           </p>
-          <button class="calendar-btn" type="button">
-            Add to Calendar (Game Placeholder)
+          <button
+            id="calendarGame"
+            class="calendar-btn"
+            type="button"
+            aria-label="Download Giants game calendar file"
+          >
+            Download .ics (Apple / Outlook / etc.)
           </button>
+          <a
+            id="calendarGameGoogle"
+            class="calendar-google-link"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Add to Google Calendar</a
+          >
         </article>
       </section>
 
@@ -169,12 +331,38 @@
         <strong>Come for either or both:</strong> You are absolutely welcome at
         the park hang, the game, or both parts of the day.
       </p>
+
       <div id="gameModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.82); z-index:1000; flex-direction:column; align-items:center; justify-content:center;">
-        <div id="gameContainer" style="border: 4px solid var(--giants-orange); background: #2d5a27; box-shadow: 0 0 0 6px #c2b280 inset;"></div>
-        <button id="closeGame" style="margin-top:10px; color:white; background:none; border:none; cursor:pointer;">[ Close Game ]</button>
+        <div id="gameContainer" style="border: 4px solid var(--giants-orange); background: #2d5a27; box-shadow: 0 0 0 6px #c2b280 inset; position:relative; z-index:1;"></div>
+        <div id="highScoreEntry" style="display:none; position:absolute; inset:0; z-index:1002; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.78); padding:1.5rem;">
+          <div style="max-width:320px; background:#111; border:3px solid var(--giants-orange); border-radius:8px; padding:1.25rem; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,0.6);">
+            <p style="margin:0 0 0.5rem; color:var(--giants-orange); font-weight:800; letter-spacing:0.1em;">GAME OVER</p>
+            <p id="hsScoreLine" style="margin:0 0 1rem; color:var(--giants-cream); font-size:1.1rem;"></p>
+            <label for="hsInitials" style="display:block; color:#aaa; font-size:0.85rem; margin-bottom:0.35rem;">ENTER INITIALS (3 LETTERS)</label>
+            <input id="hsInitials" type="text" maxlength="3" autocomplete="off" spellcheck="false" style="width:8rem; font-size:1.5rem; text-align:center; letter-spacing:0.3em; text-transform:uppercase; padding:0.5rem; border-radius:6px; border:2px solid var(--giants-orange); background:#1a1a1a; color:var(--giants-cream); font-weight:700;" placeholder="AAA" />
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:1rem; flex-wrap:wrap;">
+              <button type="button" id="hsSave" style="padding:0.5rem 1rem; border-radius:8px; border:2px solid var(--giants-orange); background:var(--giants-orange); color:#111; font-weight:800; cursor:pointer;">SAVE</button>
+              <button type="button" id="hsSkip" style="padding:0.5rem 1rem; border-radius:8px; border:2px solid #666; background:transparent; color:var(--giants-cream); font-weight:700; cursor:pointer;">SKIP</button>
+            </div>
+          </div>
+        </div>
+        <button id="closeGame" style="margin-top:10px; color:white; background:none; border:none; cursor:pointer; position:relative; z-index:1003;">[ Close Game ]</button>
+      </div>
+
+      <div id="leaderboardModal" style="display:none; position:fixed; inset:0; z-index:1100; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.88); padding:1rem;">
+        <div style="max-width:400px; width:100%; background:#111; border:3px solid var(--giants-orange); border-radius:10px; padding:1.25rem;">
+          <h2 style="margin:0 0 1rem; color:var(--giants-orange); font-size:1.25rem; text-align:center;">HIGH SCORES</h2>
+          <ol id="leaderboardList" style="margin:0; padding-left:1.25rem; color:var(--giants-cream); line-height:1.8; font-family:Consolas,monospace;"></ol>
+          <p id="leaderboardEmpty" style="display:none; color:#888; text-align:center; margin:0.5rem 0;">No scores yet. Play a game!</p>
+          <button type="button" id="leaderboardClose" style="display:block; margin:1rem auto 0; padding:0.5rem 1.25rem; border-radius:8px; border:2px solid var(--giants-orange); background:transparent; color:var(--giants-cream); font-weight:700; cursor:pointer;">Close</button>
+        </div>
       </div>
     </main>
+    <script type="module" src="./firebase-init.js"></script>
+    <script type="module" src="./firestore-test.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script src="./calendar.js"></script>
     <script src="./game.js"></script>
+    <script src="./interest.js"></script>
   </body>
 </html>
