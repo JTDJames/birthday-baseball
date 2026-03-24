@@ -212,6 +212,69 @@
         line-height: 1.4;
       }
 
+      .rusty-memorial {
+        margin: 0.65rem 0 0;
+        text-align: center;
+        font-size: 0.98rem;
+        font-style: italic;
+        font-weight: 600;
+        color: #c9c2b0;
+        letter-spacing: 0.06em;
+      }
+
+      .trivia-callout {
+        margin-top: 1.35rem;
+        max-width: 440px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 1.15rem 1.25rem 1.25rem;
+        background: linear-gradient(165deg, #2a1a12 0%, #141414 55%, #111 100%);
+        border: 3px solid var(--giants-orange);
+        border-radius: 14px;
+        text-align: center;
+        box-shadow: 0 6px 24px rgba(253, 90, 30, 0.12);
+      }
+
+      .trivia-callout-label {
+        margin: 0 0 0.2rem;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--giants-cream);
+      }
+
+      .trivia-callout-sub {
+        margin: 0 0 1rem;
+        font-size: 0.95rem;
+        color: #bbb;
+        line-height: 1.35;
+      }
+
+      .trivia-callout .trivia-btn {
+        display: inline-block;
+        width: 100%;
+        padding: 0.9rem 1.1rem;
+        font-size: 1.12rem;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        color: var(--giants-black);
+        background: var(--giants-orange);
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        box-shadow: 0 2px 0 #8a3308;
+      }
+
+      .trivia-callout .trivia-btn:hover {
+        filter: brightness(1.06);
+      }
+
+      .trivia-callout .trivia-btn:focus-visible {
+        outline: 3px solid var(--giants-cream);
+        outline-offset: 3px;
+      }
+
       .interest {
         margin-top: 1.25rem;
         border: 2px solid var(--giants-orange);
@@ -334,6 +397,17 @@
             Plays muted automatically (tap the video to unmute). If it doesn’t start,
             tap once to play.
           </p>
+          <p class="rusty-memorial">RIP Rusty.</p>
+        </div>
+
+        <div class="trivia-callout">
+          <p class="trivia-callout-label">Giants trivia</p>
+          <p class="trivia-callout-sub">
+            Warm up before first pitch—questions from easy to very hard.
+          </p>
+          <button id="giantsTriviaBtn" type="button" class="trivia-btn">
+            Play Giants Trivia!
+          </button>
         </div>
 
         <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center;">
@@ -342,9 +416,6 @@
           </button>
           <button id="leaderboardBtn" type="button" style="background-color: #1a1a1a; border: 2px solid var(--giants-orange); color: var(--giants-cream); padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 700;">
             View Leaderboard
-          </button>
-          <button id="giantsTriviaBtn" type="button" style="background-color: #1a1a1a; border: 2px solid var(--giants-orange); color: var(--giants-cream); padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 700;">
-            Giants Trivia
           </button>
         </div>
       </section>

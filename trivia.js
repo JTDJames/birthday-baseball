@@ -255,7 +255,7 @@ async function openTriviaModal() {
       <div style="display:flex;justify-content:flex-end;margin:-0.25rem 0 0.35rem;">
         <button type="button" id="triviaCloseTop" style="font-size:0.82rem;color:#888;background:none;border:none;cursor:pointer;padding:0.2rem 0;">Close</button>
       </div>
-      <h2 style="margin-top:0;">Giants Trivia</h2>
+      <h2 style="margin-top:0;">Play Giants Trivia!</h2>
       <p class="trivia-meta">Question ${n} of 5 · ${diffLabel}</p>
       <p class="trivia-author">Author: ${escapeHtml(authorLabel)}</p>
       <p class="trivia-prompt" id="triviaPrompt"></p>
