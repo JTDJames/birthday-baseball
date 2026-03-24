@@ -31,26 +31,39 @@
         overflow: hidden;
         pointer-events: none;
         background: #0d0d0d;
-        background-image: url("./photos/baseball-collage/20171001_151411.jpg");
+      }
+
+      .bg-carousel-grid {
+        position: absolute;
+        inset: -3vh -4vw;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        gap: 1rem;
+      }
+
+      .bg-carousel-row {
+        display: flex;
+        gap: 0.85rem;
+        width: max-content;
+        animation: mosaicScroll var(--row-duration, 78s) linear infinite;
+      }
+
+      .bg-carousel-row.reverse {
+        animation-direction: reverse;
+      }
+
+      .bg-carousel-tile {
+        flex: 0 0 auto;
+        width: clamp(115px, 16vw, 250px);
+        aspect-ratio: 4 / 3;
+        border-radius: 10px;
+        border: 1px solid rgba(247, 243, 232, 0.16);
+        background-color: rgba(20, 20, 20, 0.8);
         background-size: cover;
         background-position: center;
-        background-repeat: no-repeat;
-      }
-
-      .bg-carousel-slide {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-        opacity: 0;
-        transition: opacity 1.6s ease;
-        filter: saturate(0.9) contrast(1.05);
-      }
-
-      .bg-carousel-slide.is-active {
-        opacity: 1;
+        filter: saturate(0.92) contrast(1.04);
+        opacity: 0.55;
       }
 
       .bg-carousel-overlay {
@@ -264,6 +277,11 @@
       @keyframes tickerMove {
         from { transform: translateX(0); }
         to { transform: translateX(-50%); }
+      }
+
+      @keyframes mosaicScroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-33.333%); }
       }
 
       .tag {
@@ -620,7 +638,8 @@
       @media (prefers-reduced-motion: reduce) {
         .party-item,
         .pennant,
-        .crowd-ticker-track {
+        .crowd-ticker-track,
+        .bg-carousel-row {
           animation: none !important;
         }
       }
@@ -975,10 +994,6 @@
       ];
 
       const carouselContainer = document.getElementById("bgCarousel");
-      const canAnimateCarousel =
-        carouselContainer &&
-        carouselImagePaths.length > 0 &&
-        !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       if (carouselContainer && carouselImagePaths.length > 0) {
         const shuffledImagePaths = [...carouselImagePaths];
@@ -987,43 +1002,34 @@
           [shuffledImagePaths[i], shuffledImagePaths[j]] = [shuffledImagePaths[j], shuffledImagePaths[i]];
         }
 
-        const slideElements = [];
-        let activeIndex = 0;
-        let rotationStarted = false;
+        const visibleTilesPerRow = 9;
+        const rowCount = 5;
+        const grid = document.createElement("div");
+        grid.className = "bg-carousel-grid";
+        carouselContainer.appendChild(grid);
 
-        const startRotationIfReady = () => {
-          if (!canAnimateCarousel || rotationStarted || slideElements.length < 2) return;
-          rotationStarted = true;
-          const intervalMs = 5500;
-          window.setInterval(() => {
-            if (slideElements.length < 2) return;
-            const nextIndex = (activeIndex + 1) % slideElements.length;
-            slideElements[activeIndex].classList.remove("is-active");
-            slideElements[nextIndex].classList.add("is-active");
-            activeIndex = nextIndex;
-          }, intervalMs);
+        const makeTile = (path) => {
+          const tile = document.createElement("div");
+          tile.className = "bg-carousel-tile";
+          tile.style.backgroundImage = `url("${encodeURI(path)}")`;
+          return tile;
         };
 
-        shuffledImagePaths.forEach((path, idx) => {
-          const img = new Image();
-          img.className = "bg-carousel-slide";
-          img.alt = "";
-          img.decoding = "async";
-          img.onload = () => {
-            if (idx < 2) img.loading = "eager";
-            else img.loading = "lazy";
-            carouselContainer.appendChild(img);
-            slideElements.push(img);
-            if (slideElements.length === 1) {
-              img.classList.add("is-active");
+        for (let rowIdx = 0; rowIdx < rowCount; rowIdx += 1) {
+          const row = document.createElement("div");
+          row.className = `bg-carousel-row${rowIdx % 2 ? " reverse" : ""}`;
+          row.style.setProperty("--row-duration", `${74 + rowIdx * 9}s`);
+
+          // Duplicate sequences for seamless marquee scrolling.
+          for (let copyIdx = 0; copyIdx < 3; copyIdx += 1) {
+            for (let colIdx = 0; colIdx < visibleTilesPerRow; colIdx += 1) {
+              const imageIdx = (rowIdx * visibleTilesPerRow + colIdx + copyIdx * 7) % shuffledImagePaths.length;
+              row.appendChild(makeTile(shuffledImagePaths[imageIdx]));
             }
-            startRotationIfReady();
-          };
-          img.onerror = () => {
-            // Skip broken/unsupported files without showing icon artifacts.
-          };
-          img.src = encodeURI(path);
-        });
+          }
+
+          grid.appendChild(row);
+        }
       }
     </script>
   </body>
