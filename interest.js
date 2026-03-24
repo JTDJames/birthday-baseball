@@ -1,16 +1,35 @@
 import { db } from "./firebase-init.js";
 import {
-  addDoc,
+  Timestamp,
   collection,
-  serverTimestamp,
+  doc,
+  increment,
+  onSnapshot,
+  writeBatch,
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const SPLASH_DOC = doc(db, "stats", "splash");
 
 (function () {
   const form = document.getElementById("interestForm");
   const statusEl = document.getElementById("interestStatus");
   const hintEl = document.getElementById("interestHint");
+  const splashCountEl = document.getElementById("splashCount");
 
   if (!form) return;
+
+  if (splashCountEl) {
+    onSnapshot(
+      SPLASH_DOC,
+      function (snap) {
+        const n = snap.exists ? snap.data().count : 0;
+        splashCountEl.textContent = String(typeof n === "number" ? n : 0);
+      },
+      function () {
+        splashCountEl.textContent = "—";
+      }
+    );
+  }
 
   function digitsOnly(s) {
     return String(s).replace(/\D/g, "");
@@ -74,15 +93,26 @@ import {
     setStatus("Saving…");
 
     try {
-      await addDoc(collection(db, "interest_submissions"), {
+      const batch = writeBatch(db);
+      const submissionRef = doc(collection(db, "interest_submissions"));
+      batch.set(submissionRef, {
         fullName: name,
         phone: phoneRaw,
-        createdAt: serverTimestamp(),
+        submittedAt: Timestamp.now(),
       });
+      batch.set(SPLASH_DOC, { count: increment(1) }, { merge: true });
+      await batch.commit();
     } catch (err) {
       console.error(err);
+      const code = err && err.code ? err.code : "";
+      const hint =
+        code === "permission-denied"
+          ? " (Save was blocked—ask the host to update Firestore rules and publish them.)"
+          : "";
       setStatus(
-        "Could not save right now. Check your connection or try again. You can still copy your details below."
+        "Could not save right now. Check your connection or try again." +
+          hint +
+          " You can still copy your details below."
       );
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(body).catch(function () {});

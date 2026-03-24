@@ -7,14 +7,29 @@ service cloud.firestore {
     }
 
     match /interest_submissions/{id} {
-      allow create: if request.resource.data.keys().hasOnly(['fullName', 'phone', 'createdAt'])
+      allow create: if request.resource.data.keys().hasOnly(['fullName', 'phone', 'submittedAt'])
         && request.resource.data.fullName is string
         && request.resource.data.fullName.size() > 0
         && request.resource.data.fullName.size() <= 120
         && request.resource.data.phone is string
         && request.resource.data.phone.size() >= 10
-        && request.resource.data.phone.size() <= 40;
+        && request.resource.data.phone.size() <= 40
+        && request.resource.data.submittedAt is timestamp;
       allow read, update, delete: if false;
+    }
+
+    // Public splash counter (no PII). Updated in the same batch as a new interest_submissions doc.
+    match /stats/{docId} {
+      allow read: if true;
+      allow create: if docId == 'splash'
+        && request.resource.data.keys().hasOnly(['count'])
+        && request.resource.data.count is int
+        && request.resource.data.count == 1;
+      allow update: if docId == 'splash'
+        && request.resource.data.keys().hasOnly(['count'])
+        && request.resource.data.count is int
+        && request.resource.data.count == resource.data.count + 1;
+      allow delete: if false;
     }
 
     match /challenges/{challengeId} {

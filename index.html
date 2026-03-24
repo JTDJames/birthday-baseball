@@ -148,6 +148,70 @@
         letter-spacing: 0.02em;
       }
 
+      .splash-banner {
+        margin-top: 1rem;
+        padding: 0.75rem 1rem;
+        text-align: center;
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: var(--giants-cream);
+        background: #1a1a1a;
+        border: 2px dashed var(--giants-orange);
+        border-radius: 10px;
+        max-width: 420px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .splash-banner .splash-num {
+        color: var(--giants-orange);
+        font-size: 1.35rem;
+        text-decoration: underline;
+        text-underline-offset: 0.15em;
+      }
+
+      .rusty-video {
+        margin-top: 1.25rem;
+        max-width: 560px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .rusty-video h2 {
+        margin: 0 0 0.5rem;
+        font-size: 1.1rem;
+        color: var(--giants-orange);
+        text-align: center;
+      }
+
+      .rusty-video .ratio {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        border-radius: 10px;
+        border: 3px solid var(--giants-orange);
+        background: #000;
+      }
+
+      .rusty-video iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+
+      .rusty-video .rusty-caption {
+        margin: 0.5rem 0 0;
+        font-size: 0.85rem;
+        color: #aaa;
+        text-align: center;
+        line-height: 1.4;
+      }
+
       .interest {
         margin-top: 1.25rem;
         border: 2px solid var(--giants-orange);
@@ -249,6 +313,29 @@
           Two-part celebration in Giants colors - come hang out before first
           pitch and/or join for the game.
         </p>
+        <p class="splash-banner" aria-live="polite">
+          Splashes: <span id="splashCount" class="splash-num">0</span>
+          <span style="font-weight: 600; font-size: 0.92em;"> (interest submissions)</span>
+        </p>
+
+        <div class="rusty-video">
+          <h2>Rusty cam</h2>
+          <div class="ratio">
+            <iframe
+              id="rustyYoutube"
+              title="Rusty video"
+              src="https://www.youtube-nocookie.com/embed/-OF2Toly2KI?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1&loop=1&playlist=-OF2Toly2KI"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <p class="rusty-caption">
+            Plays muted automatically (tap the video to unmute). If it doesn’t start,
+            tap once to play.
+          </p>
+        </div>
+
         <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center;">
           <button id="playBallBtn" type="button" class="btn btn-google" style="background-color: #000; border: 2px solid var(--giants-orange); color: var(--giants-cream); padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 700;">
             ⚾ PLAY BALL (Mini-Game) <span style="opacity: 0.85; font-weight: 600;">(WIP)</span>
@@ -389,5 +476,12 @@
     <script src="./game.js"></script>
     <script type="module" src="./interest.js"></script>
     <script type="module" src="./trivia.js"></script>
+    <script type="module">
+      const iframe = document.getElementById("rustyYoutube");
+      if (iframe && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        iframe.src =
+          "https://www.youtube-nocookie.com/embed/-OF2Toly2KI?mute=1&playsinline=1&rel=0&modestbranding=1";
+      }
+    </script>
   </body>
 </html>
