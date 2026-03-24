@@ -76,6 +76,21 @@
   const hsSave = document.getElementById("hsSave");
   const hsSkip = document.getElementById("hsSkip");
 
+  /**
+   * Dev visibility toggle:
+   * - localhost always shows the mini-game
+   * - ?devgame=1 forces show on any host
+   * - ?devgame=0 forces hide on any host
+   */
+  const devGameParam = new URLSearchParams(window.location.search).get("devgame");
+  const isLocalHost =
+    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  const shouldShowMiniGame =
+    devGameParam === "1" || (devGameParam !== "0" && isLocalHost);
+  if (shouldShowMiniGame) {
+    document.body.classList.remove("mini-game-hidden");
+  }
+
   if (!playBallBtn || !closeGameBtn || !gameModal || !gameContainer) {
     return;
   }

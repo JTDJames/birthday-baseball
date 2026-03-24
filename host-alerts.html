@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Host Alerts - JJ Birthday Baseball Day</title>
+    <style>
+      :root {
+        --giants-orange: #fd5a1e;
+        --giants-black: #111111;
+        --giants-cream: #f7f3e8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--giants-black);
+        color: var(--giants-cream);
+      }
+
+      main {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 1.25rem 1rem 2rem;
+      }
+
+      .panel {
+        border: 2px solid var(--giants-orange);
+        border-radius: 12px;
+        background: #1a1a1a;
+        padding: 1rem;
+      }
+
+      h1 {
+        margin: 0 0 0.4rem;
+        font-size: 1.75rem;
+        color: var(--giants-orange);
+      }
+
+      .sub {
+        margin: 0 0 1rem;
+        color: #d5d0c4;
+      }
+
+      .count {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0.2rem 0 0.6rem;
+      }
+
+      .meta {
+        margin: 0;
+        color: #b3b3b3;
+        font-size: 0.92rem;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+      }
+
+      button {
+        border: 2px solid var(--giants-orange);
+        border-radius: 8px;
+        padding: 0.56rem 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .primary {
+        background: var(--giants-orange);
+        color: var(--giants-black);
+      }
+
+      .secondary {
+        background: transparent;
+        color: var(--giants-cream);
+      }
+
+      .status {
+        margin-top: 0.8rem;
+        color: #d7d1c4;
+      }
+
+      .feed {
+        margin-top: 1rem;
+        border-top: 1px solid #333;
+        padding-top: 0.8rem;
+      }
+
+      .feed h2 {
+        margin: 0 0 0.5rem;
+        font-size: 1.05rem;
+        color: var(--giants-orange);
+      }
+
+      #eventFeed {
+        margin: 0;
+        padding-left: 1.2rem;
+      }
+
+      #eventFeed li {
+        margin: 0.35rem 0;
+        color: #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="panel">
+        <h1>Host Alerts</h1>
+        <p class="sub">Live watcher for new "I'm interested" submissions.</p>
+
+        <p class="meta">Current Splash Hits</p>
+        <p class="count" id="countValue">--</p>
+        <p class="meta" id="lastUpdate">Waiting for first update...</p>
+
+        <div class="actions">
+          <button id="enableNotifications" class="primary" type="button">
+            Enable Browser Notifications
+          </button>
+          <button id="testAlert" class="secondary" type="button">
+            Test Alert Sound
+          </button>
+          <button id="resetBaseline" class="secondary" type="button">
+            Reset Baseline
+          </button>
+        </div>
+
+        <p id="status" class="status">Connecting to Firestore...</p>
+
+        <div class="feed">
+          <h2>Recent Alert Events</h2>
+          <ol id="eventFeed"></ol>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./host-alerts.js"></script>
+  </body>
+</html>
