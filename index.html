@@ -31,6 +31,10 @@
         overflow: hidden;
         pointer-events: none;
         background: #0d0d0d;
+        background-image: url("./photos/baseball-collage/20171001_151411.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
       }
 
       .bg-carousel-slide {
@@ -744,7 +748,7 @@
       </section>
 
       <p class="splash-banner" aria-live="polite">
-        Splashes: <span id="splashCount" class="splash-num">0</span>
+        Splash Hits: <span id="splashCount" class="splash-num">0</span>
         <span style="font-weight: 600; font-size: 0.92em;"> (interest submissions)</span>
       </p>
 
@@ -877,6 +881,37 @@
     <script type="module" src="./trivia.js"></script>
     <script type="module" src="./stats.js"></script>
     <script type="module">
+      const tickerTrack = document.querySelector(".crowd-ticker-track");
+      if (tickerTrack) {
+        const phrases = [
+          "GO GIANTS",
+          "MAKE SOME NOISE",
+          "JUNG! HOO! LEE!",
+          "VAMOS GIGANTES",
+          "PLAY BALL",
+          "ADIOS PELOTA!",
+          "IT IS OUT OF HERE!",
+          "GRAB SOME PINE, MEAT",
+          "THAT'S A BIG POTATO",
+          "THAT'S HOW THIS ONE GETS STARTED",
+          "TORTURE!",
+          "SAY HEY",
+          "HUMM BABY",
+          "24",
+          "WE DONT DO THE WAVE",
+        ];
+
+        for (let i = phrases.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const temp = phrases[i];
+          phrases[i] = phrases[j];
+          phrases[j] = temp;
+        }
+
+        const line = `${phrases.join(" • ")} •`;
+        tickerTrack.textContent = `${line} ${line}`;
+      }
+
       const iframe = document.getElementById("rustyYoutube");
       if (iframe && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         iframe.src =
