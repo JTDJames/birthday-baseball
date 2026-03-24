@@ -24,14 +24,14 @@
       }
 
       .party-border {
-        position: fixed;
+        position: absolute;
         inset: 0;
         pointer-events: none;
         z-index: 2;
       }
 
       .oracle-layer {
-        position: fixed;
+        position: absolute;
         inset: 0;
         pointer-events: none;
         z-index: 1;
@@ -50,8 +50,12 @@
       .pennant-row.bottom { bottom: 28px; }
 
       .pennant {
-        font-size: 1.05rem;
-        opacity: 0.46;
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 14px solid var(--giants-orange);
+        opacity: 0.58;
         animation: pennantWave 2.8s ease-in-out infinite;
       }
 
@@ -67,7 +71,7 @@
       .scoreboard-lights {
         position: absolute;
         left: 50%;
-        top: 48px;
+        top: 58px;
         transform: translateX(-50%);
         display: flex;
         gap: 6px;
@@ -619,69 +623,70 @@
         }
 
         .pennant {
-          font-size: 0.9rem;
+          border-left-width: 6px;
+          border-right-width: 6px;
+          border-top-width: 11px;
         }
 
         .scoreboard-lights {
-          top: 40px;
+          top: 50px;
         }
       }
     </style>
   </head>
   <body class="mini-game-hidden">
-    <div class="oracle-layer" aria-hidden="true">
-      <div class="pennant-row top">
-        <span class="pennant p1">🚩</span>
-        <span class="pennant p2">🚩</span>
-        <span class="pennant p3">🚩</span>
-        <span class="pennant p4">🚩</span>
-        <span class="pennant p5">🚩</span>
-        <span class="pennant p6">🚩</span>
-        <span class="pennant p7">🚩</span>
-        <span class="pennant p8">🚩</span>
-      </div>
-      <div class="scoreboard-lights">
-        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-      </div>
-      <div class="pennant-row bottom">
-        <span class="pennant p5">🚩</span>
-        <span class="pennant p6">🚩</span>
-        <span class="pennant p7">🚩</span>
-        <span class="pennant p8">🚩</span>
-        <span class="pennant p1">🚩</span>
-        <span class="pennant p2">🚩</span>
-        <span class="pennant p3">🚩</span>
-        <span class="pennant p4">🚩</span>
-      </div>
-    </div>
-
-    <div class="party-border" aria-hidden="true">
-      <span class="party-item ball b1">⚾</span>
-      <span class="party-item beer b2">🍻</span>
-      <span class="party-item mitt b3">🧤</span>
-      <span class="party-item fries b4">🍟</span>
-      <span class="party-item cannon b5">💦</span>
-      <span class="party-item ball b6">⚾</span>
-
-      <span class="party-item cannon l1">💦</span>
-      <span class="party-item fries l2">🍟</span>
-      <span class="party-item ball l3">⚾</span>
-      <span class="party-item mitt l4">🧤</span>
-      <span class="party-item beer l5">🍻</span>
-
-      <span class="party-item mitt r1">🧤</span>
-      <span class="party-item ball r2">⚾</span>
-      <span class="party-item cannon r3">💦</span>
-      <span class="party-item beer r4">🍻</span>
-      <span class="party-item fries r5">🍟</span>
-    </div>
     <div class="crowd-ticker" aria-hidden="true">
       <div class="crowd-ticker-track">
-        GO GIANTS • MAKE SOME NOISE • SPLASH HIT ENERGY • LET'S PLAY BALL • ORACLE PARK VIBES • GO GIANTS • MAKE SOME NOISE • SPLASH HIT ENERGY • LET'S PLAY BALL • ORACLE PARK VIBES •
+        GO GIANTS • MAKE SOME NOISE • JUNG! HOO! LEE! • VAMOS GIGANTES • PLAY BALL • ADIOS PELOTA! • IT IS OUT OF HERE! • GRAB SOME PINE, MEAT • THAT'S A BIG POTATO • THAT'S HOW THIS ONE GETS STARTED • TORTURE! • SAY HEY • HUMM BABY • 24 • WE DONT DO THE WAVE • GO GIANTS • MAKE SOME NOISE • JUNG! HOO! LEE! • VAMOS GIGANTES • PLAY BALL • ADIOS PELOTA! • IT IS OUT OF HERE! • GRAB SOME PINE, MEAT • THAT'S A BIG POTATO • THAT'S HOW THIS ONE GETS STARTED • TORTURE! • SAY HEY • HUMM BABY • 24 • WE DONT DO THE WAVE •
       </div>
     </div>
     <main class="page">
       <section class="hero">
+        <div class="oracle-layer" aria-hidden="true">
+          <div class="pennant-row top">
+            <span class="pennant p1"></span>
+            <span class="pennant p2"></span>
+            <span class="pennant p3"></span>
+            <span class="pennant p4"></span>
+            <span class="pennant p5"></span>
+            <span class="pennant p6"></span>
+            <span class="pennant p7"></span>
+            <span class="pennant p8"></span>
+          </div>
+          <div class="scoreboard-lights">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="pennant-row bottom">
+            <span class="pennant p5"></span>
+            <span class="pennant p6"></span>
+            <span class="pennant p7"></span>
+            <span class="pennant p8"></span>
+            <span class="pennant p1"></span>
+            <span class="pennant p2"></span>
+            <span class="pennant p3"></span>
+            <span class="pennant p4"></span>
+          </div>
+        </div>
+        <div class="party-border" aria-hidden="true">
+          <span class="party-item ball b1">⚾</span>
+          <span class="party-item beer b2">🍻</span>
+          <span class="party-item mitt b3">🥎</span>
+          <span class="party-item fries b4">🍟</span>
+          <span class="party-item cannon b5">💦</span>
+          <span class="party-item ball b6">⚾</span>
+
+          <span class="party-item cannon l1">💦</span>
+          <span class="party-item fries l2">🍟</span>
+          <span class="party-item ball l3">⚾</span>
+          <span class="party-item mitt l4">🥎</span>
+          <span class="party-item beer l5">🍻</span>
+
+          <span class="party-item mitt r1">🥎</span>
+          <span class="party-item ball r2">⚾</span>
+          <span class="party-item cannon r3">💦</span>
+          <span class="party-item beer r4">🍻</span>
+          <span class="party-item fries r5">🍟</span>
+        </div>
         <div class="hero-fun" aria-hidden="true">
           <span class="floating-ball ball-1">⚾</span>
           <span class="floating-ball ball-2">⚾</span>
