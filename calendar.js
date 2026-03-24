@@ -7,18 +7,18 @@
   const EVENTS = {
     parkHang: {
       id: "park-hang-20260509",
-      title: "Birthday Baseball — Park hang",
+      title: "JJ Birthday Baseball — Park hang",
       description:
-        "Casual pregame meet-up in the park to chill, snack, and enjoy the day together. (Save the Date — Birthday Baseball Day)",
+        "Casual pregame meet-up in the park to chill, snack, and enjoy the day together. (Save the Date — JJ Birthday Baseball Day)",
       location: "SF Bay Area (details to follow)",
       startUtc: "20260509T210000Z",
       endUtc: "20260509T230000Z",
     },
     game: {
       id: "giants-game-20260509",
-      title: "Birthday Baseball — Giants vs. Pirates",
+      title: "JJ Birthday Baseball — Giants vs. Pirates",
       description:
-        "Giants vs. Pirates. First pitch 6:05 PM. Come celebrate at the ballpark! (Save the Date — Birthday Baseball Day)",
+        "Giants vs. Pirates. First pitch 6:05 PM. Come celebrate at the ballpark! (Save the Date — JJ Birthday Baseball Day)",
       location: "Oracle Park, San Francisco, CA",
       startUtc: "20260510T010500Z",
       endUtc: "20260510T050500Z",

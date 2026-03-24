@@ -11,7 +11,7 @@
 
   function buildMessage(name, phone) {
     return (
-      "I'm interested in Birthday Baseball Day (May 9, 2026).\n\n" +
+      "I'm interested in JJ Birthday Baseball Day (May 9, 2026).\n\n" +
       "Full name: " +
       name +
       "\n" +
@@ -66,7 +66,7 @@
 
     if (hostEmail) {
       const subject = encodeURIComponent(
-        "Interested — Birthday Baseball Day"
+        "Interested — JJ Birthday Baseball Day"
       );
       const mailto =
         "mailto:" +

@@ -109,12 +109,14 @@ function injectStyles() {
   s.textContent = `
     #triviaModal.trivia-open { display: flex !important; }
     .trivia-panel {
+      position: relative; z-index: 2;
       max-width: 520px; width: 100%; background: #111;
       border: 3px solid var(--giants-orange, #fd5a1e);
       border-radius: 12px; padding: 1.25rem 1.15rem 1.1rem;
       color: var(--giants-cream, #f7f3e8);
       box-shadow: 0 12px 40px rgba(0,0,0,0.55);
     }
+    .trivia-panel.trivia-panel-wide { max-width: 600px; }
     .trivia-panel h2 { margin: 0 0 0.35rem; color: var(--giants-orange, #fd5a1e); font-size: 1.35rem; text-align: center; }
     .trivia-meta { text-align: center; font-size: 0.85rem; color: #aaa; margin: 0 0 0.35rem; }
     .trivia-author { text-align: center; font-size: 0.72rem; color: #666; margin: 0 0 1rem; }
@@ -129,11 +131,34 @@ function injectStyles() {
     .trivia-choices button:disabled { opacity: 0.85; cursor: default; }
     .trivia-choices button.trivia-correct { border-color: #2d7a3e; background: #142818; }
     .trivia-choices button.trivia-wrong { border-color: #8a2b2b; background: #241010; }
-    .trivia-footer { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; }
-    .trivia-challenge {
-      font-size: 0.72rem; color: #777; background: none; border: none; text-decoration: underline; cursor: pointer; padding: 0.2rem 0;
+    .trivia-footer { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; }
+    .trivia-challenge-end {
+      font-size: 0.72rem; color: #888; background: none; border: none; text-decoration: underline; cursor: pointer;
+      padding: 0.15rem 0; margin-top: 0.35rem; display: inline-block;
     }
-    .trivia-challenge:hover { color: #aaa; }
+    .trivia-challenge-end:hover { color: var(--giants-orange, #fd5a1e); }
+    .trivia-summary-scroll { max-height: min(52vh, 420px); overflow-y: auto; margin: 0.75rem 0 0; padding-right: 0.35rem; text-align: left; }
+    .trivia-summary-item {
+      border: 1px solid #333; border-radius: 8px; padding: 0.65rem 0.75rem; margin-bottom: 0.55rem; background: #161616;
+    }
+    .trivia-summary-item:last-child { margin-bottom: 0; }
+    .trivia-summary-item.trivia-summary-wrong { border-color: #5a3030; background: #1a1212; }
+    .trivia-summary-item.trivia-summary-right { border-color: #2a4a2a; }
+    .trivia-summary-head { font-size: 0.82rem; font-weight: 800; color: var(--giants-orange, #fd5a1e); margin: 0 0 0.35rem; }
+    .trivia-summary-prompt { font-size: 0.9rem; margin: 0 0 0.35rem; line-height: 1.4; color: #e8e4dc; }
+    .trivia-summary-correct { font-size: 0.82rem; margin: 0.35rem 0 0; color: #8fd68f; }
+    .trivia-summary-picked { font-size: 0.78rem; margin: 0.25rem 0 0; color: #999; }
+    .trivia-fireworks-layer {
+      position: absolute; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; border-radius: 0;
+    }
+    .trivia-firework-particle {
+      position: absolute; width: 7px; height: 7px; border-radius: 50%;
+      animation: trivia-firework-burst 1.15s ease-out forwards;
+    }
+    @keyframes trivia-firework-burst {
+      0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(0.15); opacity: 0; }
+    }
     .trivia-next {
       margin-left: auto; padding: 0.55rem 1rem; border-radius: 8px; border: 2px solid var(--giants-orange, #fd5a1e);
       background: var(--giants-orange, #fd5a1e); color: #111; font-weight: 800; cursor: pointer; font-size: 0.95rem;
@@ -201,7 +226,8 @@ async function openTriviaModal() {
 
   let step = 0;
   let score = 0;
-  const answers = [];
+  /** @type {{ question: object, pickedIndex: number, correct: boolean }[]} */
+  let answers = [];
 
   function closeTriviaModal() {
     modal.style.display = "none";
@@ -219,6 +245,7 @@ async function openTriviaModal() {
   document.addEventListener("keydown", onKey);
 
   function renderQuestion() {
+    root.classList.remove("trivia-panel-wide");
     const q = round[step];
     const n = step + 1;
     const diffLabel = DIFFICULTY_LABEL[q.difficulty] || q.difficulty;
@@ -234,7 +261,6 @@ async function openTriviaModal() {
       <p class="trivia-prompt" id="triviaPrompt"></p>
       <div class="trivia-choices" id="triviaChoices"></div>
       <div class="trivia-footer">
-        <button type="button" class="trivia-challenge" id="triviaChallengeBtn">Challenge this question</button>
         <button type="button" class="trivia-next" id="triviaNextBtn" disabled>Next</button>
       </div>
     `;
@@ -253,7 +279,7 @@ async function openTriviaModal() {
         answered = true;
         const correct = idx === q.correctIndex;
         if (correct) score += 1;
-        answers.push({ questionId: q.id, correct });
+        answers.push({ question: q, pickedIndex: idx, correct });
         choicesEl.querySelectorAll("button").forEach((b, bi) => {
           b.disabled = true;
           if (bi === q.correctIndex) b.classList.add("trivia-correct");
@@ -271,26 +297,95 @@ async function openTriviaModal() {
     };
 
     document.getElementById("triviaCloseTop").onclick = () => closeTriviaModal();
-    document.getElementById("triviaChallengeBtn").onclick = () => openChallengeUI(q);
+  }
+
+  function showFireworks() {
+    const layer = document.createElement("div");
+    layer.className = "trivia-fireworks-layer";
+    layer.setAttribute("aria-hidden", "true");
+    const colors = ["#fd5a1e", "#111111", "#ff7a3d", "#2a2a2a", "#ffb020"];
+    for (let w = 0; w < 3; w++) {
+      setTimeout(() => {
+        for (let i = 0; i < 35; i++) {
+          const p = document.createElement("div");
+          p.className = "trivia-firework-particle";
+          p.style.left = `${8 + Math.random() * 84}%`;
+          p.style.bottom = `${8 + Math.random() * 22}%`;
+          p.style.background = colors[Math.floor(Math.random() * colors.length)];
+          p.style.animationDelay = `${Math.random() * 0.15}s`;
+          const dur = 0.95 + Math.random() * 0.55;
+          p.style.animationDuration = `${dur}s`;
+          const tx = (Math.random() - 0.5) * 300;
+          const ty = -Math.random() * 340 - 60;
+          const rot = (Math.random() - 0.5) * 540;
+          p.style.setProperty("--tx", `${tx}px`);
+          p.style.setProperty("--ty", `${ty}px`);
+          p.style.setProperty("--rot", `${rot}deg`);
+          layer.appendChild(p);
+        }
+      }, w * 280);
+    }
+    modal.insertBefore(layer, modal.firstChild);
+    setTimeout(() => layer.remove(), 3600);
   }
 
   function renderSummary() {
+    root.classList.add("trivia-panel-wide");
+    const perfect = score === 5;
+    const summaryRows = answers
+      .map((a, i) => {
+        const q = a.question;
+        const diffLabel = DIFFICULTY_LABEL[q.difficulty] || q.difficulty;
+        const n = i + 1;
+        const correctText = q.choices[q.correctIndex];
+        const pickedText = q.choices[a.pickedIndex];
+        const ok = a.correct;
+        const head = ok
+          ? `Q${n} · ${diffLabel} · Correct`
+          : `Q${n} · ${diffLabel} · Wrong`;
+        const cls = ok ? "trivia-summary-right" : "trivia-summary-wrong";
+        let html = `<div class="trivia-summary-item ${cls}">
+          <div class="trivia-summary-head">${escapeHtml(head)}</div>
+          <p class="trivia-summary-prompt">${escapeHtml(q.prompt)}</p>`;
+        if (!ok) {
+          html += `<p class="trivia-summary-correct">Correct answer: ${escapeHtml(correctText)}</p>
+          <p class="trivia-summary-picked">Your answer: ${escapeHtml(pickedText)}</p>
+          <button type="button" class="trivia-challenge-end" data-challenge-idx="${i}">Challenge this question</button>`;
+        }
+        html += `</div>`;
+        return html;
+      })
+      .join("");
+
     root.innerHTML = `
       <div style="display:flex;justify-content:flex-end;margin:-0.25rem 0 0.35rem;">
         <button type="button" id="triviaCloseTopSum" style="font-size:0.82rem;color:#888;background:none;border:none;cursor:pointer;padding:0.2rem 0;">Close</button>
       </div>
       <h2 style="margin-top:0;">Round complete</h2>
-      <p class="trivia-meta">You got ${score} out of 5 correct.</p>
-      <p class="trivia-score">Thanks for playing!</p>
+      <p class="trivia-meta">${perfect ? "Perfect game — 5 for 5!" : `You got ${score} out of 5 correct.`}</p>
+      <div class="trivia-summary-scroll">${summaryRows}</div>
+      <p class="trivia-score" style="margin-top:0.75rem;">Thanks for playing!</p>
       <div style="display:flex;gap:0.6rem;justify-content:center;margin-top:1rem;flex-wrap:wrap;">
         <button type="button" class="trivia-next" id="triviaPlayAgain">Play again</button>
         <button type="button" class="trivia-btn-secondary" id="triviaCloseSummary" style="padding:0.55rem 1rem;border-radius:8px;">Close</button>
       </div>
     `;
+
+    if (perfect) showFireworks();
+
+    root.querySelectorAll("[data-challenge-idx]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = parseInt(btn.getAttribute("data-challenge-idx"), 10);
+        const entry = answers[idx];
+        if (entry && entry.question) openChallengeUI(entry.question);
+      });
+    });
+
     document.getElementById("triviaPlayAgain").onclick = () => {
       round = buildRound(bank);
       step = 0;
       score = 0;
+      answers = [];
       renderQuestion();
     };
     document.getElementById("triviaCloseSummary").onclick = () => closeTriviaModal();
