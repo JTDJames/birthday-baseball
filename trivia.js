@@ -1,8 +1,11 @@
 import { db } from "./firebase-init.js";
 import {
+  Timestamp,
   addDoc,
   collection,
+  doc,
   getDocs,
+  runTransaction,
   serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
@@ -100,6 +103,80 @@ function buildRound(bank) {
     round.push(shufflePick(pool));
   }
   return round;
+}
+
+/**
+ * Persist analytics for each completed round.
+ * - trivia_game_sessions: one document per completed round
+ * - trivia_question_stats: rolling counters by questionId
+ */
+async function persistRoundAnalytics(answers, score) {
+  if (!Array.isArray(answers) || answers.length === 0) return;
+  const playedAt = Timestamp.now();
+  const normalized = answers.map((a) => ({
+    questionId: String(a.question.id),
+    questionPrompt: String(a.question.prompt || ""),
+    difficulty: String(a.question.difficulty || ""),
+    category: String(a.question.category || ""),
+    correct: !!a.correct,
+    pickedIndex: Number(a.pickedIndex),
+    correctIndex: Number(a.question.correctIndex),
+  }));
+
+  // 1) Session-level event log (best source of truth)
+  await addDoc(collection(db, "trivia_game_sessions"), {
+    score: Number(score),
+    totalQuestions: normalized.length,
+    perfect: Number(score) === normalized.length,
+    playedAt,
+    gameType: "giants_trivia",
+    answers: normalized,
+  });
+
+  // 2) Aggregated per-question counters
+  const perQuestionDeltas = new Map();
+  normalized.forEach((row) => {
+    const prev = perQuestionDeltas.get(row.questionId) || {
+      questionId: row.questionId,
+      difficulty: row.difficulty,
+      category: row.category,
+      timesSeen: 0,
+      rightDelta: 0,
+      wrongDelta: 0,
+    };
+    prev.timesSeen += 1;
+    if (row.correct) prev.rightDelta += 1;
+    else prev.wrongDelta += 1;
+    perQuestionDeltas.set(row.questionId, prev);
+  });
+
+  // Use transactions to avoid lost updates if multiple users finish simultaneously.
+  for (const delta of perQuestionDeltas.values()) {
+    const ref = doc(db, "trivia_question_stats", delta.questionId);
+    await runTransaction(db, async (tx) => {
+      const snap = await tx.get(ref);
+      const data = snap.exists() ? snap.data() : {};
+      const timesSeen = Number(data.timesSeen || 0) + delta.timesSeen;
+      const rightCount = Number(data.rightCount || 0) + delta.rightDelta;
+      const wrongCount = Number(data.wrongCount || 0) + delta.wrongDelta;
+      tx.set(
+        ref,
+        {
+          questionId: delta.questionId,
+          questionPrompt: normalized.find((n) => n.questionId === delta.questionId)
+            ?.questionPrompt || "",
+          difficulty: delta.difficulty,
+          category: delta.category,
+          timesSeen,
+          rightCount,
+          wrongCount,
+          challengeCount: Number(data.challengeCount || 0),
+          lastUpdatedAt: playedAt,
+        },
+        { merge: true }
+      );
+    });
+  }
 }
 
 function injectStyles() {
@@ -228,6 +305,7 @@ async function openTriviaModal() {
   let score = 0;
   /** @type {{ question: object, pickedIndex: number, correct: boolean }[]} */
   let answers = [];
+  let analyticsPersistedForRound = false;
 
   function closeTriviaModal() {
     modal.style.display = "none";
@@ -372,6 +450,12 @@ async function openTriviaModal() {
     `;
 
     if (perfect) showFireworks();
+    if (!analyticsPersistedForRound) {
+      analyticsPersistedForRound = true;
+      persistRoundAnalytics(answers, score).catch((e) => {
+        console.warn("Could not persist trivia analytics:", e);
+      });
+    }
 
     root.querySelectorAll("[data-challenge-idx]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -386,6 +470,7 @@ async function openTriviaModal() {
       step = 0;
       score = 0;
       answers = [];
+      analyticsPersistedForRound = false;
       renderQuestion();
     };
     document.getElementById("triviaCloseSummary").onclick = () => closeTriviaModal();
@@ -464,6 +549,27 @@ function openChallengeUI(q) {
       if (email) payload.contactEmail = email;
 
       await addDoc(collection(db, "challenges"), payload);
+      // Keep a rolling challenge counter per question for analytics.
+      const qRef = doc(db, "trivia_question_stats", String(q.id));
+      await runTransaction(db, async (tx) => {
+        const snap = await tx.get(qRef);
+        const data = snap.exists() ? snap.data() : {};
+        tx.set(
+          qRef,
+          {
+            questionId: String(q.id),
+            questionPrompt: String(q.prompt || ""),
+            difficulty: String(q.difficulty || ""),
+            category: String(q.category || ""),
+            timesSeen: Number(data.timesSeen || 0),
+            rightCount: Number(data.rightCount || 0),
+            wrongCount: Number(data.wrongCount || 0),
+            challengeCount: Number(data.challengeCount || 0) + 1,
+            lastUpdatedAt: Timestamp.now(),
+          },
+          { merge: true }
+        );
+      });
       statusEl.style.color = "#8fd68f";
       statusEl.textContent = "Thanks — we received your challenge.";
       overlay.querySelector("#triviaChallengeSend").disabled = true;

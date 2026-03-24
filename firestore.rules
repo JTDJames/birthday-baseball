@@ -49,5 +49,95 @@ service cloud.firestore {
                 && request.resource.data.claimedCorrectIndex <= 3));
       allow read, update, delete: if false;
     }
+
+    // Trivia analytics event log: one document per completed 5-question round.
+    match /trivia_game_sessions/{id} {
+      allow create: if request.resource.data.keys().hasOnly([
+          'score', 'totalQuestions', 'perfect', 'playedAt', 'gameType', 'answers'
+        ])
+        && request.resource.data.gameType == 'giants_trivia'
+        && request.resource.data.score is int
+        && request.resource.data.score >= 0
+        && request.resource.data.score <= 5
+        && request.resource.data.totalQuestions == 5
+        && request.resource.data.perfect is bool
+        && request.resource.data.playedAt is timestamp
+        && request.resource.data.answers is list
+        && request.resource.data.answers.size() == 5;
+      allow read: if true;
+      allow update, delete: if false;
+    }
+
+    // Rolling per-question counters for right/wrong answers + challenge volume.
+    match /trivia_question_stats/{questionId} {
+      allow read: if true;
+
+      allow create: if request.resource.data.keys().hasOnly([
+          'questionId', 'questionPrompt', 'difficulty', 'category',
+          'timesSeen', 'rightCount', 'wrongCount', 'challengeCount', 'lastUpdatedAt'
+        ])
+        && request.resource.data.questionId == questionId
+        && request.resource.data.questionPrompt is string
+        && request.resource.data.difficulty is string
+        && request.resource.data.category is string
+        && request.resource.data.timesSeen is int
+        && request.resource.data.rightCount is int
+        && request.resource.data.wrongCount is int
+        && request.resource.data.challengeCount is int
+        && (
+          // First sighting from gameplay.
+          (
+            request.resource.data.timesSeen == 1
+            && request.resource.data.rightCount + request.resource.data.wrongCount == 1
+            && request.resource.data.challengeCount == 0
+          )
+          // First touch from a challenge before gameplay.
+          || (
+            request.resource.data.timesSeen == 0
+            && request.resource.data.rightCount == 0
+            && request.resource.data.wrongCount == 0
+            && request.resource.data.challengeCount == 1
+          )
+        )
+        && request.resource.data.lastUpdatedAt is timestamp;
+
+      allow update: if request.resource.data.keys().hasOnly([
+          'questionId', 'questionPrompt', 'difficulty', 'category',
+          'timesSeen', 'rightCount', 'wrongCount', 'challengeCount', 'lastUpdatedAt'
+        ])
+        && request.resource.data.questionId == resource.data.questionId
+        && request.resource.data.questionPrompt is string
+        && request.resource.data.difficulty is string
+        && request.resource.data.category is string
+        && request.resource.data.timesSeen is int
+        && request.resource.data.rightCount is int
+        && request.resource.data.wrongCount is int
+        && request.resource.data.challengeCount is int
+        && (
+          // Gameplay update: seen +1 and exactly one of right/wrong increments by 1.
+          (
+            request.resource.data.timesSeen == resource.data.timesSeen + 1
+            && request.resource.data.challengeCount == resource.data.challengeCount
+            && request.resource.data.rightCount + request.resource.data.wrongCount
+              == request.resource.data.timesSeen
+            && (
+              (request.resource.data.rightCount == resource.data.rightCount + 1
+                && request.resource.data.wrongCount == resource.data.wrongCount)
+              || (request.resource.data.rightCount == resource.data.rightCount
+                && request.resource.data.wrongCount == resource.data.wrongCount + 1)
+            )
+          )
+          // Challenge update: only challengeCount increments.
+          || (
+            request.resource.data.timesSeen == resource.data.timesSeen
+            && request.resource.data.rightCount == resource.data.rightCount
+            && request.resource.data.wrongCount == resource.data.wrongCount
+            && request.resource.data.challengeCount == resource.data.challengeCount + 1
+          )
+        )
+        && request.resource.data.lastUpdatedAt is timestamp;
+
+      allow delete: if false;
+    }
   }
 }
