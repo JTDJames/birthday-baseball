@@ -11,22 +11,31 @@
   const PITCH_ORIGIN_X = BOARD_WIDTH / 2;
   const PITCH_ORIGIN_Y = 158;
   /** Full circular pitcher’s mound (world units). */
-  const MOUND_RADIUS = 18;
-  /** Launch hole sits toward home plate (downscreen) — pinball “shooter lane” metaphor. */
-  const PITCH_HOLE_OFFSET_Y = 11;
+  const MOUND_RADIUS = 14;
+  /** Launch hole centered on mound. */
+  const PITCH_HOLE_OFFSET_Y = 0;
   /** Visual radius of the metal hole bezel (ball is larger; reads as popping out). */
-  const PITCH_HOLE_VISUAL_R = 5;
+  const PITCH_HOLE_VISUAL_R = 4;
   /**
    * Baseball diamond metaphor (from home / mound):
    * 2B left (shortstop), 1B right (first), 3B up the middle (behind 2nd),
    * HR deepest center — behind 3B toward the fence.
    */
   const FIELD_LAYOUT = {
-    double: { x: PITCH_ORIGIN_X - 84, y: 118, r: 15, label: "2B", type: "double" },
-    single: { x: PITCH_ORIGIN_X + 84, y: 118, r: 16, label: "1B", type: "single" },
-    triple: { x: PITCH_ORIGIN_X, y: 94, r: 13, label: "3B", type: "triple" },
-    homerun: { x: PITCH_ORIGIN_X, y: 52, r: 10, label: "HR", type: "homerun" },
+    double: { x: PITCH_ORIGIN_X - 100, y: 138, r: 12, label: "2B", type: "double" },
+    single: { x: PITCH_ORIGIN_X + 100, y: 138, r: 12, label: "1B", type: "single" },
+    triple: { x: PITCH_ORIGIN_X, y: 114, r: 10, label: "3B", type: "triple" },
+    homerun: { x: PITCH_ORIGIN_X, y: 56, r: 8, label: "HR", type: "homerun" },
+    homerunLeft: { x: 42, y: 50, r: 8, label: "HR", type: "homerun" },
+    homerunRight: { x: BOARD_WIDTH - 42, y: 50, r: 8, label: "HR", type: "homerun" },
   };
+  /** Circular pop bumpers (approximate to user-marked zones). */
+  const POP_BUMPER_LAYOUT = [
+    { x: PITCH_ORIGIN_X - 58, y: 82, r: 10 },
+    { x: PITCH_ORIGIN_X + 58, y: 82, r: 10 },
+    { x: 28, y: 236, r: 10 },
+    { x: BOARD_WIDTH - 28, y: 236, r: 10 },
+  ];
   const BALL_RADIUS = 7;
   /** Bottom edge of top wall body (center y=22, height 44) — ball must stay below this + radius. */
   const TOP_WALL_BOTTOM = 44;
@@ -59,7 +68,7 @@
 
   const LEADERBOARD_KEY = "bbPinballLeaderboardV1";
   const LEGACY_HIGH_KEY = "bbPinballHighScore";
-  const LEADERBOARD_MAX = 15;
+  const LEADERBOARD_MAX = 10;
 
   const playBallBtn = document.getElementById("playBallBtn");
   const closeGameBtn = document.getElementById("closeGame");
@@ -110,6 +119,8 @@
   let swingHoldPointer = false;
   let swingHoldSpace = false;
   let batTargetAngle = BAT_REST_ANGLE;
+  /** Measured flipper angular speed in rad/s (from frame-to-frame angle delta). */
+  let batAngularSpeed = 0;
   let pitchesThisInning = 0;
   let inningsLimit = MAX_INNINGS;
   let extraInningsAwarded = 0;
@@ -164,11 +175,12 @@
       window.localStorage.setItem(LEGACY_HIGH_KEY, String(highScore));
     }
     syncHighFromStorage();
+    populateLeaderboardList();
   }
 
   function populateLeaderboardList() {
     if (!leaderboardList || !leaderboardEmpty) return;
-    const rows = getLeaderboard();
+    const rows = getLeaderboard().slice(0, LEADERBOARD_MAX);
     leaderboardList.innerHTML = "";
     if (rows.length === 0) {
       leaderboardEmpty.style.display = "block";
@@ -243,7 +255,7 @@
 
   let overlay = null;
   /** Bump when field art changes so the bitmap rebuilds (no stale brown fan, etc.). */
-  const INF_FIELD_CACHE_VERSION = 4;
+  const INF_FIELD_CACHE_VERSION = 6;
   /** Pre-rendered mound + hole; blitted under the ball. */
   let infieldLayerCache = null;
   let bat = null;
@@ -439,24 +451,6 @@
       wallOptions
     );
 
-    /** Separate side gutters from main play (slings sit just inside). */
-    const gutterSepY = 175;
-    const gutterSepH = BOARD_HEIGHT - gutterSepY + 40;
-    const leftGutterSep = Bodies.rectangle(
-      SIDE_GUTTER_X + 2,
-      gutterSepY + gutterSepH / 2,
-      6,
-      gutterSepH,
-      wallOptions
-    );
-    const rightGutterSep = Bodies.rectangle(
-      BOARD_WIDTH - SIDE_GUTTER_X - 2,
-      gutterSepY + gutterSepH / 2,
-      6,
-      gutterSepH,
-      wallOptions
-    );
-
     const batLength = BAT_LENGTH;
     const batThickness = BAT_THICKNESS;
     const batX = BOARD_WIDTH / 2 - 22;
@@ -527,6 +521,15 @@
       rightBumper = Bodies.polygon(BOARD_WIDTH - SIDE_GUTTER_X - 34, slingY, 3, 26, slingCommon);
       Body.setAngle(rightBumper, Math.PI / 2 - 0.32);
     }
+    const popBumpers = POP_BUMPER_LAYOUT.map((slot) =>
+      Bodies.circle(slot.x, slot.y, slot.r, {
+        isStatic: true,
+        friction: 0.04,
+        restitution: 1.28,
+        label: "bumper",
+        render: { fillStyle: GiantsTheme.orange, strokeStyle: "#2a1000", lineWidth: 1.5 },
+      })
+    );
     const bx = BOARD_WIDTH / 2;
 
     const drainGuideOpts = {
@@ -555,12 +558,11 @@
       rightWall,
       topWall,
       floor,
-      leftGutterSep,
-      rightGutterSep,
       leftDrainGuide,
       rightDrainGuide,
       leftBumper,
       rightBumper,
+      ...popBumpers,
       bat,
       ...targetSensors.map((t) => t.body),
     ]);
@@ -570,7 +572,7 @@
   }
 
   function createTargets() {
-    const keys = ["double", "single", "triple", "homerun"];
+    const keys = ["double", "single", "triple", "homerun", "homerunLeft", "homerunRight"];
     return keys.map((key) => {
       const slot = FIELD_LAYOUT[key];
       const hole = Bodies.circle(slot.x, slot.y, slot.r, {
@@ -592,10 +594,10 @@
 
   function getPitchProfile() {
     const profiles = [
-      { name: "Floater", xVel: 0.08, yVel: 1.65 },
-      { name: "Changeup", xVel: 0.16, yVel: 1.92 },
-      { name: "Two-Seam", xVel: 0.26, yVel: 2.15 },
-      { name: "Heater", xVel: 0.34, yVel: 2.38 },
+      { name: "Floater", xVel: 0.05, yVel: 1.35 },
+      { name: "Changeup", xVel: 0.15, yVel: 1.85 },
+      { name: "Two-Seam", xVel: 0.3, yVel: 2.35 },
+      { name: "Heater", xVel: 0.5, yVel: 3.0 },
     ];
     const base = profiles[Math.floor(Math.random() * profiles.length)];
     const inningScale = 1 + (gameState.inning - 1) * 0.08;
@@ -741,15 +743,13 @@
     return false;
   }
 
-  function getContactTimingGrade(ballBody) {
-    if (!bat) return { label: "GOOD", bonus: 0 };
+  function getContactBonus(ballBody) {
+    if (!bat) return 0;
     const timingScale = DIFFICULTY_MODES[difficultyIndex].timingScale;
     const batTipX = bat.position.x + Math.cos(bat.angle) * BAT_PIVOT_TO_CENTER;
     const offset = Math.abs(ballBody.position.x - batTipX);
-    if (offset <= 9 * timingScale) return { label: "PERFECT!", bonus: 1 };
-    if (offset <= 22 * timingScale) return { label: "GREAT", bonus: 0 };
-    if (offset <= 38 * timingScale) return { label: "GOOD", bonus: 0 };
-    return { label: "LATE", bonus: 0 };
+    if (offset <= 9 * timingScale) return 1;
+    return 0;
   }
 
   function handleTargetHit(targetType, ballBody) {
@@ -830,11 +830,67 @@
     return null;
   }
 
-  function boostHitBall(ballBody) {
-    const upSpeed = 11 + Math.random() * 2.5;
-    const sideSpeed = (Math.random() - 0.5) * 7.2;
+  function boostHitBall(ballBody, swingSpeed = 0) {
+    // Impulse scales with flipper speed so a held, stationary flipper does not "auto-hit".
+    const speedFactor = Math.max(0, Math.min(1.8, (swingSpeed - 1.15) / 5.25));
+    const upSpeed = 7.2 + speedFactor * 5.8 + Math.random() * 1.6;
+    const sideSpeed = (Math.random() - 0.5) * (4.2 + speedFactor * 3.2);
     Body.setVelocity(ballBody, { x: sideSpeed, y: -upSpeed });
     Body.setAngularVelocity(ballBody, (Math.random() - 0.5) * 1.2);
+  }
+
+  /**
+   * Anti-tunneling assist for fast flipper motion:
+   * if a ball is close to the bat segment during a swing, force a contact response.
+   */
+  function enforceSwingContact() {
+    if (!engine || !bat || !isSwinging) return;
+    // Only assist tunneling while the flipper is actually moving quickly.
+    if (batAngularSpeed < 1.15) return;
+    const now = Date.now();
+    const halfW = BAT_LENGTH / 2;
+    const halfH = BAT_THICKNESS / 2;
+    const cos = Math.cos(bat.angle);
+    const sin = Math.sin(bat.angle);
+    const ax = bat.position.x - cos * halfW;
+    const ay = bat.position.y - sin * halfW;
+    const bx = bat.position.x + cos * halfW;
+    const by = bat.position.y + sin * halfW;
+    const vx = bx - ax;
+    const vy = by - ay;
+    const segLenSq = vx * vx + vy * vy;
+    if (segLenSq < 1e-6) return;
+    const nx = -sin;
+    const ny = cos;
+    const contactPad = BALL_RADIUS + halfH + 2.2;
+
+    engine.world.bodies.forEach((ball) => {
+      if (ball.label !== "baseball") return;
+      const lastAssist = ball.plugin && ball.plugin.lastBatAssistAt ? ball.plugin.lastBatAssistAt : 0;
+      if (now - lastAssist < 95) return;
+
+      const px = ball.position.x;
+      const py = ball.position.y;
+      const wx = px - ax;
+      const wy = py - ay;
+      let t = (wx * vx + wy * vy) / segLenSq;
+      if (t < 0 || t > 1) return;
+      t = Math.max(0, Math.min(1, t));
+      const qx = ax + vx * t;
+      const qy = ay + vy * t;
+      const dx = px - qx;
+      const dy = py - qy;
+      const distSq = dx * dx + dy * dy;
+      if (distSq > contactPad * contactPad) return;
+
+      const normalSign = (dx * nx + dy * ny) >= 0 ? 1 : -1;
+      const push = contactPad + 0.6;
+      Body.setPosition(ball, { x: qx + nx * push * normalSign, y: qy + ny * push * normalSign });
+
+      if (!ball.plugin) ball.plugin = {};
+      ball.plugin.lastBatAssistAt = now;
+      boostHitBall(ball, batAngularSpeed);
+    });
   }
 
   function onCollisionStart(event) {
@@ -858,24 +914,21 @@
       const batAndBall =
         (pair.bodyA === bat && pair.bodyB.label === "baseball" && pair.bodyB) ||
         (pair.bodyB === bat && pair.bodyA.label === "baseball" && pair.bodyA);
-      if (batAndBall && isSwinging) {
-        const timing = getContactTimingGrade(batAndBall);
-        setFeedback(timing.label, 700);
-        let contactMessage = `${timing.label} contact`;
-        if (timing.bonus > 0) {
-          gameState.score += timing.bonus;
+      if (batAndBall && isSwinging && batAngularSpeed > 1.15) {
+        const contactBonus = getContactBonus(batAndBall);
+        if (contactBonus > 0) {
+          gameState.score += contactBonus;
           gameState.perfectHits += 1;
           playSfx("perfect");
-          contactMessage = "Perfect contact! Bonus run awarded.";
+          updateOverlay("Contact! Bonus run awarded. Drive it to the targets!");
+        } else {
+          updateOverlay("Contact! Drive it to the targets!");
         }
-        boostHitBall(batAndBall);
-        updateOverlay(`${contactMessage} Drive it to the targets!`);
+        boostHitBall(batAndBall, batAngularSpeed);
       }
 
       const hit = getBallAndTarget(pair.bodyA, pair.bodyB);
       if (!hit) return;
-      // Only count balls hit back up toward the top targets.
-      if (hit.ball.velocity.y > -0.75) return;
       const targetType = hit.target.label.split(":")[1];
       handleTargetHit(targetType, hit.ball);
       removeBall(hit.ball);
@@ -893,9 +946,7 @@
         gameState.hitStreak = 0;
         specialLit = false;
         let gutterNote = "";
-        if (body.position.x < SIDE_GUTTER_X) gutterNote = "Left gutter!";
-        else if (body.position.x > BOARD_WIDTH - SIDE_GUTTER_X) gutterNote = "Right gutter!";
-        else if (Math.abs(body.position.x - BOARD_WIDTH / 2) < CENTER_DRAIN_HALF_W) {
+        if (Math.abs(body.position.x - BOARD_WIDTH / 2) < CENTER_DRAIN_HALF_W) {
           gutterNote = "Center drain!";
         }
         if (gameState.outs >= 3) {
@@ -943,9 +994,10 @@
 
   function constrainBatMotion() {
     if (!bat || !batAnchor) return;
+    const prevAngle = bat.angle;
 
     const constrainedTarget = Math.min(BAT_MAX_ANGLE, Math.max(BAT_MIN_ANGLE, batTargetAngle));
-    const ease = isSwinging ? 0.48 : 0.2;
+    const ease = isSwinging ? 0.58 : 0.2;
     const nextAngle = bat.angle + (constrainedTarget - bat.angle) * ease;
     const clampedAngle = Math.min(BAT_MAX_ANGLE, Math.max(BAT_MIN_ANGLE, nextAngle));
     const cos = Math.cos(clampedAngle);
@@ -955,6 +1007,12 @@
       y: batAnchor.y + sin * BAT_PIVOT_TO_CENTER,
     });
     Body.setAngle(bat, clampedAngle);
+
+    let dAngle = clampedAngle - prevAngle;
+    while (dAngle > Math.PI) dAngle -= Math.PI * 2;
+    while (dAngle < -Math.PI) dAngle += Math.PI * 2;
+    const dtMs = engine && engine.timing && engine.timing.lastDelta ? engine.timing.lastDelta : 16.666;
+    batAngularSpeed = Math.abs(dAngle) / Math.max(0.001, dtMs / 1000);
   }
 
   /**
@@ -1037,6 +1095,7 @@
     cleanupMissedBalls();
     keepBallInPlayfield();
     constrainBatMotion();
+    enforceSwingContact();
     applyBallSlideOnBat();
     updateSwingCueState();
   }
@@ -1095,6 +1154,54 @@
     ix.arc(hx, hy, Math.max(2, PITCH_HOLE_VISUAL_R - 2), 0, Math.PI * 2);
     ix.fill();
 
+    // Faint background path inspired by a baseball-diamond sketch (purely decorative).
+    const { single, double, triple } = FIELD_LAYOUT;
+    const leftMidX = 56;
+    const rightMidX = BOARD_WIDTH - 56;
+    const midY = 255;
+    const homeY = BOARD_HEIGHT - 72;
+    ix.strokeStyle = "rgba(247,243,232,0.2)";
+    ix.lineWidth = 2;
+    ix.lineJoin = "round";
+    ix.lineCap = "round";
+
+    // Outer "diamond path" contour.
+    ix.beginPath();
+    ix.moveTo(hx - 8, hy + 14);
+    ix.lineTo(double.x - 14, double.y + 46);
+    ix.lineTo(leftMidX, midY);
+    ix.lineTo(hx - 14, homeY);
+    ix.lineTo(hx + 14, homeY);
+    ix.lineTo(rightMidX, midY);
+    ix.lineTo(single.x + 14, single.y + 46);
+    ix.lineTo(hx + 8, hy + 14);
+    ix.stroke();
+
+    // Top cap around 3B/center lane.
+    ix.beginPath();
+    ix.moveTo(hx - 28, triple.y - 10);
+    ix.quadraticCurveTo(hx, triple.y - 16, hx + 28, triple.y - 10);
+    ix.lineTo(hx + 27, triple.y + 20);
+    ix.quadraticCurveTo(hx, triple.y + 14, hx - 27, triple.y + 20);
+    ix.closePath();
+    ix.stroke();
+
+    // Side base boxes (1B / 2B pads in the sketch style).
+    const boxW = 48;
+    const boxH = 34;
+    ix.strokeRect(double.x - 56, single.y + 66, boxW, boxH);
+    ix.strokeRect(single.x + 8, single.y + 66, boxW, boxH);
+
+    // Home plate marker.
+    ix.beginPath();
+    ix.moveTo(hx - 16, homeY);
+    ix.lineTo(hx + 16, homeY);
+    ix.lineTo(hx + 12, homeY + 24);
+    ix.lineTo(hx, homeY + 32);
+    ix.lineTo(hx - 12, homeY + 24);
+    ix.closePath();
+    ix.stroke();
+
     infieldLayerCache = c;
     return infieldLayerCache;
   }
@@ -1118,10 +1225,6 @@
     context.save();
     context.textAlign = "center";
     context.textBaseline = "middle";
-
-    context.fillStyle = "rgba(0,0,0,0.14)";
-    context.fillRect(0, 0, SIDE_GUTTER_X, BOARD_HEIGHT);
-    context.fillRect(BOARD_WIDTH - SIDE_GUTTER_X, 0, SIDE_GUTTER_X, BOARD_HEIGHT);
 
     if (moundCueVisible) {
       context.strokeStyle = GiantsTheme.orange;
@@ -1172,14 +1275,14 @@
     });
 
     if (specialLit) {
-      const hrTarget = targetSensors.find((target) => target.type === "homerun");
-      if (hrTarget) {
+      const hrTargets = targetSensors.filter((target) => target.type === "homerun");
+      hrTargets.forEach((hrTarget) => {
         context.strokeStyle = GiantsTheme.orange;
         context.lineWidth = 3;
         context.beginPath();
-        context.arc(hrTarget.x, hrTarget.y, hrTarget.radius + 6, 0, Math.PI * 2);
+        context.arc(hrTarget.x, hrTarget.y, hrTarget.radius + 4, 0, Math.PI * 2);
         context.stroke();
-      }
+      });
     }
 
     if (swingCueVisible) {
@@ -1299,6 +1402,10 @@
     }
     queuePitch();
   }
+
+  // Populate persistent leaderboard card on initial page load.
+  syncHighFromStorage();
+  populateLeaderboardList();
 
   playBallBtn.addEventListener("click", pitchNowFromButton);
   closeGameBtn.addEventListener("click", stopGame);

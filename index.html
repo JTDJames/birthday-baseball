@@ -624,12 +624,20 @@
         font-weight: 600;
       }
 
-      /* Mini-game WIP: remove class `mini-game-hidden` from <body> to show Play Ball / leaderboard again */
-      body.mini-game-hidden #playBallBtn,
-      body.mini-game-hidden #leaderboardBtn,
+      .mini-game-card {
+        margin-top: 1rem;
+      }
+
+      .mini-game-card h2 {
+        margin: 0;
+        color: var(--giants-orange);
+        font-size: 1.35rem;
+      }
+
+      /* Mini-game WIP: remove class `mini-game-hidden` from <body> to show this section again */
+      body.mini-game-hidden #miniGameCard,
       body.mini-game-hidden #triviaStatsBtn,
-      body.mini-game-hidden #gameModal,
-      body.mini-game-hidden #leaderboardModal {
+      body.mini-game-hidden #gameModal {
         display: none !important;
         visibility: hidden;
         pointer-events: none;
@@ -756,14 +764,6 @@
           <p class="interest-status" id="interestStatus" role="status" aria-live="polite"></p>
         </section>
 
-        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center;">
-          <button id="playBallBtn" type="button" class="btn btn-google" style="background-color: #000; border: 2px solid var(--giants-orange); color: var(--giants-cream); padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 700;">
-            ⚾ PLAY BALL (Mini-Game) <span style="opacity: 0.85; font-weight: 600;">(WIP)</span>
-          </button>
-          <button id="leaderboardBtn" type="button" style="background-color: #1a1a1a; border: 2px solid var(--giants-orange); color: var(--giants-cream); padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 700;">
-            View Leaderboard
-          </button>
-        </div>
         </div>
       </section>
 
@@ -807,6 +807,19 @@
           View Trivia Stats
         </button>
       </div>
+
+      <section id="miniGameCard" class="card mini-game-card" aria-labelledby="mini-game-heading">
+        <h2 id="mini-game-heading">Mini-Game</h2>
+        <p class="detail" style="margin-top:0.35rem; margin-bottom:0.9rem;">
+          Quick baseball pinball run. Tap to swing and chase runs.
+        </p>
+        <button id="playBallBtn" type="button" style="background-color:#000; border:2px solid var(--giants-orange); color:var(--giants-cream); padding:0.75rem 1rem; border-radius:8px; cursor:pointer; font-weight:700; width:100%;">
+          ⚾ PLAY BALL (Mini-Game) <span style="opacity:0.85; font-weight:600;">(WIP)</span>
+        </button>
+        <h3 style="margin:1rem 0 0.55rem; color:var(--giants-orange); font-size:1.05rem;">Top 10 Leaderboard</h3>
+        <ol id="leaderboardList" style="margin:0; padding-left:1.25rem; color:var(--giants-cream); line-height:1.8; font-family:Consolas,monospace;"></ol>
+        <p id="leaderboardEmpty" style="display:none; color:#888; text-align:center; margin:0.5rem 0 0;">No scores yet. Play a game!</p>
+      </section>
 
       <section class="schedule" aria-label="Event schedule">
         <article class="card">
@@ -883,14 +896,6 @@
         <button id="closeGame" style="margin-top:10px; color:white; background:none; border:none; cursor:pointer; position:relative; z-index:1003;">[ Close Game ]</button>
       </div>
 
-      <div id="leaderboardModal" style="display:none; position:fixed; inset:0; z-index:1100; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.88); padding:1rem;">
-        <div style="max-width:400px; width:100%; background:#111; border:3px solid var(--giants-orange); border-radius:10px; padding:1.25rem;">
-          <h2 style="margin:0 0 1rem; color:var(--giants-orange); font-size:1.25rem; text-align:center;">HIGH SCORES</h2>
-          <ol id="leaderboardList" style="margin:0; padding-left:1.25rem; color:var(--giants-cream); line-height:1.8; font-family:Consolas,monospace;"></ol>
-          <p id="leaderboardEmpty" style="display:none; color:#888; text-align:center; margin:0.5rem 0;">No scores yet. Play a game!</p>
-          <button type="button" id="leaderboardClose" style="display:block; margin:1rem auto 0; padding:0.5rem 1.25rem; border-radius:8px; border:2px solid var(--giants-orange); background:transparent; color:var(--giants-cream); font-weight:700; cursor:pointer;">Close</button>
-        </div>
-      </div>
     </main>
     <script type="module" src="./firebase-init.js"></script>
     <script type="module" src="./firestore-test.js"></script>
