@@ -35,6 +35,17 @@ const SPLASH_DOC = doc(db, "stats", "splash");
     return String(s).replace(/\D/g, "");
   }
 
+  function normalizeUsPhone(raw) {
+    const digits = digitsOnly(raw);
+    if (digits.length === 10) {
+      return `+1${digits}`;
+    }
+    if (digits.length === 11 && digits[0] === "1") {
+      return `+${digits}`;
+    }
+    return "";
+  }
+
   function buildMessage(name, phone) {
     return (
       "I'm interested in JJ Birthday Baseball Day (May 9, 2026).\n\n" +
@@ -80,14 +91,14 @@ const SPLASH_DOC = doc(db, "stats", "splash");
       return;
     }
 
-    const digits = digitsOnly(phoneRaw);
-    if (digits.length < 10) {
-      setStatus("Please enter a valid phone number (at least 10 digits).");
+    const normalizedPhone = normalizeUsPhone(phoneRaw);
+    if (!normalizedPhone) {
+      setStatus("Please enter a valid US phone number.");
       if (phoneInput) phoneInput.focus();
       return;
     }
 
-    const body = buildMessage(name, phoneRaw);
+    const body = buildMessage(name, normalizedPhone);
     const hostEmail = (form.getAttribute("data-rsvp-email") || "").trim();
 
     setStatus("Saving…");
@@ -97,7 +108,7 @@ const SPLASH_DOC = doc(db, "stats", "splash");
       const submissionRef = doc(collection(db, "interest_submissions"));
       batch.set(submissionRef, {
         fullName: name,
-        phone: phoneRaw,
+        phone: normalizedPhone,
         submittedAt: Timestamp.now(),
       });
       batch.set(SPLASH_DOC, { count: increment(1) }, { merge: true });
