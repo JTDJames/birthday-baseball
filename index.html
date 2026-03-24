@@ -217,9 +217,19 @@
         color: var(--giants-cream);
         font-weight: 600;
       }
+
+      /* Mini-game WIP: remove class `mini-game-hidden` from <body> to show Play Ball / leaderboard again */
+      body.mini-game-hidden #playBallBtn,
+      body.mini-game-hidden #leaderboardBtn,
+      body.mini-game-hidden #gameModal,
+      body.mini-game-hidden #leaderboardModal {
+        display: none !important;
+        visibility: hidden;
+        pointer-events: none;
+      }
     </style>
   </head>
-  <body>
+  <body class="mini-game-hidden">
     <main class="page">
       <section class="hero">
         <div class="tag">Save the Date</div>

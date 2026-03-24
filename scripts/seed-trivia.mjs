@@ -52,6 +52,7 @@ async function main() {
         choices: q.choices,
         correctIndex: q.correctIndex,
         category: q.category ?? "",
+        author: q.author ?? "AI generated",
       });
       inBatch += 1;
       if (inBatch >= 450) await flush();

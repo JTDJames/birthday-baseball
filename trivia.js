@@ -27,26 +27,23 @@ function shufflePick(arr) {
   return arr[i];
 }
 
-async function loadQuestionBank() {
-  const snap = await getDocs(collection(db, "questions"));
-  if (!snap.empty) {
-    return snap.docs.map((d) => {
-      const data = d.data();
-      return {
-        id: d.id,
-        difficulty: data.difficulty,
-        prompt: data.prompt,
-        choices: data.choices,
-        correctIndex: data.correctIndex,
-        category: data.category ?? "",
-      };
-    });
-  }
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
 
+/** Resolved relative to this module so fetch works even when the page URL path differs. */
+function triviaDataUrl(tier) {
+  return new URL(`./data/trivia/${tier}.json`, import.meta.url).href;
+}
+
+async function loadJsonBank() {
   const out = [];
   for (let t = 0; t < DIFFICULTY_ORDER.length; t++) {
     const tier = DIFFICULTY_ORDER[t];
-    const res = await fetch(`./data/trivia/${tier}.json`);
+    const res = await fetch(triviaDataUrl(tier));
     if (!res.ok) {
       throw new Error(`Missing trivia file for ${tier} (${res.status})`);
     }
@@ -59,10 +56,38 @@ async function loadQuestionBank() {
         choices: q.choices,
         correctIndex: q.correctIndex,
         category: q.category ?? "",
+        author: q.author ?? "AI generated",
       });
     });
   }
   return out;
+}
+
+async function loadQuestionBank() {
+  try {
+    const snap = await getDocs(collection(db, "questions"));
+    if (!snap.empty) {
+      return snap.docs.map((d) => {
+        const data = d.data();
+        return {
+          id: d.id,
+          difficulty: data.difficulty,
+          prompt: data.prompt,
+          choices: data.choices,
+          correctIndex: data.correctIndex,
+          category: data.category ?? "",
+          author: data.author ?? "AI generated",
+        };
+      });
+    }
+  } catch (e) {
+    console.warn(
+      "Firestore questions read failed (rules or offline); using local JSON.",
+      e
+    );
+  }
+
+  return loadJsonBank();
 }
 
 function buildRound(bank) {
@@ -91,7 +116,8 @@ function injectStyles() {
       box-shadow: 0 12px 40px rgba(0,0,0,0.55);
     }
     .trivia-panel h2 { margin: 0 0 0.35rem; color: var(--giants-orange, #fd5a1e); font-size: 1.35rem; text-align: center; }
-    .trivia-meta { text-align: center; font-size: 0.85rem; color: #aaa; margin: 0 0 1rem; }
+    .trivia-meta { text-align: center; font-size: 0.85rem; color: #aaa; margin: 0 0 0.35rem; }
+    .trivia-author { text-align: center; font-size: 0.72rem; color: #666; margin: 0 0 1rem; }
     .trivia-prompt { font-size: 1.08rem; margin: 0 0 1rem; line-height: 1.45; }
     .trivia-choices { display: flex; flex-direction: column; gap: 0.55rem; }
     .trivia-choices button {
@@ -159,8 +185,16 @@ async function openTriviaModal() {
     round = buildRound(bank);
   } catch (e) {
     console.error(e);
-    root.innerHTML = `<p style="color:#e88;">Could not load questions. Check Firestore rules and that <code>data/trivia/*.json</code> exists if the bank is empty.</p>
-      <button type="button" class="trivia-next" id="triviaCloseErr">Close</button>`;
+    const detail =
+      e && typeof e.message === "string" ? e.message : String(e);
+    const safe = detail
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+    root.innerHTML = `<p style="color:#e88;">Could not load questions.</p>
+      <p style="font-size:0.85rem;color:#aaa;margin:0.5rem 0 0;line-height:1.4;">${safe}</p>
+      <p style="font-size:0.82rem;color:#888;margin:0.75rem 0 0;">If Firestore is empty, ensure <code>data/trivia/*.json</code> is next to <code>trivia.js</code> and you are using a local web server (not opening the HTML file directly).</p>
+      <button type="button" class="trivia-next" id="triviaCloseErr" style="margin-top:1rem;">Close</button>`;
     document.getElementById("triviaCloseErr").onclick = () => closeTriviaModal();
     return;
   }
@@ -188,6 +222,7 @@ async function openTriviaModal() {
     const q = round[step];
     const n = step + 1;
     const diffLabel = DIFFICULTY_LABEL[q.difficulty] || q.difficulty;
+    const authorLabel = q.author ? String(q.author) : "AI generated";
 
     root.innerHTML = `
       <div style="display:flex;justify-content:flex-end;margin:-0.25rem 0 0.35rem;">
@@ -195,6 +230,7 @@ async function openTriviaModal() {
       </div>
       <h2 style="margin-top:0;">Giants Trivia</h2>
       <p class="trivia-meta">Question ${n} of 5 · ${diffLabel}</p>
+      <p class="trivia-author">Author: ${escapeHtml(authorLabel)}</p>
       <p class="trivia-prompt" id="triviaPrompt"></p>
       <div class="trivia-choices" id="triviaChoices"></div>
       <div class="trivia-footer">

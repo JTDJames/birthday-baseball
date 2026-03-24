@@ -55,7 +55,7 @@
     dirt: "#c2b280",
   };
 
-  const { Engine, Render, Runner, World, Bodies, Body, Events, Sleeping, Constraint } = Matter;
+  const { Engine, Render, Runner, World, Bodies, Body, Events, Sleeping } = Matter;
 
   const LEADERBOARD_KEY = "bbPinballLeaderboardV1";
   const LEGACY_HIGH_KEY = "bbPinballHighScore";
@@ -225,10 +225,6 @@
     hitStreak: 0,
     perfectHits: 0,
   };
-
-  /** Static hinge point the flipper constraint attaches to (world space). */
-  let batPivotBody = null;
-  let batPivotConstraint = null;
 
   let overlay = null;
   /** Bump when field art changes so the bitmap rebuilds (no stale brown fan, etc.). */
@@ -460,35 +456,18 @@
     batAnchor = { x: pivotX, y: pivotY };
 
     /**
-     * Dynamic flipper + world hinge (Constraint): static bat never imparted velocity to the ball
-     * correctly; a constrained dynamic body matches pinball-style impulse transfer.
+     * Kinematic flipper (static body, pivot-correct pose each frame): dynamic+constraint was unstable
+     * (self-oscillation). Static keeps motion predictable while we tune further.
      */
-    batPivotBody = Bodies.circle(pivotX, pivotY, 6, {
-      isStatic: true,
-      isSensor: true,
-      render: { visible: false },
-    });
-
     bat = Bodies.rectangle(batX, batY, batLength, batThickness, {
-      density: 0.012,
+      isStatic: true,
       friction: 0.55,
-      restitution: 0.12,
-      frictionAir: 0.12,
+      restitution: 0.14,
       render: { fillStyle: GiantsTheme.orange },
       chamfer: { radius: 6 },
     });
     Body.setAngle(bat, BAT_REST_ANGLE);
     batTargetAngle = BAT_REST_ANGLE;
-
-    batPivotConstraint = Constraint.create({
-      bodyA: bat,
-      pointA: { x: -batLength / 2, y: 0 },
-      bodyB: batPivotBody,
-      pointB: { x: 0, y: 0 },
-      stiffness: 1,
-      length: 0,
-      render: { visible: false },
-    });
 
     targetSensors = createTargets();
 
@@ -567,9 +546,7 @@
       rightDrainGuide,
       leftBumper,
       rightBumper,
-      batPivotBody,
       bat,
-      batPivotConstraint,
       ...targetSensors.map((t) => t.body),
     ]);
 
@@ -950,27 +927,19 @@
   }
 
   function constrainBatMotion() {
-    if (!bat || !batAnchor || !engine) return;
+    if (!bat || !batAnchor) return;
 
-    const target = Math.min(BAT_MAX_ANGLE, Math.max(BAT_MIN_ANGLE, batTargetAngle));
-    let diff = target - bat.angle;
-    while (diff > Math.PI) diff -= Math.PI * 2;
-    while (diff < -Math.PI) diff += Math.PI * 2;
-
-    const drive = isSwinging ? 16 : 11;
-    const blend = isSwinging ? 0.42 : 0.32;
-    const desiredAv = diff * drive;
-    const nextAv = bat.angularVelocity * (1 - blend) + desiredAv * blend;
-    Body.setAngularVelocity(bat, nextAv);
-
-    const gy = engine.gravity.y;
-    Body.applyForce(bat, bat.position, { x: 0, y: -bat.mass * gy });
-
-    const linDamp = 0.35;
-    Body.setVelocity(bat, {
-      x: bat.velocity.x * linDamp,
-      y: bat.velocity.y * linDamp,
+    const constrainedTarget = Math.min(BAT_MAX_ANGLE, Math.max(BAT_MIN_ANGLE, batTargetAngle));
+    const ease = isSwinging ? 0.48 : 0.2;
+    const nextAngle = bat.angle + (constrainedTarget - bat.angle) * ease;
+    const clampedAngle = Math.min(BAT_MAX_ANGLE, Math.max(BAT_MIN_ANGLE, nextAngle));
+    const cos = Math.cos(clampedAngle);
+    const sin = Math.sin(clampedAngle);
+    Body.setPosition(bat, {
+      x: batAnchor.x + cos * BAT_PIVOT_TO_CENTER,
+      y: batAnchor.y + sin * BAT_PIVOT_TO_CENTER,
     });
+    Body.setAngle(bat, clampedAngle);
   }
 
   /**
