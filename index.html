@@ -23,6 +23,44 @@
         line-height: 1.5;
       }
 
+      .bg-carousel {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        overflow: hidden;
+        pointer-events: none;
+        background: #0d0d0d;
+      }
+
+      .bg-carousel-slide {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        opacity: 0;
+        transition: opacity 1.6s ease;
+        filter: saturate(0.9) contrast(1.05);
+      }
+
+      .bg-carousel-slide.is-active {
+        opacity: 1;
+      }
+
+      .bg-carousel-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background: linear-gradient(
+          to bottom,
+          rgba(12, 12, 12, 0.68) 0%,
+          rgba(10, 10, 10, 0.78) 45%,
+          rgba(8, 8, 8, 0.88) 100%
+        );
+      }
+
       .party-border {
         position: absolute;
         inset: 0;
@@ -67,33 +105,6 @@
       .p6 { animation-delay: 1s; }
       .p7 { animation-delay: 1.2s; }
       .p8 { animation-delay: 1.4s; }
-
-      .scoreboard-lights {
-        position: absolute;
-        left: 50%;
-        top: 58px;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 6px;
-        opacity: 0.5;
-      }
-
-      .scoreboard-lights span {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #ffe9b5;
-        box-shadow: 0 0 8px rgba(255, 212, 128, 0.7);
-        animation: lightBlink 1.8s infinite;
-      }
-
-      .scoreboard-lights span:nth-child(2n) {
-        background: var(--giants-orange);
-      }
-
-      .scoreboard-lights span:nth-child(3n) {
-        animation-delay: 0.4s;
-      }
 
       .crowd-ticker {
         position: fixed;
@@ -235,11 +246,6 @@
         0% { transform: rotate(-8deg) translateY(0); }
         50% { transform: rotate(6deg) translateY(-1px); }
         100% { transform: rotate(-8deg) translateY(0); }
-      }
-
-      @keyframes lightBlink {
-        0%, 100% { opacity: 0.4; }
-        50% { opacity: 1; }
       }
 
       @keyframes tagDotMove {
@@ -606,7 +612,6 @@
       @media (prefers-reduced-motion: reduce) {
         .party-item,
         .pennant,
-        .scoreboard-lights span,
         .crowd-ticker-track {
           animation: none !important;
         }
@@ -624,13 +629,12 @@
           border-top-width: 11px;
         }
 
-        .scoreboard-lights {
-          top: 50px;
-        }
       }
     </style>
   </head>
   <body class="mini-game-hidden">
+    <div class="bg-carousel" id="bgCarousel" aria-hidden="true"></div>
+    <div class="bg-carousel-overlay" aria-hidden="true"></div>
     <div class="crowd-ticker" aria-hidden="true">
       <div class="crowd-ticker-track">
         GO GIANTS • MAKE SOME NOISE • JUNG! HOO! LEE! • VAMOS GIGANTES • PLAY BALL • ADIOS PELOTA! • IT IS OUT OF HERE! • GRAB SOME PINE, MEAT • THAT'S A BIG POTATO • THAT'S HOW THIS ONE GETS STARTED • TORTURE! • SAY HEY • HUMM BABY • 24 • WE DONT DO THE WAVE • GO GIANTS • MAKE SOME NOISE • JUNG! HOO! LEE! • VAMOS GIGANTES • PLAY BALL • ADIOS PELOTA! • IT IS OUT OF HERE! • GRAB SOME PINE, MEAT • THAT'S A BIG POTATO • THAT'S HOW THIS ONE GETS STARTED • TORTURE! • SAY HEY • HUMM BABY • 24 • WE DONT DO THE WAVE •
@@ -648,9 +652,6 @@
             <span class="pennant p6"></span>
             <span class="pennant p7"></span>
             <span class="pennant p8"></span>
-          </div>
-          <div class="scoreboard-lights">
-            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
           </div>
           <div class="pennant-row bottom">
             <span class="pennant p5"></span>
@@ -878,6 +879,98 @@
       if (iframe && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         iframe.src =
           "https://www.youtube-nocookie.com/embed/-OF2Toly2KI?mute=1&playsinline=1&rel=0&modestbranding=1";
+      }
+
+      const carouselImagePaths = [
+        "./photos/baseball collage/20171001_151411.jpg",
+        "./photos/baseball collage/IMG-20250518-WA0006.jpg",
+        "./photos/baseball collage/PXL_20210901_050223674.jpg",
+        "./photos/baseball collage/PXL_20240428_014504506.MP.jpg",
+        "./photos/baseball collage/PXL_20240420_191548631.MP.jpg",
+        "./photos/baseball collage/PXL_20240420_040555852.jpg",
+        "./photos/baseball collage/IMG_1867.JPG",
+        "./photos/baseball collage/IMG_20210424_195846858.jpg",
+        "./photos/baseball collage/original_793e72df-4a44-4a5b-bdb5-ecbb2f73bb7b_PXL_20240615_040254192.jpg",
+        "./photos/baseball collage/PXL_20220430_213700320.MP.jpg",
+        "./photos/baseball collage/IMG-20250518-WA0002.jpg",
+        "./photos/baseball collage/PXL_20230910_034715998.jpg",
+        "./photos/baseball collage/PXL_20250518_210234709~2.jpg",
+        "./photos/baseball collage/PXL_20250518_203945325.jpg",
+        "./photos/baseball collage/PXL_20210904_011622015.MP.jpg",
+        "./photos/baseball collage/PXL_20250518_221040354.jpg",
+        "./photos/baseball collage/Screenshot_20250518-214341.png",
+        "./photos/baseball collage/PXL_20220507_223034282.MP.jpg",
+        "./photos/baseball collage/imagejpeg_0_02.jpg",
+        "./photos/baseball collage/PXL_20230604_014547839.jpg",
+        "./photos/baseball collage/LRM_EXPORT_20160724_181946.jpg",
+        "./photos/baseball collage/PXL_20230826_220732028.jpg",
+        "./photos/baseball collage/PXL_20210822_231006613.jpg",
+        "./photos/baseball collage/IMG_20190929_145935671_HDR.jpg",
+        "./photos/baseball collage/PXL_20240824_191838871~2.jpg",
+        "./photos/baseball collage/IMG_20210706_210652_01.jpg",
+        "./photos/baseball collage/-ewjugx.jpg",
+        "./photos/baseball collage/PXL_20250408_023320556.jpg",
+        "./photos/baseball collage/PXL_20240928_012649897.jpg",
+        "./photos/baseball collage/IMG_6768.jpg",
+        "./photos/baseball collage/PXL_20250426_023107545.jpg",
+        "./photos/baseball collage/PXL_20240427_013919619.jpg",
+        "./photos/baseball collage/PXL_20250404_215530904~2.jpg",
+        "./photos/baseball collage/PXL_20240616_000824621.MP.jpg",
+        "./photos/baseball collage/IMG_20190929_125256958.jpg",
+        "./photos/baseball collage/PXL_20240913_030844352~2.jpg",
+        "./photos/baseball collage/824689930978028.jpg",
+        "./photos/baseball collage/PXL_20250518_222855718_exported_0~2.jpg",
+        "./photos/baseball collage/20180809_211200.jpg",
+        "./photos/baseball collage/PXL_20250518_202546899.jpg",
+        "./photos/baseball collage/PXL_20240913_024416511.jpg",
+        "./photos/baseball collage/PXL_20250518_195915432.jpg",
+        "./photos/baseball collage/PXL_20210930_032725542.MP.jpg",
+        "./photos/baseball collage/PXL_20240615_233832880.jpg",
+        "./photos/baseball collage/PXL_20240407_230102518.RAW-01.COVER.jpg",
+        "./photos/baseball collage/IMG-20250518-WA0010.jpg",
+        "./photos/baseball collage/PXL_20240601_033939210.MP.jpg",
+        "./photos/baseball collage/20180518_215025.jpg",
+        "./photos/baseball collage/PXL_20220430_214207429.MP.jpg",
+        "./photos/baseball collage/PXL_20250518_195050561.jpg",
+        "./photos/baseball collage/20180210_121454.jpg",
+        "./photos/baseball collage/PXL_20240615_013511154.MP~2.jpg"
+      ];
+
+      const carouselContainer = document.getElementById("bgCarousel");
+      const canAnimateCarousel =
+        carouselContainer &&
+        carouselImagePaths.length > 0 &&
+        !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (carouselContainer && carouselImagePaths.length > 0) {
+        const shuffledImagePaths = [...carouselImagePaths];
+        for (let i = shuffledImagePaths.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffledImagePaths[i], shuffledImagePaths[j]] = [shuffledImagePaths[j], shuffledImagePaths[i]];
+        }
+
+        const slideElements = shuffledImagePaths.map((path, idx) => {
+          const img = document.createElement("img");
+          img.className = "bg-carousel-slide";
+          img.src = encodeURI(path);
+          img.alt = "";
+          img.loading = idx < 2 ? "eager" : "lazy";
+          img.decoding = "async";
+          if (idx === 0) img.classList.add("is-active");
+          carouselContainer.appendChild(img);
+          return img;
+        });
+
+        if (canAnimateCarousel) {
+          let activeIndex = 0;
+          const intervalMs = 5500;
+          window.setInterval(() => {
+            const nextIndex = (activeIndex + 1) % slideElements.length;
+            slideElements[activeIndex].classList.remove("is-active");
+            slideElements[nextIndex].classList.add("is-active");
+            activeIndex = nextIndex;
+          }, intervalMs);
+        }
       }
     </script>
   </body>
