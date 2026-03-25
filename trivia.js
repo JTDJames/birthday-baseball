@@ -463,10 +463,15 @@ async function openTriviaModal() {
       bar.innerHTML = `Sign in with Google to count on the leaderboard. <button type="button" class="trivia-auth-action" id="triviaSignIn">Sign in</button>`;
       const inBtn = document.getElementById("triviaSignIn");
       if (inBtn)
-        inBtn.onclick = () => {
-          signInWithGoogle().catch((err) =>
-            console.warn("Sign-in failed:", err)
-          );
+        inBtn.onclick = async () => {
+          inBtn.disabled = true;
+          try {
+            await signInWithGoogle();
+          } catch (err) {
+            console.warn("Sign-in failed:", err);
+          } finally {
+            inBtn.disabled = false;
+          }
         };
     }
   }
