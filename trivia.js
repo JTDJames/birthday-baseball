@@ -37,22 +37,66 @@ function shufflePick(arr) {
   return arr[i];
 }
 
+function choiceTextFromCell(c) {
+  if (c == null) return "";
+  if (typeof c === "string") return c;
+  if (typeof c === "object") {
+    if (typeof c.text === "string") return c.text;
+    if (typeof c.label === "string") return c.label;
+    if (typeof c.choice === "string") return c.choice;
+  }
+  return String(c);
+}
+
 /**
- * Normalize Firestore/JSON `choices` to a dense string array (preserves index = correctIndex key).
+ * Normalize Firestore/JSON `choices` to a dense string array (index = correctIndex key).
+ * Handles: arrays, newline/pipe–delimited single strings, map-shaped objects, `{ text }` cells.
  */
 function normalizeChoiceStrings(q) {
   const raw = q && q.choices;
-  if (!raw) return [];
-  if (Array.isArray(raw)) {
-    return raw.map((c) => (c == null ? "" : String(c)));
+  if (raw == null) return [];
+
+  if (typeof raw === "string") {
+    const parts = raw.split(/\||\n/).map((s) => s.trim()).filter(Boolean);
+    return parts.length ? parts : [raw];
   }
+
+  if (Array.isArray(raw)) {
+    if (
+      raw.length === 1 &&
+      typeof raw[0] === "string" &&
+      /[\n|]/.test(raw[0])
+    ) {
+      return raw[0]
+        .split(/\||\n/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+    }
+    return raw.map((c) => choiceTextFromCell(c));
+  }
+
   if (typeof raw === "object") {
     return Object.keys(raw)
       .filter((k) => /^\d+$/.test(k))
       .sort((a, b) => Number(a) - Number(b))
-      .map((k) => String(raw[k]));
+      .map((k) => choiceTextFromCell(raw[k]));
   }
+
   return [];
+}
+
+/** Coerce `correctIndex` to a valid index after choices are normalized. */
+function normalizeCorrectIndex(q, choiceCount) {
+  let ci = Number(q.correctIndex);
+  if (!Number.isFinite(ci)) ci = 0;
+  if (choiceCount <= 0) return 0;
+  return Math.max(0, Math.min(choiceCount - 1, Math.floor(ci)));
+}
+
+function normalizeQuestionRecord(q) {
+  const choices = normalizeChoiceStrings(q);
+  const correctIndex = normalizeCorrectIndex(q, choices.length);
+  return { ...q, choices, correctIndex };
 }
 
 function randomIntInclusive(maxInclusive) {
@@ -68,20 +112,20 @@ function randomIntInclusive(maxInclusive) {
 
 /** Randomize on-screen order; keep mapping to original choice indices for scoring/analytics. */
 function shuffleChoicesDisplay(q) {
-  const choices = normalizeChoiceStrings(q);
+  const choices = Array.isArray(q.choices) ? q.choices : normalizeChoiceStrings(q);
   const n = choices.length;
   if (n === 0) return [];
-  const order = Array.from({ length: n }, (_, i) => i);
-  for (let i = n - 1; i > 0; i--) {
-    const j = randomIntInclusive(i);
-    const t = order[i];
-    order[i] = order[j];
-    order[j] = t;
-  }
-  return order.map((origIdx) => ({
-    text: choices[origIdx],
+  const paired = choices.map((text, origIdx) => ({
+    text,
     origIdx,
   }));
+  for (let i = n - 1; i > 0; i--) {
+    const j = randomIntInclusive(i);
+    const tmp = paired[i];
+    paired[i] = paired[j];
+    paired[j] = tmp;
+  }
+  return paired;
 }
 
 function escapeHtml(s) {
@@ -106,15 +150,17 @@ async function loadJsonBank() {
     }
     const arr = await res.json();
     arr.forEach((q, idx) => {
-      out.push({
-        id: `local-${tier}-${idx}`,
-        difficulty: tier,
-        prompt: q.prompt,
-        choices: q.choices,
-        correctIndex: q.correctIndex,
-        category: q.category ?? "",
-        author: q.author ?? "AI generated",
-      });
+      out.push(
+        normalizeQuestionRecord({
+          id: `local-${tier}-${idx}`,
+          difficulty: tier,
+          prompt: q.prompt,
+          choices: q.choices,
+          correctIndex: q.correctIndex,
+          category: q.category ?? "",
+          author: q.author ?? "AI generated",
+        })
+      );
     });
   }
   return out;
@@ -126,7 +172,7 @@ async function loadQuestionBank() {
     if (!snap.empty) {
       return snap.docs.map((d) => {
         const data = d.data();
-        return {
+        return normalizeQuestionRecord({
           id: d.id,
           difficulty: data.difficulty,
           prompt: data.prompt,
@@ -134,7 +180,7 @@ async function loadQuestionBank() {
           correctIndex: data.correctIndex,
           category: data.category ?? "",
           author: data.author ?? "AI generated",
-        };
+        });
       });
     }
   } catch (e) {
@@ -486,24 +532,39 @@ async function openTriviaModal() {
     paired.forEach((item, displayIdx) => {
       const btn = document.createElement("button");
       btn.type = "button";
+      btn.setAttribute("data-orig-idx", String(item.origIdx));
       btn.textContent = item.text;
       btn.addEventListener("click", () => {
         if (answered) return;
         answered = true;
         const pickedOriginal = item.origIdx;
-        const correct = pickedOriginal === q.correctIndex;
+        const correct =
+          Number(pickedOriginal) === Number(q.correctIndex);
         if (correct) score += 1;
         answers.push({ question: q, pickedIndex: pickedOriginal, correct });
         choicesEl.querySelectorAll("button").forEach((b, bi) => {
           b.disabled = true;
           const orig = paired[bi].origIdx;
-          if (orig === q.correctIndex) b.classList.add("trivia-correct");
+          if (Number(orig) === Number(q.correctIndex))
+            b.classList.add("trivia-correct");
           else if (bi === displayIdx && !correct) b.classList.add("trivia-wrong");
         });
         nextBtn.disabled = false;
       });
       choicesEl.appendChild(btn);
     });
+
+    if (
+      typeof location !== "undefined" &&
+      new URLSearchParams(location.search).has("debugTrivia")
+    ) {
+      const dbg = document.createElement("p");
+      dbg.setAttribute("aria-hidden", "true");
+      dbg.style.cssText =
+        "font-size:11px;color:#888;font-family:ui-monospace,monospace;margin:0.4rem 0 0;text-align:center;";
+      dbg.textContent = `shuffle order (orig indices): ${paired.map((p) => p.origIdx).join(", ")}`;
+      choicesEl.appendChild(dbg);
+    }
 
     nextBtn.onclick = () => {
       step += 1;

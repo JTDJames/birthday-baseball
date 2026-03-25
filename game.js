@@ -34,12 +34,13 @@
    * (wall inner faces ~x=10 and ~x=310) that gap > ball diameter — otherwise the ball
    * wedges between wall and bumper arc.
    */
-  const SIDE_POP_X_INSET = 36;
+  const SIDE_BUMPER_ROW_Y = 236;
+  const SIDE_POP_X_INSET = 46;
   const POP_BUMPER_LAYOUT = [
     { x: PITCH_ORIGIN_X - 58, y: 82, r: 10 },
     { x: PITCH_ORIGIN_X + 58, y: 82, r: 10 },
-    { x: SIDE_POP_X_INSET, y: 236, r: 10 },
-    { x: BOARD_WIDTH - SIDE_POP_X_INSET, y: 236, r: 10 },
+    { x: SIDE_POP_X_INSET, y: SIDE_BUMPER_ROW_Y, r: 10 },
+    { x: BOARD_WIDTH - SIDE_POP_X_INSET, y: SIDE_BUMPER_ROW_Y, r: 10 },
   ];
   const BALL_RADIUS = 7;
   /** Bottom edge of top wall body (center y=22, height 44) — ball must stay below this + radius. */
@@ -1173,9 +1174,42 @@
     });
   }
 
+  /**
+   * Matter can leave the ball at rest in the thin wedge between a side pop bumper and
+   * the vertical wall. If we are in that wedge at low speed, kick the ball toward center.
+   */
+  function dislodgeSideBumperWedges() {
+    if (!engine) return;
+    const wallInnerL = 10;
+    const wallInnerR = BOARD_WIDTH - 10;
+    const maxSpeed = 5.5;
+    POP_BUMPER_LAYOUT.forEach((slot) => {
+      if (slot.y !== SIDE_BUMPER_ROW_Y) return;
+      const { x: cx, y: cy, r: br } = slot;
+      engine.world.bodies.forEach((ball) => {
+        if (ball.label !== "baseball") return;
+        const dx = ball.position.x - cx;
+        const dy = ball.position.y - cy;
+        const dist = Math.hypot(dx, dy);
+        if (dist > br + BALL_RADIUS + 0.75) return;
+        const speed = Math.hypot(ball.velocity.x, ball.velocity.y);
+        if (speed > maxSpeed) return;
+        const leftSide = cx < BOARD_WIDTH / 2;
+        if (leftSide) {
+          if (ball.position.x < cx + br * 0.7 && ball.position.x < wallInnerL + BALL_RADIUS + 22) {
+            Body.setVelocity(ball, { x: Math.max(2.4, ball.velocity.x + 2), y: ball.velocity.y - 0.4 });
+          }
+        } else if (ball.position.x > cx - br * 0.7 && ball.position.x > wallInnerR - BALL_RADIUS - 22) {
+          Body.setVelocity(ball, { x: Math.min(-2.4, ball.velocity.x - 2), y: ball.velocity.y - 0.4 });
+        }
+      });
+    });
+  }
+
   function beforeUpdateWorld() {
     cleanupMissedBalls();
     keepBallInPlayfield();
+    dislodgeSideBumperWedges();
     constrainBatMotion();
     enforceSwingContact();
     applyBallSlideOnBat();
