@@ -29,12 +29,17 @@
     homerunLeft: { x: 42, y: 50, r: 8, label: "HR", type: "homerun" },
     homerunRight: { x: BOARD_WIDTH - 42, y: 50, r: 8, label: "HR", type: "homerun" },
   };
-  /** Circular pop bumpers (approximate to user-marked zones). */
+  /**
+   * Circular pop bumpers. Lower side pair must sit far enough from vertical walls
+   * (wall inner faces ~x=10 and ~x=310) that gap > ball diameter — otherwise the ball
+   * wedges between wall and bumper arc.
+   */
+  const SIDE_POP_X_INSET = 36;
   const POP_BUMPER_LAYOUT = [
     { x: PITCH_ORIGIN_X - 58, y: 82, r: 10 },
     { x: PITCH_ORIGIN_X + 58, y: 82, r: 10 },
-    { x: 28, y: 236, r: 10 },
-    { x: BOARD_WIDTH - 28, y: 236, r: 10 },
+    { x: SIDE_POP_X_INSET, y: 236, r: 10 },
+    { x: BOARD_WIDTH - SIDE_POP_X_INSET, y: 236, r: 10 },
   ];
   const BALL_RADIUS = 7;
   /** Bottom edge of top wall body (center y=22, height 44) — ball must stay below this + radius. */
