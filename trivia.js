@@ -37,14 +37,51 @@ function shufflePick(arr) {
   return arr[i];
 }
 
+/**
+ * Normalize Firestore/JSON `choices` to a dense string array (preserves index = correctIndex key).
+ */
+function normalizeChoiceStrings(q) {
+  const raw = q && q.choices;
+  if (!raw) return [];
+  if (Array.isArray(raw)) {
+    return raw.map((c) => (c == null ? "" : String(c)));
+  }
+  if (typeof raw === "object") {
+    return Object.keys(raw)
+      .filter((k) => /^\d+$/.test(k))
+      .sort((a, b) => Number(a) - Number(b))
+      .map((k) => String(raw[k]));
+  }
+  return [];
+}
+
+function randomIntInclusive(maxInclusive) {
+  const max = maxInclusive + 1;
+  try {
+    const buf = new Uint32Array(1);
+    crypto.getRandomValues(buf);
+    return Math.floor((buf[0] / 4294967296) * max);
+  } catch {
+    return Math.floor(Math.random() * max);
+  }
+}
+
 /** Randomize on-screen order; keep mapping to original choice indices for scoring/analytics. */
 function shuffleChoicesDisplay(q) {
-  const paired = q.choices.map((text, origIdx) => ({ text, origIdx }));
-  for (let i = paired.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [paired[i], paired[j]] = [paired[j], paired[i]];
+  const choices = normalizeChoiceStrings(q);
+  const n = choices.length;
+  if (n === 0) return [];
+  const order = Array.from({ length: n }, (_, i) => i);
+  for (let i = n - 1; i > 0; i--) {
+    const j = randomIntInclusive(i);
+    const t = order[i];
+    order[i] = order[j];
+    order[j] = t;
   }
-  return paired;
+  return order.map((origIdx) => ({
+    text: choices[origIdx],
+    origIdx,
+  }));
 }
 
 function escapeHtml(s) {
@@ -429,15 +466,19 @@ async function openTriviaModal() {
       <p class="trivia-meta">Question ${n} of 5 · ${diffLabel}</p>
       <p class="trivia-author">Author: ${escapeHtml(authorLabel)}</p>
       <p class="trivia-prompt" id="triviaPrompt"></p>
-      <div class="trivia-choices" id="triviaChoices"></div>
+      <div class="trivia-choices"></div>
       <div class="trivia-footer">
         <button type="button" class="trivia-next" id="triviaNextBtn" disabled>Next</button>
       </div>
     `;
 
     document.getElementById("triviaPrompt").textContent = q.prompt;
-    const choicesEl = document.getElementById("triviaChoices");
+    const choicesEl = root.querySelector(".trivia-choices");
     const nextBtn = document.getElementById("triviaNextBtn");
+    if (!choicesEl) {
+      console.error("trivia: missing .trivia-choices container");
+      return;
+    }
 
     const paired = shuffleChoicesDisplay(q);
 
