@@ -226,13 +226,13 @@
       return;
     }
     leaderboardEmpty.style.display = "none";
-    rows.forEach((row, i) => {
+    rows.forEach((row) => {
       const li = document.createElement("li");
       const dateStr =
         row.at != null
           ? new Date(row.at).toLocaleDateString(undefined, { month: "short", day: "numeric" })
           : "";
-      li.textContent = `${i + 1}. ${row.initials || "???"} — ${row.score}${dateStr ? `  (${dateStr})` : ""}`;
+      li.textContent = `${row.initials || "???"} — ${row.score}${dateStr ? `  (${dateStr})` : ""}`;
       leaderboardList.appendChild(li);
     });
   }
@@ -248,14 +248,14 @@
     leaderboardModal.style.display = "none";
   }
 
-  function showInitialsPanel(finalScore, perfects) {
+  function showInitialsPanel(finalScore) {
     if (!highScoreEntry || !hsScoreLine) return;
     initialsOpen = true;
     if (hsInitials) {
       hsInitials.value = "";
       hsInitials.maxLength = 3;
     }
-    hsScoreLine.textContent = `Final score: ${finalScore}  ·  Perfects: ${perfects}`;
+    hsScoreLine.textContent = `Final score: ${finalScore}`;
     highScoreEntry.style.display = "flex";
     window.setTimeout(() => hsInitials && hsInitials.focus(), 80);
   }
@@ -289,7 +289,6 @@
     outs: 0,
     bases: [0, 0, 0], // [1st, 2nd, 3rd]
     hitStreak: 0,
-    perfectHits: 0,
   };
 
   let overlay = null;
@@ -310,7 +309,6 @@
   let feedbackUntil = 0;
   let homerunBurstUntil = 0;
   let pendingFinalScore = 0;
-  let pendingPerfects = 0;
 
   function createOverlay() {
     overlay = document.createElement("div");
@@ -1001,7 +999,6 @@
         const contactBonus = getContactBonus(batAndBall);
         if (contactBonus > 0) {
           gameState.score += contactBonus;
-          gameState.perfectHits += 1;
           playSfx("perfect");
           updateOverlay("Contact! Bonus run awarded. Drive it to the targets!");
         } else {
@@ -1055,9 +1052,8 @@
               window.localStorage.setItem(LEGACY_HIGH_KEY, String(highScore));
             }
             pendingFinalScore = gameState.score;
-            pendingPerfects = gameState.perfectHits;
             updateOverlay("BALLGAME — Enter initials or SKIP");
-            showInitialsPanel(pendingFinalScore, pendingPerfects);
+            showInitialsPanel(pendingFinalScore);
           } else {
             updateOverlay(`Side retired. Inning ${gameState.inning} in a moment...`);
             if (inningBreakTimeout) window.clearTimeout(inningBreakTimeout);
@@ -1530,7 +1526,6 @@
       gameState.outs = 0;
       gameState.bases = [0, 0, 0];
       gameState.hitStreak = 0;
-      gameState.perfectHits = 0;
       pitchesThisInning = 0;
       inningsLimit = MAX_INNINGS;
       extraInningsAwarded = 0;

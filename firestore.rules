@@ -50,6 +50,82 @@ service cloud.firestore {
       allow read, update, delete: if false;
     }
 
+    function validDifficultyKey() {
+      return request.resource.data.difficulty == 'easy'
+        || request.resource.data.difficulty == 'somewhat_easy'
+        || request.resource.data.difficulty == 'medium'
+        || request.resource.data.difficulty == 'hard'
+        || request.resource.data.difficulty == 'very_hard';
+    }
+
+    function triviaSubmissionWrongAnswersManual() {
+      return request.resource.data.wrongAnswers is list
+        && request.resource.data.wrongAnswers.size() == 3
+        && request.resource.data.wrongAnswers[0] is string
+        && request.resource.data.wrongAnswers[0].size() >= 1
+        && request.resource.data.wrongAnswers[0].size() <= 500
+        && request.resource.data.wrongAnswers[1] is string
+        && request.resource.data.wrongAnswers[1].size() >= 1
+        && request.resource.data.wrongAnswers[1].size() <= 500
+        && request.resource.data.wrongAnswers[2] is string
+        && request.resource.data.wrongAnswers[2].size() >= 1
+        && request.resource.data.wrongAnswers[2].size() <= 500;
+    }
+
+    function triviaSubmissionBaseFields() {
+      return request.resource.data.authorName is string
+        && request.resource.data.authorName.size() >= 1
+        && request.resource.data.authorName.size() <= 120
+        && request.resource.data.prompt is string
+        && request.resource.data.prompt.size() >= 1
+        && request.resource.data.prompt.size() <= 2000
+        && request.resource.data.correctAnswer is string
+        && request.resource.data.correctAnswer.size() >= 1
+        && request.resource.data.correctAnswer.size() <= 500
+        && validDifficultyKey()
+        && (request.resource.data.wrongAnswersSource == 'manual'
+            || request.resource.data.wrongAnswersSource == 'ai_requested')
+        && request.resource.data.status == 'pending'
+        && request.resource.data.submittedAt is timestamp;
+    }
+
+    // User-submitted trivia ideas; admin reviews in Console (no public read).
+    match /trivia_question_submissions/{id} {
+      allow create: if triviaSubmissionBaseFields()
+        && request.resource.data.keys().hasOnly([
+          'authorName', 'prompt', 'correctAnswer', 'difficulty',
+          'wrongAnswersSource', 'wrongAnswers', 'status', 'submittedAt'
+        ])
+        && (
+          (request.resource.data.wrongAnswersSource == 'manual'
+            && triviaSubmissionWrongAnswersManual())
+          || (request.resource.data.wrongAnswersSource == 'ai_requested'
+            && request.resource.data.wrongAnswers is list
+            && request.resource.data.wrongAnswers.size() == 0)
+        );
+
+      allow create: if triviaSubmissionBaseFields()
+        && request.auth != null
+        && request.auth.uid == request.resource.data.submitterUid
+        && request.resource.data.keys().hasOnly([
+          'authorName', 'prompt', 'correctAnswer', 'difficulty',
+          'wrongAnswersSource', 'wrongAnswers', 'status', 'submittedAt',
+          'submitterUid', 'submitterDisplayName'
+        ])
+        && request.resource.data.submitterUid is string
+        && request.resource.data.submitterDisplayName is string
+        && request.resource.data.submitterDisplayName.size() <= 120
+        && (
+          (request.resource.data.wrongAnswersSource == 'manual'
+            && triviaSubmissionWrongAnswersManual())
+          || (request.resource.data.wrongAnswersSource == 'ai_requested'
+            && request.resource.data.wrongAnswers is list
+            && request.resource.data.wrongAnswers.size() == 0)
+        );
+
+      allow read, update, delete: if false;
+    }
+
     function triviaSessionBase() {
       return request.resource.data.gameType == 'giants_trivia'
         && request.resource.data.score is int

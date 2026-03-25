@@ -514,10 +514,42 @@
       }
 
       .trivia-callout-sub {
-        margin: 0 0 1rem;
+        margin: 0 0 0.55rem;
         font-size: 0.95rem;
         color: #bbb;
         line-height: 1.35;
+      }
+
+      .trivia-callout-prize {
+        margin: 0 0 0.85rem;
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: var(--giants-orange);
+        line-height: 1.35;
+      }
+
+      .trivia-callout-auth {
+        margin: 0 0 1rem;
+        font-size: 0.82rem;
+        color: #888;
+        line-height: 1.45;
+      }
+
+      .trivia-callout-auth-btn {
+        color: var(--giants-orange);
+        background: none;
+        border: none;
+        text-decoration: underline;
+        cursor: pointer;
+        padding: 0;
+        font-weight: 700;
+        font-size: inherit;
+        font-family: inherit;
+      }
+
+      .trivia-callout-auth-btn:disabled {
+        opacity: 0.55;
+        cursor: wait;
       }
 
       .trivia-callout .trivia-btn {
@@ -542,6 +574,26 @@
       .trivia-callout .trivia-btn:focus-visible {
         outline: 3px solid var(--giants-cream);
         outline-offset: 3px;
+      }
+
+      .trivia-submit-question-btn {
+        display: block;
+        width: 100%;
+        margin-top: 0.45rem;
+        padding: 0.45rem 0.75rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--giants-cream);
+        background: transparent;
+        border: 2px solid rgba(253, 90, 30, 0.65);
+        border-radius: 8px;
+        cursor: pointer;
+        line-height: 1.35;
+      }
+
+      .trivia-submit-question-btn:hover {
+        border-color: var(--giants-orange);
+        color: var(--giants-orange);
       }
 
       .interest {
@@ -847,6 +899,14 @@
         <p class="trivia-callout-sub">
           Warm up before first pitch—questions from easy to very hard.
         </p>
+        <p class="trivia-callout-prize">
+          Top trivia leaders on game day will get a prize!
+        </p>
+        <div
+          id="triviaCardAuthBar"
+          class="trivia-callout-auth"
+          aria-live="polite"
+        ></div>
         <button id="giantsTriviaBtn" type="button" class="trivia-btn">
           Play Giants Trivia!
         </button>
@@ -863,6 +923,14 @@
           style="margin-top:0.5rem; width:100%; padding:0.6rem 1rem; font-size:0.9rem; font-weight:700; color:var(--giants-cream); background:transparent; border:2px solid var(--giants-orange); border-radius:10px; cursor:pointer;"
         >
           Trivia Leaderboard
+        </button>
+        <button
+          id="triviaSubmitQuestionBtn"
+          type="button"
+          class="trivia-submit-question-btn"
+          aria-label="Submit your own trivia question"
+        >
+          Submit your own question
         </button>
       </div>
 
@@ -956,6 +1024,8 @@
 
     </main>
     <script type="module" src="./firebase-init.js"></script>
+    <script type="module" src="./trivia-card-auth.js"></script>
+    <script type="module" src="./trivia-submit-question.js?v=1"></script>
     <script type="module" src="./pinball-leaderboard.js"></script>
     <script type="module" src="./firestore-test.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>

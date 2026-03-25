@@ -39,6 +39,9 @@ function ensureModal() {
         Sign in with Google before finishing a round to record your stats. Accuracy list requires at least
         ${MIN_CORRECT_FOR_ACCURACY_BOARD} lifetime correct answers.
       </p>
+      <p style="margin:0 0 0.75rem; color:#fd5a1e; font-size:0.9rem; font-weight:700; text-align:center;">
+        Prizes for top trivia leaders on game day — details at the event.
+      </p>
       <p id="triviaLbLoading" style="margin:0; color:#aaa; text-align:center;">Loading…</p>
       <div id="triviaLbBody" style="display:none;">
         <div style="display:grid; gap:0.85rem;">
