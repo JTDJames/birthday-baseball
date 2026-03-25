@@ -1,142 +1,482 @@
 [
   {
     "prompt": "What was the first official name of Oracle Park when it opened in 2000?",
-    "choices": ["Pacific Bell Park", "SBC Park", "AT&T Park", "Oracle Park"],
+    "choices": [
+      "Pacific Bell Park",
+      "SBC Park",
+      "AT&T Park",
+      "Oracle Park"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "What is the distance (in feet) to straightaway center field at Oracle Park?",
-    "choices": ["391 feet", "399 feet", "415 feet", "404 feet"],
+    "choices": [
+      "391 feet",
+      "399 feet",
+      "415 feet",
+      "404 feet"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won back-to-back NL Cy Young Awards in 2008 and 2009?",
-    "choices": ["Tim Lincecum", "Matt Cain", "Madison Bumgarner", "Barry Zito"],
+    "choices": [
+      "Tim Lincecum",
+      "Matt Cain",
+      "Madison Bumgarner",
+      "Barry Zito"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who caught Matt Cain’s perfect game on June 13, 2012?",
-    "choices": ["Buster Posey", "Hector Sanchez", "Eli Whiteside", "Andrew Susac"],
+    "choices": [
+      "Buster Posey",
+      "Hector Sanchez",
+      "Eli Whiteside",
+      "Andrew Susac"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What Giant won 2012 NL MVP?",
-    "choices": ["Buster Posey", "Melky Cabrera", "Angel Pagan", "Pablo Sandoval"],
+    "choices": [
+      "Buster Posey",
+      "Melky Cabrera",
+      "Angel Pagan",
+      "Pablo Sandoval"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What Giant won 2010 NL Rookie of the Year?",
-    "choices": ["Buster Posey", "Madison Bumgarner", "Brandon Belt", "Brandon Crawford"],
+    "choices": [
+      "Buster Posey",
+      "Madison Bumgarner",
+      "Brandon Belt",
+      "Brandon Crawford"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What is the name of the Giants late Hall of Fame broadcaster known for \"Tell it goodbye!\"?",
-    "choices": ["Lon Simmons", "Russ Hodges", "Hank Greenwald", "Bill King"],
+    "choices": [
+      "Lon Simmons",
+      "Russ Hodges",
+      "Hank Greenwald",
+      "Bill King"
+    ],
     "correctIndex": 0,
     "category": "human story",
     "author": "AI generated"
   },
   {
     "prompt": "What year did the Giants move from New York to San Francisco?",
-    "choices": ["1958", "1957", "1960", "1962"],
+    "choices": [
+      "1958",
+      "1957",
+      "1960",
+      "1962"
+    ],
     "correctIndex": 0,
     "category": "history",
     "author": "AI generated"
   },
   {
     "prompt": "What was the Giants home stadium before Oracle Park?",
-    "choices": ["Candlestick Park", "Seals Stadium", "Kezar Stadium", "Cow Palace"],
+    "choices": [
+      "Candlestick Park",
+      "Seals Stadium",
+      "Kezar Stadium",
+      "Cow Palace"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant slugger is the namesake of McCovey Point outside the ballpark?",
-    "choices": ["Willie McCovey", "Willie Mays", "Orlando Cepeda", "Juan Marichal"],
+    "choices": [
+      "Willie McCovey",
+      "Willie Mays",
+      "Orlando Cepeda",
+      "Juan Marichal"
+    ],
     "correctIndex": 0,
     "category": "culture",
     "author": "AI generated"
   },
   {
     "prompt": "What is the name of the Giants late Hall of Fame pitcher with a famous high leg kick?",
-    "choices": ["Juan Marichal", "Gaylord Perry", "Matt Cain", "Kirk Rueter"],
+    "choices": [
+      "Juan Marichal",
+      "Gaylord Perry",
+      "Matt Cain",
+      "Kirk Rueter"
+    ],
     "correctIndex": 0,
     "category": "history",
     "author": "AI generated"
   },
   {
     "prompt": "Which number is retired for Gaylord Perry as a Giant?",
-    "choices": ["36", "27", "22", "44"],
+    "choices": [
+      "36",
+      "27",
+      "22",
+      "44"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which number is retired for Orlando Cepeda as a Giant?",
-    "choices": ["30", "20", "24", "44"],
+    "choices": [
+      "30",
+      "20",
+      "24",
+      "44"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won 1969 NL MVP?",
-    "choices": ["Willie McCovey", "Willie Mays", "Bobby Bonds", "Juan Marichal"],
+    "choices": [
+      "Willie McCovey",
+      "Willie Mays",
+      "Bobby Bonds",
+      "Juan Marichal"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giants catcher returned from a devastating leg injury to win NL MVP and a batting title?",
-    "choices": ["Buster Posey", "Bengie Molina", "Terry Kennedy", "Bob Brenly"],
+    "choices": [
+      "Buster Posey",
+      "Bengie Molina",
+      "Terry Kennedy",
+      "Bob Brenly"
+    ],
     "correctIndex": 0,
     "category": "human story",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won 1968 NL Cy Young?",
-    "choices": ["Juan Marichal", "Gaylord Perry", "Mike McCormick", "Sam McDowell"],
+    "choices": [
+      "Juan Marichal",
+      "Gaylord Perry",
+      "Mike McCormick",
+      "Sam McDowell"
+    ],
     "correctIndex": 2,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who was the Giants principal owner whose name was on the ballpark before Oracle?",
-    "choices": ["Peter Magowan", "Bill Neukom", "Larry Baer", "Charles Johnson"],
+    "choices": [
+      "Peter Magowan",
+      "Bill Neukom",
+      "Larry Baer",
+      "Charles Johnson"
+    ],
     "correctIndex": 0,
     "category": "culture",
     "author": "AI generated"
   },
   {
     "prompt": "What is the name of the Giants CEO who has been a prominent public face of the franchise?",
-    "choices": ["Larry Baer", "Farhan Zaidi", "Brian Sabean", "Bob Melvin"],
+    "choices": [
+      "Larry Baer",
+      "Farhan Zaidi",
+      "Brian Sabean",
+      "Bob Melvin"
+    ],
     "correctIndex": 0,
     "category": "culture",
     "author": "AI generated"
   },
   {
     "prompt": "Who hit the home run known as the \"Shot Heard 'Round the World\" for the New York Giants in 1951?",
-    "choices": ["Bobby Thomson", "Willie Mays", "Monte Irvin", "Don Mueller"],
+    "choices": [
+      "Bobby Thomson",
+      "Willie Mays",
+      "Monte Irvin",
+      "Don Mueller"
+    ],
     "correctIndex": 0,
     "category": "history",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won 1959 NL Rookie of the Year?",
-    "choices": ["Willie McCovey", "Orlando Cepeda", "Willie Mays", "Felipe Alou"],
+    "choices": [
+      "Willie McCovey",
+      "Orlando Cepeda",
+      "Willie Mays",
+      "Felipe Alou"
+    ],
     "correctIndex": 1,
     "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "In what year did the Giants move from New York to San Francisco?",
+    "choices": [
+      "1958",
+      "1955",
+      "1962",
+      "1960"
+    ],
+    "correctIndex": 0,
+    "category": "history",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants pitcher won the Cy Young Award in 2008 and 2009?",
+    "choices": [
+      "Tim Lincecum",
+      "Matt Cain",
+      "Barry Zito",
+      "Noah Lowry"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who caught Buster Posey’s position when Posey missed 2011 after injury?",
+    "choices": [
+      "Chris Stewart and Eli Whiteside shared time",
+      "Andrew Susac only",
+      "Hector Sanchez only",
+      "Bengie Molina"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants outfielder won the 2010 NLCS MVP?",
+    "choices": [
+      "Cody Ross",
+      "Pat Burrell",
+      "Andrés Torres",
+      "Aubrey Huff"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "After Pacific Bell Park was renamed for the SBC era, what was the ballpark called before it became AT&T Park?",
+    "choices": [
+      "SBC Park",
+      "Oracle Park",
+      "Candlestick Park",
+      "Municipal Stadium"
+    ],
+    "correctIndex": 0,
+    "category": "ballpark",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants player hit the walk-off home run in 2014 NLCS Game 5 against the Cardinals?",
+    "choices": [
+      "Travis Ishikawa",
+      "Michael Morse",
+      "Brandon Belt",
+      "Pablo Sandoval"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who was the Giants’ general manager for much of the 2010s championship window?",
+    "choices": [
+      "Brian Sabean",
+      "Farhan Zaidi",
+      "Bobby Evans",
+      "Pete Putila"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants pitcher started Game 7 of the 2014 World Series?",
+    "choices": [
+      "Tim Hudson",
+      "Madison Bumgarner",
+      "Jake Peavy",
+      "Ryan Vogelsong"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "The Giants’ Triple-A affiliate (as of recent years) has often been in which California city?",
+    "choices": [
+      "Sacramento",
+      "Fresno",
+      "Reno",
+      "Las Vegas"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants lefty reliever was nicknamed “The Beard” alongside Brian Wilson’s era?",
+    "choices": [
+      "Jeremy Affeldt",
+      "Javier López",
+      "Will Smith",
+      "Tony Watson"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who managed the Giants in 2002 when they reached the World Series?",
+    "choices": [
+      "Dusty Baker",
+      "Felipe Alou",
+      "Bruce Bochy",
+      "Roger Craig"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants slugger won the 2012 World Series MVP?",
+    "choices": [
+      "Pablo Sandoval",
+      "Buster Posey",
+      "Marco Scutaro",
+      "Hunter Pence"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "What jersey number did Barry Bonds wear for most of his Giants career?",
+    "choices": [
+      "25",
+      "24",
+      "44",
+      "33"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants pitcher started the 2010 World Series Game 1?",
+    "choices": [
+      "Tim Lincecum",
+      "Matt Cain",
+      "Jonathan Sánchez",
+      "Madison Bumgarner"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who was the Giants’ everyday second baseman for much of the 2014 championship season?",
+    "choices": [
+      "Joe Panik",
+      "Marco Scutaro",
+      "Ryan Theriot",
+      "Emmanuel Burriss"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants shortstop won his first Gold Glove in 2015?",
+    "choices": [
+      "Brandon Crawford",
+      "Brandon Belt",
+      "Joe Panik",
+      "Matt Duffy"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "The Giants’ 2010 playoff run included a memorable division series against which NL East team?",
+    "choices": [
+      "Atlanta Braves",
+      "Philadelphia Phillies",
+      "Cincinnati Reds",
+      "Chicago Cubs"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants pitcher was known for a big leg kick and “The Freak” nickname?",
+    "choices": [
+      "Tim Lincecum",
+      "Johnny Cueto",
+      "Jeff Samardzija",
+      "Derek Holland"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who hit the go-ahead home run in Game 4 of the 2014 NLDS vs. Washington (late innings)?",
+    "choices": [
+      "Brandon Belt",
+      "Buster Posey",
+      "Pablo Sandoval",
+      "Joe Panik"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which future “Will the Thrill” slugger did the Giants draft second overall in the 1985 MLB Draft?",
+    "choices": [
+      "Will Clark",
+      "Willie McGee",
+      "Royce Clayton",
+      "Matt Williams"
+    ],
+    "correctIndex": 0,
+    "category": "history",
     "author": "AI generated"
   }
 ]

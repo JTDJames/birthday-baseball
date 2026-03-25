@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Photo moderation</title>
+    <style>
+      :root {
+        --bg: #111;
+        --fg: #f7f3e8;
+        --accent: #fd5a1e;
+        --card: #1a1a1a;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+        line-height: 1.45;
+        padding: 1.25rem;
+      }
+      .top {
+        max-width: 52rem;
+        margin: 0 auto 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem 1rem;
+        justify-content: space-between;
+      }
+      h1 {
+        font-size: 1.35rem;
+        margin: 0;
+      }
+      .btn {
+        padding: 0.55rem 1rem;
+        border-radius: 8px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 0.95rem;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #111;
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--fg);
+        border: 1px solid #444;
+      }
+      .btn-danger {
+        background: #8b2c2c;
+        color: #fff;
+      }
+      .btn-success {
+        background: #2d6a4f;
+        color: #fff;
+      }
+      .hint {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        max-width: 52rem;
+        margin: 0 auto 1rem;
+      }
+      .warn {
+        max-width: 52rem;
+        margin: 0 auto 1rem;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        background: rgba(180, 120, 40, 0.25);
+        border: 1px solid rgba(220, 160, 80, 0.35);
+      }
+      .grid {
+        max-width: 52rem;
+        margin: 0 auto;
+        display: grid;
+        gap: 1.25rem;
+      }
+      @media (min-width: 640px) {
+        .grid {
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+      }
+      .card {
+        background: var(--card);
+        border-radius: 10px;
+        border: 1px solid #333;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .card img {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        background: #0d0d0d;
+      }
+      .card-body {
+        padding: 0.75rem 0.85rem 1rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .meta {
+        font-size: 0.82rem;
+        opacity: 0.88;
+        word-break: break-word;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: auto;
+      }
+      .actions .btn {
+        flex: 1 1 auto;
+        min-width: 6rem;
+      }
+      label {
+        font-size: 0.85rem;
+        display: block;
+        margin-bottom: 0.25rem;
+      }
+      textarea {
+        width: 100%;
+        min-height: 2.5rem;
+        padding: 0.4rem 0.5rem;
+        border-radius: 6px;
+        border: 1px solid #444;
+        background: #111;
+        color: var(--fg);
+        font-family: inherit;
+        font-size: 0.9rem;
+      }
+      .empty {
+        max-width: 52rem;
+        margin: 0 auto;
+        opacity: 0.85;
+      }
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <h1>Photo moderation</h1>
+      <div>
+        <button type="button" class="btn btn-primary" id="signInBtn">Sign in with Google</button>
+        <button type="button" class="btn btn-ghost hidden" id="signOutBtn">Sign out</button>
+      </div>
+    </div>
+    <p class="hint">
+      Approve copies the image to a public path for the collage. Reject deletes the pending file
+      (optional note stored in Firestore).
+    </p>
+    <p id="adminWarn" class="warn hidden">
+      Replace <code>sFLbwsGEPXWMc3iXLtpPaHE6pHr1</code> in
+      <code>firestore.rules</code>, <code>storage.rules</code>, and
+      <code>photo-moderation.js</code> with your Google account’s UID, then deploy rules.
+    </p>
+    <p id="statusLine" class="hint"></p>
+    <div id="grid" class="grid"></div>
+    <p id="empty" class="empty hidden">No pending submissions.</p>
+
+    <script type="module" src="./photo-moderation.js"></script>
+  </body>
+</html>

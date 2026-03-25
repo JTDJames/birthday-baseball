@@ -1,140 +1,480 @@
 [
   {
     "prompt": "What is Barry Bonds’ single-season National League home run record (set in 2001)?",
-    "choices": ["73", "70", "65", "61"],
+    "choices": [
+      "73",
+      "70",
+      "65",
+      "61"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won the NL batting title in 2012?",
-    "choices": ["Buster Posey", "Melky Cabrera", "Brandon Belt", "Angel Pagan"],
+    "choices": [
+      "Buster Posey",
+      "Melky Cabrera",
+      "Brandon Belt",
+      "Angel Pagan"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who won 1989 NL MVP while playing for the Giants?",
-    "choices": ["Kevin Mitchell", "Will Clark", "Robby Thompson", "Matt Williams"],
+    "choices": [
+      "Kevin Mitchell",
+      "Will Clark",
+      "Robby Thompson",
+      "Matt Williams"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who won 1987 NLCS MVP for the Giants?",
-    "choices": ["Jeffrey Leonard", "Will Clark", "Kevin Mitchell", "Dave Dravecky"],
+    "choices": [
+      "Jeffrey Leonard",
+      "Will Clark",
+      "Kevin Mitchell",
+      "Dave Dravecky"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who threw the Giants’ first perfect game in the San Francisco era (2012)?",
-    "choices": ["Matt Cain", "Tim Lincecum", "Madison Bumgarner", "Chris Heston"],
+    "choices": [
+      "Matt Cain",
+      "Tim Lincecum",
+      "Madison Bumgarner",
+      "Chris Heston"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who threw a no-hitter for the Giants at Citi Field in 2015?",
-    "choices": ["Chris Heston", "Tim Lincecum", "Matt Cain", "Ryan Vogelsong"],
+    "choices": [
+      "Chris Heston",
+      "Tim Lincecum",
+      "Matt Cain",
+      "Ryan Vogelsong"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who threw a no-hitter for the Giants on July 10, 2009?",
-    "choices": ["Jonathan Sánchez", "Tim Lincecum", "Matt Cain", "Barry Zito"],
+    "choices": [
+      "Jonathan Sánchez",
+      "Tim Lincecum",
+      "Matt Cain",
+      "Barry Zito"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won NL MVP in 1993?",
-    "choices": ["Barry Bonds", "Lenny Dykstra", "David Justice", "Ron Gant"],
+    "choices": [
+      "Barry Bonds",
+      "Lenny Dykstra",
+      "David Justice",
+      "Ron Gant"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won NL MVP in 2002?",
-    "choices": ["Barry Bonds", "Jeff Kent", "Sammy Sosa", "Albert Pujols"],
+    "choices": [
+      "Barry Bonds",
+      "Jeff Kent",
+      "Sammy Sosa",
+      "Albert Pujols"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won NL MVP in 2003?",
-    "choices": ["Barry Bonds", "Albert Pujols", "Gary Sheffield", "Jim Edmonds"],
+    "choices": [
+      "Barry Bonds",
+      "Albert Pujols",
+      "Gary Sheffield",
+      "Jim Edmonds"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won NL MVP in 2004?",
-    "choices": ["Barry Bonds", "Adrian Beltre", "Scott Rolen", "Jim Edmonds"],
+    "choices": [
+      "Barry Bonds",
+      "Adrian Beltre",
+      "Scott Rolen",
+      "Jim Edmonds"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won NL Cy Young in 2008?",
-    "choices": ["Tim Lincecum", "Brandon Webb", "Johan Santana", "Ryan Dempster"],
+    "choices": [
+      "Tim Lincecum",
+      "Brandon Webb",
+      "Johan Santana",
+      "Ryan Dempster"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won NL Cy Young in 2009?",
-    "choices": ["Tim Lincecum", "Adam Wainwright", "Chris Carpenter", "Dan Haren"],
+    "choices": [
+      "Tim Lincecum",
+      "Adam Wainwright",
+      "Chris Carpenter",
+      "Dan Haren"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won NL Cy Young in 2010?",
-    "choices": ["Tim Lincecum", "Roy Halladay", "Adam Wainwright", "Ubaldo Jiménez"],
+    "choices": [
+      "Tim Lincecum",
+      "Roy Halladay",
+      "Adam Wainwright",
+      "Ubaldo Jiménez"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who won 2011 NL Cy Young (not a Giant)?",
-    "choices": ["Clayton Kershaw", "Tim Lincecum", "Roy Halladay", "Cliff Lee"],
+    "choices": [
+      "Clayton Kershaw",
+      "Tim Lincecum",
+      "Roy Halladay",
+      "Cliff Lee"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won 2012 NL MVP?",
-    "choices": ["Buster Posey", "Ryan Braun", "Andrew McCutchen", "Yadier Molina"],
+    "choices": [
+      "Buster Posey",
+      "Ryan Braun",
+      "Andrew McCutchen",
+      "Yadier Molina"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What year was Buster Posey drafted by the Giants (first-round pick)?",
-    "choices": ["2008", "2007", "2009", "2006"],
+    "choices": [
+      "2008",
+      "2007",
+      "2009",
+      "2006"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What overall pick was Buster Posey in the 2008 MLB Draft (Giants selection)?",
-    "choices": ["5th overall", "1st overall", "10th overall", "14th overall"],
+    "choices": [
+      "5th overall",
+      "1st overall",
+      "10th overall",
+      "14th overall"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who was the Giants pitching coach for much of the 2010s dynasty run?",
-    "choices": ["Dave Righetti", "Mark Gardner", "Curt Young", "Andrew Bailey"],
+    "choices": [
+      "Dave Righetti",
+      "Mark Gardner",
+      "Curt Young",
+      "Andrew Bailey"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who was the Giants bench coach for many seasons under Bruce Bochy?",
-    "choices": ["Ron Wotus", "Hensley Meulens", "Dave Righetti", "Mark Gardner"],
+    "choices": [
+      "Ron Wotus",
+      "Hensley Meulens",
+      "Dave Righetti",
+      "Mark Gardner"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which coach nicknamed “Bam Bam” served as Giants hitting coach for much of the 2010–2014 championship seasons?",
+    "choices": [
+      "Hensley Meulens",
+      "Mark Gardner",
+      "Dave Righetti",
+      "Ron Wotus"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants pitcher threw a no-hitter on June 9, 2015, against the New York Mets at home?",
+    "choices": [
+      "Chris Heston",
+      "Matt Cain",
+      "Tim Lincecum",
+      "Ryan Vogelsong"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who recorded the final out of the 2012 World Series by striking out Miguel Cabrera?",
+    "choices": [
+      "Sergio Romo",
+      "Brian Wilson",
+      "Javier López",
+      "Santiago Casilla"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants catcher won the 2010 NL Rookie of the Year Award?",
+    "choices": [
+      "Buster Posey",
+      "Brandon Belt",
+      "Madison Bumgarner",
+      "Brett Pill"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants center fielder and leadoff catalyst was key to the 2010 championship run?",
+    "choices": [
+      "Andrés Torres",
+      "Aaron Rowand",
+      "Cody Ross",
+      "Pat Burrell"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants pitcher started the 2012 World Series Game 1 in Detroit?",
+    "choices": [
+      "Barry Zito",
+      "Madison Bumgarner",
+      "Ryan Vogelsong",
+      "Matt Cain"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who hit three home runs in Game 1 of the 2012 World Series at Detroit?",
+    "choices": [
+      "Pablo Sandoval",
+      "Buster Posey",
+      "Hunter Pence",
+      "Brandon Belt"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants outfielder was acquired mid-2010 and became NLCS MVP that year?",
+    "choices": [
+      "Cody Ross",
+      "José Guillén",
+      "Pat Burrell",
+      "Aaron Rowand"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "The Giants clinched the 2010 World Series in Arlington in how many games?",
+    "choices": [
+      "Five games",
+      "Four games",
+      "Six games",
+      "Seven games"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants pitcher earned the save in Game 7 of the 2014 World Series?",
+    "choices": [
+      "Madison Bumgarner (long relief)",
+      "Santiago Casilla",
+      "Sergio Romo",
+      "Jeremy Affeldt"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who served as the Giants pitching coach for most of the Bruce Bochy era (including the 2010s titles)?",
+    "choices": [
+      "Dave Righetti",
+      "Mark Gardner",
+      "Curt Young",
+      "Andrew Bailey"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants infielder was known for a key defensive stop in the 2014 World Series at third base?",
+    "choices": [
+      "Pablo Sandoval",
+      "Joaquin Arias",
+      "Matt Duffy",
+      "Adam Duvall"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "What jersey number did Tim Lincecum wear for the Giants?",
+    "choices": [
+      "55",
+      "40",
+      "22",
+      "38"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants player was nicknamed “Blockbuster” for a key 2014 trade acquisition?",
+    "choices": [
+      "Jake Peavy",
+      "Mike Leake",
+      "Jeff Samardzija",
+      "Eddie Guardado"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "In 2014, which Giants reliever threw 2.2 scoreless innings in Game 7 of the World Series before Bumgarner’s long outing?",
+    "choices": [
+      "Jeremy Affeldt",
+      "Hunter Strickland",
+      "Jean Machi",
+      "Yusmeiro Petit"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants catcher started behind the plate for most of the 2012 postseason?",
+    "choices": [
+      "Buster Posey",
+      "Hector Sánchez",
+      "Eli Whiteside",
+      "Chris Stewart"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who managed the Detroit Tigers when they faced the Giants in the 2012 World Series?",
+    "choices": [
+      "Jim Leyland",
+      "Brad Ausmus",
+      "Ron Gardenhire",
+      "Alan Trammell"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants first baseman started Game 1 of the 2010 World Series at DH (American League park rules in Texas)?",
+    "choices": [
+      "Aubrey Huff",
+      "Travis Ishikawa",
+      "Buster Posey",
+      "Pat Burrell"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which team did the Giants defeat in the 2010 NLCS before the World Series?",
+    "choices": [
+      "Philadelphia Phillies",
+      "Atlanta Braves",
+      "Cincinnati Reds",
+      "St. Louis Cardinals"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Royals player did Madison Bumgarner retire for the final out of the 2014 World Series (after Salvador Pérez fouled off)?",
+    "choices": [
+      "Salvador Pérez (pop-up to third)",
+      "Eric Hosmer",
+      "Mike Moustakas",
+      "Lorenzo Cain"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"

@@ -1,140 +1,480 @@
 [
   {
     "prompt": "What year did Oracle Park open (then Pacific Bell Park)?",
-    "choices": ["2000", "1995", "2005", "1990"],
+    "choices": [
+      "2000",
+      "1995",
+      "2005",
+      "1990"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "What is the official height of the right-field wall (in feet) at Oracle Park?",
-    "choices": ["24 feet", "8 feet", "18 feet", "30 feet"],
+    "choices": [
+      "24 feet",
+      "8 feet",
+      "18 feet",
+      "30 feet"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "Who is the Giants career home run leader (all-time as a Giant)?",
-    "choices": ["Barry Bonds", "Willie Mays", "Willie McCovey", "Mel Ott"],
+    "choices": [
+      "Barry Bonds",
+      "Willie Mays",
+      "Willie McCovey",
+      "Mel Ott"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What is the name of the statue area near the waterfront entrance honoring a Giants legend?",
-    "choices": ["Willie Mays Plaza", "McCovey Point", "Bonds Bay", "Candlestick Court"],
+    "choices": [
+      "Willie Mays Plaza",
+      "McCovey Point",
+      "Bonds Bay",
+      "Candlestick Court"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won NL MVP three times (2001–2004 era)?",
-    "choices": ["Barry Bonds", "Jeff Kent", "Buster Posey", "Brandon Crawford"],
+    "choices": [
+      "Barry Bonds",
+      "Jeff Kent",
+      "Buster Posey",
+      "Brandon Crawford"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What is the Giants program name for home runs that splash into McCovey Cove?",
-    "choices": ["Splash Hits", "Cove Bombs", "Bay Blasts", "Arcade Dingers"],
+    "choices": [
+      "Splash Hits",
+      "Cove Bombs",
+      "Bay Blasts",
+      "Arcade Dingers"
+    ],
     "correctIndex": 0,
     "category": "culture",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant catcher was 2010 NL Rookie of the Year and later NL MVP?",
-    "choices": ["Buster Posey", "Bengie Molina", "Andrew Susac", "Nick Hundley"],
+    "choices": [
+      "Buster Posey",
+      "Bengie Molina",
+      "Andrew Susac",
+      "Nick Hundley"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What is the name of the Giants Hall of Fame first baseman known as \"Stretch\"?",
-    "choices": ["Willie McCovey", "J.T. Snow", "Brandon Belt", "Will Clark"],
+    "choices": [
+      "Willie McCovey",
+      "J.T. Snow",
+      "Brandon Belt",
+      "Will Clark"
+    ],
     "correctIndex": 0,
     "category": "culture",
     "author": "AI generated"
   },
   {
     "prompt": "What is the name of the Giants pitcher who threw a perfect game in 2012?",
-    "choices": ["Matt Cain", "Tim Lincecum", "Madison Bumgarner", "Ryan Vogelsong"],
+    "choices": [
+      "Matt Cain",
+      "Tim Lincecum",
+      "Madison Bumgarner",
+      "Ryan Vogelsong"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What is the name of the Giants two-time Cy Young winner nicknamed \"The Freak\"?",
-    "choices": ["Tim Lincecum", "Matt Cain", "Madison Bumgarner", "Johnny Cueto"],
+    "choices": [
+      "Tim Lincecum",
+      "Matt Cain",
+      "Madison Bumgarner",
+      "Johnny Cueto"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant famously hit three home runs in a 2014 World Series game?",
-    "choices": ["Pablo Sandoval", "Buster Posey", "Hunter Pence", "Michael Morse"],
+    "choices": [
+      "Pablo Sandoval",
+      "Buster Posey",
+      "Hunter Pence",
+      "Michael Morse"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What is the name of the Giants lefty who won World Series MVP in 2014?",
-    "choices": ["Madison Bumgarner", "Sergio Romo", "Javier López", "Jeremy Affeldt"],
+    "choices": [
+      "Madison Bumgarner",
+      "Sergio Romo",
+      "Javier López",
+      "Jeremy Affeldt"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What is the name of the Giants closer who saved the final out of the 2012 World Series?",
-    "choices": ["Sergio Romo", "Brian Wilson", "Will Smith", "Robb Nen"],
+    "choices": [
+      "Sergio Romo",
+      "Brian Wilson",
+      "Will Smith",
+      "Robb Nen"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant shortstop made \"The Brandon\" web gems part of the 2010s identity?",
-    "choices": ["Brandon Crawford", "Brandon Belt", "Brandon Wood", "Brandon Phillips"],
+    "choices": [
+      "Brandon Crawford",
+      "Brandon Belt",
+      "Brandon Wood",
+      "Brandon Phillips"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who managed the Giants for the 2010, 2012, and 2014 World Series championships?",
-    "choices": ["Bruce Bochy", "Dusty Baker", "Roger Craig", "Gabe Kapler"],
+    "choices": [
+      "Bruce Bochy",
+      "Dusty Baker",
+      "Roger Craig",
+      "Gabe Kapler"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who was named 2014 World Series MVP?",
-    "choices": ["Madison Bumgarner", "Buster Posey", "Pablo Sandoval", "Hunter Pence"],
+    "choices": [
+      "Madison Bumgarner",
+      "Buster Posey",
+      "Pablo Sandoval",
+      "Hunter Pence"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who was named 2012 World Series MVP after hitting three home runs in Game 1?",
-    "choices": ["Pablo Sandoval", "Marco Scutaro", "Buster Posey", "Hunter Pence"],
+    "choices": [
+      "Pablo Sandoval",
+      "Marco Scutaro",
+      "Buster Posey",
+      "Hunter Pence"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who was named 2010 World Series MVP?",
-    "choices": ["Edgar Rentería", "Tim Lincecum", "Cody Ross", "Juan Uribe"],
+    "choices": [
+      "Edgar Rentería",
+      "Tim Lincecum",
+      "Cody Ross",
+      "Juan Uribe"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which outfielder was known for fiery speeches and a memorable 2014 postseason with the Giants?",
-    "choices": ["Hunter Pence", "Angel Pagan", "Gregor Blanco", "Michael Morse"],
+    "choices": [
+      "Hunter Pence",
+      "Angel Pagan",
+      "Gregor Blanco",
+      "Michael Morse"
+    ],
     "correctIndex": 0,
     "category": "human story",
     "author": "AI generated"
   },
   {
     "prompt": "What is the name of the Giants pitcher who threw no-hitters including a 2013 no-hitter at Petco Park?",
-    "choices": ["Tim Lincecum", "Matt Cain", "Chris Heston", "Jonathan Sánchez"],
+    "choices": [
+      "Tim Lincecum",
+      "Matt Cain",
+      "Chris Heston",
+      "Jonathan Sánchez"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants pitcher threw a perfect game on June 13, 2012?",
+    "choices": [
+      "Matt Cain",
+      "Tim Lincecum",
+      "Madison Bumgarner",
+      "Ryan Vogelsong"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who hit the Series-winning RBI in Game 5 of the 2014 World Series for the Giants?",
+    "choices": [
+      "Michael Morse",
+      "Buster Posey",
+      "Pablo Sandoval",
+      "Joe Panik"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants closer recorded the final out of the 2010 World Series?",
+    "choices": [
+      "Brian Wilson",
+      "Sergio Romo",
+      "Santiago Casilla",
+      "Jeremy Affeldt"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "What was the first official name of the Giants’ current ballpark when it opened in 2000?",
+    "choices": [
+      "Pacific Bell Park",
+      "Oracle Park",
+      "AT&T Park",
+      "SBC Park"
+    ],
+    "correctIndex": 0,
+    "category": "ballpark",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants third baseman was nicknamed “Kung Fu Panda”?",
+    "choices": [
+      "Pablo Sandoval",
+      "Matt Williams",
+      "David Bell",
+      "Pedro Feliz"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who won World Series MVP for the Giants in 2010?",
+    "choices": [
+      "Edgar Rentería",
+      "Tim Lincecum",
+      "Cody Ross",
+      "Buster Posey"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants pitcher won World Series MVP in 2014?",
+    "choices": [
+      "Madison Bumgarner",
+      "Bruce Bochy",
+      "Buster Posey",
+      "Hunter Strickland"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "The Giants clinched the 2012 NL West on the last day against which team?",
+    "choices": [
+      "Los Angeles Dodgers",
+      "San Diego Padres",
+      "Arizona Diamondbacks",
+      "Colorado Rockies"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants outfielder made a famous running catch to help save a 2014 postseason game in Kansas City?",
+    "choices": [
+      "Gregor Blanco",
+      "Hunter Pence",
+      "Juan Pérez",
+      "Michael Morse"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who managed the Giants immediately before Bruce Bochy’s tenure began?",
+    "choices": [
+      "Felipe Alou",
+      "Dusty Baker",
+      "Roger Craig",
+      "Jim Davenport"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants infielder won 2012 NL MVP?",
+    "choices": [
+      "Buster Posey",
+      "Brandon Crawford",
+      "Pablo Sandoval",
+      "Marco Scutaro"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "What nickname is often used for the Giants–Dodgers rivalry?",
+    "choices": [
+      "The Bay vs. LA feud",
+      "The Subway Series",
+      "The Crosstown Classic",
+      "The Turnpike Series"
+    ],
+    "correctIndex": 0,
+    "category": "culture",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants pitcher threw two no-hitters in 2013 and 2014?",
+    "choices": [
+      "Tim Lincecum",
+      "Matt Cain",
+      "Chris Heston",
+      "Jonathan Sánchez"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Oracle Park’s right-field water feature is named after which Giants legend?",
+    "choices": [
+      "Willie McCovey",
+      "Willie Mays",
+      "Orlando Cepeda",
+      "Juan Marichal"
+    ],
+    "correctIndex": 0,
+    "category": "ballpark",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants player hit a key inside-the-park-ish style play often replayed from 2014 postseason highlights (Pence broken-bat hit)?",
+    "choices": [
+      "Hunter Pence",
+      "Brandon Belt",
+      "Brandon Crawford",
+      "Buster Posey"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "The 2010 Giants slogan “Giants baseball” was often paired with what kind of pitching reputation?",
+    "choices": [
+      "Torture (close games)",
+      "Power slugging",
+      "Stolen bases",
+      "Small ball only"
+    ],
+    "correctIndex": 0,
+    "category": "culture",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants reliever was known for big postseason outs in 2010 with long hair?",
+    "choices": [
+      "Brian Wilson",
+      "Sergio Romo",
+      "Javier López",
+      "Ramón Ramírez"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who was the Giants’ primary shortstop on the 2014 World Series roster?",
+    "choices": [
+      "Brandon Crawford",
+      "Joaquin Arias",
+      "Ehire Adrianza",
+      "Matt Duffy"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants first baseman was nicknamed “Baby Giraffe” by fans?",
+    "choices": [
+      "Brandon Belt",
+      "Travis Ishikawa",
+      "Aubrey Huff",
+      "J.T. Snow"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "The Giants won the 2012 NLCS against which team?",
+    "choices": [
+      "St. Louis Cardinals",
+      "Atlanta Braves",
+      "Washington Nationals",
+      "Cincinnati Reds"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"

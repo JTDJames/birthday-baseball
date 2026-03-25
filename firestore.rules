@@ -1,6 +1,71 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Photo submissions MVP: replace with your Firebase Auth UID(s) from Console → Authentication.
+    function isPhotoAdmin() {
+      return request.auth != null && request.auth.uid in [
+        'sFLbwsGEPXWMc3iXLtpPaHE6pHr1'
+      ];
+    }
+
+    function photoSubmissionOptionalCaption() {
+      return !('caption' in request.resource.data)
+        || (request.resource.data.caption is string
+          && request.resource.data.caption.size() <= 500);
+    }
+
+    function photoSubmissionOptionalDisplayName() {
+      return !('displayName' in request.resource.data)
+        || (request.resource.data.displayName is string
+          && request.resource.data.displayName.size() <= 120);
+    }
+
+    function photoSubmissionCreateBase() {
+      return request.resource.data.submitterUid is string
+        && request.resource.data.submitterUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.submittedAt is timestamp
+        && photoSubmissionOptionalDisplayName()
+        && photoSubmissionOptionalCaption();
+    }
+
+    function photoSubmissionSubmitterPendingUpdate() {
+      return request.auth != null
+        && request.auth.uid == resource.data.submitterUid
+        && resource.data.status == 'pending'
+        && request.resource.data.status == 'pending'
+        && request.resource.data.submitterUid == resource.data.submitterUid
+        && request.resource.data.submittedAt == resource.data.submittedAt
+        && request.resource.data.pendingStoragePath is string
+        && request.resource.data.pendingStoragePath.matches('^photo-submissions/pending/[^/]+/[^/]+$')
+        && request.resource.data.fileName is string
+        && request.resource.data.fileName.size() >= 1
+        && request.resource.data.fileName.size() <= 200
+        && request.resource.data.contentType is string
+        && request.resource.data.contentType.size() <= 100;
+    }
+
+    // User-submitted photos: anonymous submitter creates pending; admins moderate; public reads approved only.
+    match /photo_submissions/{submissionId} {
+      allow create: if request.auth != null
+        && photoSubmissionCreateBase()
+        && request.resource.data.keys().hasOnly([
+          'submitterUid', 'status', 'submittedAt', 'displayName', 'caption'
+        ]);
+
+      allow get, list: if resource.data.status == 'approved' || isPhotoAdmin();
+
+      allow update: if isPhotoAdmin();
+
+      allow update: if request.auth != null
+        && photoSubmissionSubmitterPendingUpdate()
+        && request.resource.data.diff(resource.data).changedKeys().hasOnly([
+          'pendingStoragePath', 'fileName', 'contentType'
+        ]);
+
+      allow delete: if isPhotoAdmin();
+    }
     match /questions/{questionId} {
       allow read: if true;
       allow write: if false;

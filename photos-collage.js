@@ -1,4 +1,27 @@
 import { carouselImagePaths } from "./photos-collage-paths.js";
+import { db } from "./firebase-init.js";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+async function loadApprovedSubmissionUrls() {
+  const q = query(
+    collection(db, "photo_submissions"),
+    where("status", "==", "approved")
+  );
+  const snap = await getDocs(q);
+  const urls = [];
+  snap.forEach((d) => {
+    const data = d.data();
+    if (data.publicUrl && typeof data.publicUrl === "string") {
+      urls.push(data.publicUrl);
+    }
+  });
+  return urls;
+}
 
 function shuffleInPlace(arr) {
   for (let i = arr.length - 1; i > 0; i -= 1) {
@@ -63,19 +86,26 @@ function buildPhotosFrame(stripEl, shuffledImagePaths) {
   stripEl.appendChild(row);
 }
 
-(function initCollage() {
-  if (!carouselImagePaths.length) return;
+(async function initCollage() {
+  let paths = [...carouselImagePaths];
+  try {
+    const extra = await loadApprovedSubmissionUrls();
+    paths = [...paths, ...extra];
+  } catch (e) {
+    console.warn("photo_submissions: could not load approved photos", e);
+  }
 
-  const shuffledImagePaths = [...carouselImagePaths];
-  shuffleInPlace(shuffledImagePaths);
+  if (!paths.length) return;
+
+  shuffleInPlace(paths);
 
   const carouselContainer = document.getElementById("bgCarousel");
   if (carouselContainer) {
-    buildBackgroundCarousel(carouselContainer, shuffledImagePaths);
+    buildBackgroundCarousel(carouselContainer, paths);
   }
 
   const stripEl = document.getElementById("photosFrameStrip");
   if (stripEl) {
-    buildPhotosFrame(stripEl, shuffledImagePaths);
+    buildPhotosFrame(stripEl, paths);
   }
 })();

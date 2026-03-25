@@ -1,140 +1,480 @@
 [
   {
     "prompt": "What is the approximate official seating capacity of Oracle Park (commonly published)?",
-    "choices": ["About 41,000", "About 36,000", "About 48,000", "About 55,000"],
+    "choices": [
+      "About 41,000",
+      "About 36,000",
+      "About 48,000",
+      "About 55,000"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "What is the distance (in feet) down the right-field line at Oracle Park?",
-    "choices": ["309 feet", "325 feet", "302 feet", "330 feet"],
+    "choices": [
+      "309 feet",
+      "325 feet",
+      "302 feet",
+      "330 feet"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "What is the distance (in feet) down the left-field line at Oracle Park?",
-    "choices": ["339 feet", "330 feet", "315 feet", "345 feet"],
+    "choices": [
+      "339 feet",
+      "330 feet",
+      "315 feet",
+      "345 feet"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "What was the Giants franchise record for wins in a 162-game season (through the early 2020s)?",
-    "choices": ["107 wins (2021)", "103 wins", "100 wins", "105 wins"],
+    "choices": [
+      "107 wins (2021)",
+      "103 wins",
+      "100 wins",
+      "105 wins"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What was the Giants regular-season record in their 2010 World Series championship year?",
-    "choices": ["92–70", "86–76", "90–72", "94–68"],
+    "choices": [
+      "92–70",
+      "86–76",
+      "90–72",
+      "94–68"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What was the Giants regular-season record in their 2012 World Series championship year?",
-    "choices": ["94–68", "92–70", "86–76", "90–72"],
+    "choices": [
+      "94–68",
+      "92–70",
+      "86–76",
+      "90–72"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What was the Giants regular-season record in their 2014 World Series championship year?",
-    "choices": ["88–74", "92–70", "94–68", "86–76"],
+    "choices": [
+      "88–74",
+      "92–70",
+      "94–68",
+      "86–76"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who did the Giants defeat in the 2010 World Series?",
-    "choices": ["Texas Rangers", "Detroit Tigers", "Kansas City Royals", "St. Louis Cardinals"],
+    "choices": [
+      "Texas Rangers",
+      "Detroit Tigers",
+      "Kansas City Royals",
+      "St. Louis Cardinals"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who did the Giants defeat in the 2012 World Series?",
-    "choices": ["Detroit Tigers", "Texas Rangers", "Kansas City Royals", "St. Louis Cardinals"],
+    "choices": [
+      "Detroit Tigers",
+      "Texas Rangers",
+      "Kansas City Royals",
+      "St. Louis Cardinals"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who did the Giants defeat in the 2014 World Series?",
-    "choices": ["Kansas City Royals", "Texas Rangers", "Detroit Tigers", "St. Louis Cardinals"],
+    "choices": [
+      "Kansas City Royals",
+      "Texas Rangers",
+      "Detroit Tigers",
+      "St. Louis Cardinals"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won 1989 NLCS MVP?",
-    "choices": ["Will Clark", "Kevin Mitchell", "Matt Williams", "Robby Thompson"],
+    "choices": [
+      "Will Clark",
+      "Kevin Mitchell",
+      "Matt Williams",
+      "Robby Thompson"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won 2002 NLCS MVP?",
-    "choices": ["Benito Santiago", "Jeff Kent", "Rich Aurilia", "Barry Bonds"],
+    "choices": [
+      "Benito Santiago",
+      "Jeff Kent",
+      "Rich Aurilia",
+      "Barry Bonds"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won 2010 NLCS MVP?",
-    "choices": ["Cody Ross", "Juan Uribe", "Tim Lincecum", "Buster Posey"],
+    "choices": [
+      "Cody Ross",
+      "Juan Uribe",
+      "Tim Lincecum",
+      "Buster Posey"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won 2012 NLCS MVP?",
-    "choices": ["Marco Scutaro", "Pablo Sandoval", "Buster Posey", "Matt Cain"],
+    "choices": [
+      "Marco Scutaro",
+      "Pablo Sandoval",
+      "Buster Posey",
+      "Matt Cain"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Giant won 2014 NLCS MVP?",
-    "choices": ["Madison Bumgarner", "Buster Posey", "Pablo Sandoval", "Hunter Pence"],
+    "choices": [
+      "Madison Bumgarner",
+      "Buster Posey",
+      "Pablo Sandoval",
+      "Hunter Pence"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What year did San Francisco host the MLB All-Star Game at Oracle Park (then AT&T Park)?",
-    "choices": ["2007", "2000", "2010", "2012"],
+    "choices": [
+      "2007",
+      "2000",
+      "2010",
+      "2012"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "What is Barry Bonds’ MLB-record walks total for a single season (2004)?",
-    "choices": ["232", "198", "177", "250"],
+    "choices": [
+      "232",
+      "198",
+      "177",
+      "250"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which statement is true about the 1986 NL Rookie of the Year award?",
-    "choices": ["No Giant won; Todd Worrell (Cardinals) won the award", "Will Clark won", "Robby Thompson won", "Barry Bonds won"],
+    "choices": [
+      "No Giant won; Todd Worrell (Cardinals) won the award",
+      "Will Clark won",
+      "Robby Thompson won",
+      "Barry Bonds won"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who managed the Giants immediately before Bruce Bochy?",
-    "choices": ["Felipe Alou", "Dusty Baker", "Roger Craig", "Bob Brenly"],
+    "choices": [
+      "Felipe Alou",
+      "Dusty Baker",
+      "Roger Craig",
+      "Bob Brenly"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Who managed the Giants immediately after Bruce Bochy (next full-time manager)?",
-    "choices": ["Gabe Kapler", "Bob Melvin", "Ron Wotus", "Scott Harris"],
+    "choices": [
+      "Gabe Kapler",
+      "Bob Melvin",
+      "Ron Wotus",
+      "Scott Harris"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Hall of Fame manager led the New York Giants to the 1923 National League pennant?",
+    "choices": [
+      "John McGraw",
+      "Bill Terry",
+      "Leo Durocher",
+      "Roger Craig"
+    ],
+    "correctIndex": 0,
+    "category": "history",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants pitcher won the 1933 NL MVP and helped win the World Series that fall?",
+    "choices": [
+      "Carl Hubbell",
+      "Hal Schumacher",
+      "Fat Freddie Fitzsimmons",
+      "Roy Parmelee"
+    ],
+    "correctIndex": 0,
+    "category": "history",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who did the Giants face in the 1989 World Series (Bay Area matchup)?",
+    "choices": [
+      "Oakland Athletics",
+      "Los Angeles Dodgers",
+      "Boston Red Sox",
+      "Minnesota Twins"
+    ],
+    "correctIndex": 0,
+    "category": "history",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants slugger was NL MVP in 2000 while playing second base?",
+    "choices": [
+      "Jeff Kent",
+      "Barry Bonds",
+      "Rich Aurilia",
+      "J.T. Snow"
+    ],
+    "correctIndex": 0,
+    "category": "history",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants player famously carried Darren Baker away from home plate during the 2002 World Series?",
+    "choices": [
+      "J.T. Snow",
+      "David Bell",
+      "Benito Santiago",
+      "Reggie Sanders"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "The 1989 World Series was famously delayed by what event before Game 3 at Candlestick?",
+    "choices": [
+      "Loma Prieta earthquake",
+      "Fog delay",
+      "Power outage",
+      "Player strike"
+    ],
+    "correctIndex": 0,
+    "category": "history",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants first baseman won the 1969 NL MVP during “The Year of the Pitcher”?",
+    "choices": [
+      "Willie McCovey",
+      "Willie Mays",
+      "Bobby Bonds",
+      "George Foster"
+    ],
+    "correctIndex": 0,
+    "category": "history",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who broke Hank Aaron’s career home run record as a Giant in 2007 at home in San Francisco?",
+    "choices": [
+      "Barry Bonds",
+      "Willie Mays",
+      "Willie McCovey",
+      "Orlando Cepeda"
+    ],
+    "correctIndex": 0,
+    "category": "history",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants pitcher threw a perfect game on June 13, 2012 (first in franchise history)?",
+    "choices": [
+      "Matt Cain",
+      "Tim Lincecum",
+      "Jonathan Sánchez",
+      "Chris Heston"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants shortstop won 11 Gold Gloves and finished his career in San Francisco?",
+    "choices": [
+      "Omar Vizquel",
+      "Rich Aurilia",
+      "Royce Clayton",
+      "José Uribe"
+    ],
+    "correctIndex": 0,
+    "category": "history",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants first baseman was nicknamed “Will the Thrill” after being drafted in 1985?",
+    "choices": [
+      "Will Clark",
+      "Willie McGee",
+      "Willie Montañez",
+      "Willie McCovey"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who managed the Giants in 2002 when they reached the World Series against the Angels?",
+    "choices": [
+      "Dusty Baker",
+      "Felipe Alou",
+      "Bruce Bochy",
+      "Roger Craig"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants pitcher won the 2008 and 2009 NL Cy Young Awards?",
+    "choices": [
+      "Tim Lincecum",
+      "Matt Cain",
+      "Barry Zito",
+      "Noah Lowry"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants outfielder was NL Rookie of the Year in 1973?",
+    "choices": [
+      "Gary Matthews",
+      "Dave Kingman",
+      "George Foster",
+      "Gary Thomasson"
+    ],
+    "correctIndex": 0,
+    "category": "history",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants pitcher threw his first career no-hitter against the Padres at Petco Park in 2013?",
+    "choices": [
+      "Tim Lincecum",
+      "Matt Cain",
+      "Jonathan Sánchez",
+      "Chris Heston"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Who was the Giants general manager when Barry Bonds signed as a free agent before the 1993 season?",
+    "choices": [
+      "Bob Quinn",
+      "Brian Sabean",
+      "Al Rosen",
+      "Bill Neukom"
+    ],
+    "correctIndex": 0,
+    "category": "history",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giant led MLB with 43 home runs in the strike-shortened 1994 season?",
+    "choices": [
+      "Matt Williams",
+      "Barry Bonds",
+      "Will Clark",
+      "Jeff Bagwell"
+    ],
+    "correctIndex": 0,
+    "category": "history",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "In which year did the Giants play their first season in San Francisco?",
+    "choices": [
+      "1958",
+      "1957",
+      "1960",
+      "1962"
+    ],
+    "correctIndex": 0,
+    "category": "history",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which three-time Giants World Series-winning manager was a former big-league catcher (including with the Padres)?",
+    "choices": [
+      "Bruce Bochy",
+      "Dusty Baker",
+      "Bob Melvin",
+      "Felipe Alou"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which left-handed pitcher started and won Game 1 of the 2012 World Series for the Giants in Detroit?",
+    "choices": [
+      "Barry Zito",
+      "Madison Bumgarner",
+      "Ryan Vogelsong",
+      "Tim Lincecum"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"

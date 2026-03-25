@@ -1,142 +1,482 @@
 [
   {
     "prompt": "What city do the San Francisco Giants play home games in?",
-    "choices": ["San Francisco", "Oakland", "San Jose", "Sacramento"],
+    "choices": [
+      "San Francisco",
+      "Oakland",
+      "San Jose",
+      "Sacramento"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "What are the Giants primary brand colors?",
-    "choices": ["Orange and black", "Blue and white", "Green and gold", "Purple and silver"],
+    "choices": [
+      "Orange and black",
+      "Blue and white",
+      "Green and gold",
+      "Purple and silver"
+    ],
     "correctIndex": 0,
     "category": "culture",
     "author": "AI generated"
   },
   {
     "prompt": "What is the name of the Giants mascot?",
-    "choices": ["Lou Seal", "Clawed", "Orbit", "The Phanatic"],
+    "choices": [
+      "Lou Seal",
+      "Clawed",
+      "Orbit",
+      "The Phanatic"
+    ],
     "correctIndex": 0,
     "category": "culture",
     "author": "AI generated"
   },
   {
     "prompt": "What is the name of the water beyond right field where splash-hit home runs land?",
-    "choices": ["McCovey Cove", "Oracle Lake", "Bay Lagoon", "The Splash Zone"],
+    "choices": [
+      "McCovey Cove",
+      "Oracle Lake",
+      "Bay Lagoon",
+      "The Splash Zone"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "Which league are the Giants in?",
-    "choices": ["National League", "American League", "Pacific Coast League", "Atlantic League"],
+    "choices": [
+      "National League",
+      "American League",
+      "Pacific Coast League",
+      "Atlantic League"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What is the Giants current home ballpark name (2020s)?",
-    "choices": ["Oracle Park", "Candlestick Park", "AT&T Park", "Pacific Bell Park"],
+    "choices": [
+      "Oracle Park",
+      "Candlestick Park",
+      "AT&T Park",
+      "Pacific Bell Park"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "What number is retired for Willie Mays in San Francisco?",
-    "choices": ["24", "25", "44", "14"],
+    "choices": [
+      "24",
+      "25",
+      "44",
+      "14"
+    ],
     "correctIndex": 0,
     "category": "culture",
     "author": "AI generated"
   },
   {
     "prompt": "Which station is famously associated with Giants radio broadcasts in the Bay Area?",
-    "choices": ["KNBR", "KGO", "KPIX", "KRON"],
+    "choices": [
+      "KNBR",
+      "KGO",
+      "KPIX",
+      "KRON"
+    ],
     "correctIndex": 0,
     "category": "culture",
     "author": "AI generated"
   },
   {
     "prompt": "Which bridge is often visible near Oracle Park in TV broadcasts?",
-    "choices": ["San Francisco–Oakland Bay Bridge", "Golden Gate Bridge", "Dumbarton Bridge", "Richmond Bridge"],
+    "choices": [
+      "San Francisco–Oakland Bay Bridge",
+      "Golden Gate Bridge",
+      "Dumbarton Bridge",
+      "Richmond Bridge"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "The Giants have a historic rivalry with which NL West team?",
-    "choices": ["Los Angeles Dodgers", "San Diego Padres", "Arizona Diamondbacks", "Colorado Rockies"],
+    "choices": [
+      "Los Angeles Dodgers",
+      "San Diego Padres",
+      "Arizona Diamondbacks",
+      "Colorado Rockies"
+    ],
     "correctIndex": 0,
     "category": "culture",
     "author": "AI generated"
   },
   {
     "prompt": "How many World Series championships did the Giants win in San Francisco in 2010, 2012, and 2014 combined?",
-    "choices": ["3", "2", "4", "1"],
+    "choices": [
+      "3",
+      "2",
+      "4",
+      "1"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Where do the Giants play spring training games in Arizona?",
-    "choices": ["Scottsdale Stadium", "Salt River Fields", "Hohokam Stadium", "Sloan Park"],
+    "choices": [
+      "Scottsdale Stadium",
+      "Salt River Fields",
+      "Hohokam Stadium",
+      "Sloan Park"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "What is the Giants Triple-A affiliate (city/team)?",
-    "choices": ["Sacramento River Cats", "Fresno Grizzlies", "Las Vegas Aviators", "Reno Aces"],
+    "choices": [
+      "Sacramento River Cats",
+      "Fresno Grizzlies",
+      "Las Vegas Aviators",
+      "Reno Aces"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What is the Giants Double-A affiliate (city/team)?",
-    "choices": ["Richmond Flying Squirrels", "Eugene Emeralds", "Hartford Yard Goats", "Akron RubberDucks"],
+    "choices": [
+      "Richmond Flying Squirrels",
+      "Eugene Emeralds",
+      "Hartford Yard Goats",
+      "Akron RubberDucks"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What is the Giants High-A affiliate (city/team)?",
-    "choices": ["Eugene Emeralds", "San Jose Giants", "Hillsboro Hops", "Tri-City Dust Devils"],
+    "choices": [
+      "Eugene Emeralds",
+      "San Jose Giants",
+      "Hillsboro Hops",
+      "Tri-City Dust Devils"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "What is the Giants Single-A affiliate (city/team)?",
-    "choices": ["San Jose Giants", "Eugene Emeralds", "Stockton Ports", "Modesto Nuts"],
+    "choices": [
+      "San Jose Giants",
+      "Eugene Emeralds",
+      "Stockton Ports",
+      "Modesto Nuts"
+    ],
     "correctIndex": 0,
     "category": "baseball",
     "author": "AI generated"
   },
   {
     "prompt": "Which Ford C. Frick Award-winning broadcaster is long associated with Giants broadcasts?",
-    "choices": ["Jon Miller", "Vin Scully", "Joe Buck", "Al Michaels"],
+    "choices": [
+      "Jon Miller",
+      "Vin Scully",
+      "Joe Buck",
+      "Al Michaels"
+    ],
     "correctIndex": 0,
     "category": "human story",
     "author": "AI generated"
   },
   {
     "prompt": "What food item is famously associated with garlic at Oracle Park?",
-    "choices": ["Garlic fries", "Garlic bread", "Garlic ice cream", "Garlic pretzels"],
+    "choices": [
+      "Garlic fries",
+      "Garlic bread",
+      "Garlic ice cream",
+      "Garlic pretzels"
+    ],
     "correctIndex": 0,
     "category": "food",
     "author": "AI generated"
   },
   {
     "prompt": "What is the name of the Giants home dugout side at Oracle Park (first-base or third-base)?",
-    "choices": ["First-base side", "Third-base side", "Center-field side", "Behind home plate only"],
+    "choices": [
+      "First-base side",
+      "Third-base side",
+      "Center-field side",
+      "Behind home plate only"
+    ],
     "correctIndex": 0,
     "category": "ballpark",
     "author": "AI generated"
   },
   {
     "prompt": "What division do the Giants play in?",
-    "choices": ["NL West", "NL Central", "NL East", "AL West"],
+    "choices": [
+      "NL West",
+      "NL Central",
+      "NL East",
+      "AL West"
+    ],
     "correctIndex": 0,
     "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which ocean lies to the west of San Francisco?",
+    "choices": [
+      "Pacific Ocean",
+      "Atlantic Ocean",
+      "Indian Ocean",
+      "Arctic Ocean"
+    ],
+    "correctIndex": 0,
+    "category": "geography",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "What type of marine animal is the Giants mascot Lou Seal?",
+    "choices": [
+      "California sea lion",
+      "Walrus",
+      "Dolphin",
+      "Otter"
+    ],
+    "correctIndex": 0,
+    "category": "culture",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which iconic left-field feature at Oracle Park is shaped like a giant baseball glove?",
+    "choices": [
+      "The Coca-Cola bottle and glove play area",
+      "The arcade scoreboard",
+      "The bullpen cart",
+      "The splash counter"
+    ],
+    "correctIndex": 0,
+    "category": "ballpark",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "The Giants are a member of which league?",
+    "choices": [
+      "National League",
+      "American League",
+      "Pacific Coast League",
+      "International League"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Southern California team is the Giants’ most famous division rival?",
+    "choices": [
+      "Los Angeles Dodgers",
+      "San Diego Padres",
+      "Los Angeles Angels",
+      "Arizona Diamondbacks"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "What is the name of the bay beside Oracle Park?",
+    "choices": [
+      "San Francisco Bay",
+      "Monterey Bay",
+      "Puget Sound",
+      "Hudson Bay"
+    ],
+    "correctIndex": 0,
+    "category": "ballpark",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants catcher was a cornerstone of the 2010s championship teams?",
+    "choices": [
+      "Buster Posey",
+      "Yadier Molina",
+      "Joe Mauer",
+      "Jorge Posada"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Madison Bumgarner was especially famous for his pitching in which postseason?",
+    "choices": [
+      "2014 World Series",
+      "2002 World Series",
+      "2010 NLDS only",
+      "2016 Wild Card only"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "How many World Series did the Giants win in San Francisco between 2010 and 2014 inclusive?",
+    "choices": [
+      "Three",
+      "One",
+      "Two",
+      "Four"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Oracle Park is located in which California city?",
+    "choices": [
+      "San Francisco",
+      "Oakland",
+      "San Jose",
+      "Sacramento"
+    ],
+    "correctIndex": 0,
+    "category": "ballpark",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants outfielder was known for a memorable pregame speech during the 2014 postseason run?",
+    "choices": [
+      "Hunter Pence",
+      "Barry Bonds",
+      "Jeff Kent",
+      "Andres Galarraga"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "What is the Giants’ primary accent color besides black?",
+    "choices": [
+      "Orange",
+      "Purple",
+      "Teal",
+      "Navy"
+    ],
+    "correctIndex": 0,
+    "category": "culture",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Splash hits land in the water beyond which outfield area at Oracle Park?",
+    "choices": [
+      "Right field (McCovey Cove)",
+      "Left field only",
+      "Center field only",
+      "The bullpen"
+    ],
+    "correctIndex": 0,
+    "category": "ballpark",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which Giants manager skippered the team to World Series titles in 2010, 2012, and 2014?",
+    "choices": [
+      "Bruce Bochy",
+      "Dusty Baker",
+      "Felipe Alou",
+      "Roger Craig"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "The Giants play home games in which division?",
+    "choices": [
+      "NL West",
+      "NL Central",
+      "NL East",
+      "AL West"
+    ],
+    "correctIndex": 0,
+    "category": "baseball",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which former Giants lefty was nicknamed “The Freak” for his unusual delivery?",
+    "choices": [
+      "Tim Lincecum",
+      "Barry Zito",
+      "Madison Bumgarner",
+      "Matt Cain"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "What is the name of the Giants’ flagship radio network brand many fans still say aloud?",
+    "choices": [
+      "KNBR",
+      "KRON",
+      "KPIX",
+      "KCBS"
+    ],
+    "correctIndex": 0,
+    "category": "culture",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Willie Mays is most associated with which defensive position in his Giants prime?",
+    "choices": [
+      "Center field",
+      "First base",
+      "Catcher",
+      "Shortstop"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Which number is famously retired for Willie Mays in San Francisco?",
+    "choices": [
+      "24",
+      "25",
+      "44",
+      "20"
+    ],
+    "correctIndex": 0,
+    "category": "human story",
+    "author": "AI generated"
+  },
+  {
+    "prompt": "Giants fans often wear orange on which promotional theme day?",
+    "choices": [
+      "Orange Friday",
+      "Black Saturday",
+      "White Wednesday",
+      "Green Monday"
+    ],
+    "correctIndex": 0,
+    "category": "culture",
     "author": "AI generated"
   }
 ]

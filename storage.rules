@@ -1,0 +1,38 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Must match isPhotoAdmin() UIDs in firestore.rules.
+    function isPhotoAdmin() {
+      return request.auth != null && request.auth.uid in [
+        'sFLbwsGEPXWMc3iXLtpPaHE6pHr1'
+      ];
+    }
+
+    // Pending uploads: submitter (matches Firestore doc) can write; admins can read/delete.
+    match /photo-submissions/pending/{docId}/{fileName} {
+      allow read: if isPhotoAdmin();
+
+      allow create: if request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*')
+        && request.auth != null
+        && firestore.exists(/databases/(default)/documents/photo_submissions/$(docId))
+        && firestore.get(/databases/(default)/documents/photo_submissions/$(docId)).data.status == 'pending'
+        && request.auth.uid
+          == firestore.get(/databases/(default)/documents/photo_submissions/$(docId)).data.submitterUid;
+
+      allow delete: if isPhotoAdmin();
+    }
+
+    // Approved copies: public read for collage; only admins write/delete.
+    match /photo-submissions/approved/{docId}/{fileName} {
+      allow read: if true;
+
+      allow create: if isPhotoAdmin()
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+
+      allow delete: if isPhotoAdmin();
+    }
+  }
+}
