@@ -1,5 +1,12 @@
 import { db } from "./firebase-init.js";
 import {
+  auth,
+  displayNameFromUser,
+  signInWithGoogle,
+  signOutTrivia,
+} from "./trivia-auth.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {
   Timestamp,
   addDoc,
   collection,
@@ -28,6 +35,16 @@ const DIFFICULTY_LABEL = {
 function shufflePick(arr) {
   const i = Math.floor(Math.random() * arr.length);
   return arr[i];
+}
+
+/** Randomize on-screen order; keep mapping to original choice indices for scoring/analytics. */
+function shuffleChoicesDisplay(q) {
+  const paired = q.choices.map((text, origIdx) => ({ text, origIdx }));
+  for (let i = paired.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [paired[i], paired[j]] = [paired[j], paired[i]];
+  }
+  return paired;
 }
 
 function escapeHtml(s) {
@@ -109,8 +126,9 @@ function buildRound(bank) {
  * Persist analytics for each completed round.
  * - trivia_game_sessions: one document per completed round
  * - trivia_question_stats: rolling counters by questionId
+ * - trivia_player_stats/{uid}: lifetime totals when `user` is signed in
  */
-async function persistRoundAnalytics(answers, score) {
+async function persistRoundAnalytics(answers, score, user) {
   if (!Array.isArray(answers) || answers.length === 0) return;
   const playedAt = Timestamp.now();
   const normalized = answers.map((a) => ({
@@ -123,15 +141,53 @@ async function persistRoundAnalytics(answers, score) {
     correctIndex: Number(a.question.correctIndex),
   }));
 
-  // 1) Session-level event log (best source of truth)
-  await addDoc(collection(db, "trivia_game_sessions"), {
+  const sessionPayload = {
     score: Number(score),
     totalQuestions: normalized.length,
     perfect: Number(score) === normalized.length,
     playedAt,
     gameType: "giants_trivia",
     answers: normalized,
-  });
+  };
+  if (user) {
+    sessionPayload.playerId = user.uid;
+    sessionPayload.playerDisplayName = displayNameFromUser(user);
+  }
+
+  // 1) Session-level event log (best source of truth)
+  await addDoc(collection(db, "trivia_game_sessions"), sessionPayload);
+
+  if (user) {
+    const uid = user.uid;
+    const displayName = displayNameFromUser(user);
+    const statsRef = doc(db, "trivia_player_stats", uid);
+    await runTransaction(db, async (tx) => {
+      const snap = await tx.get(statsRef);
+      const prev = snap.exists() ? snap.data() : null;
+      const totalGames = Number(prev?.totalGames || 0) + 1;
+      const totalCorrect = Number(prev?.totalCorrect || 0) + Number(score);
+      const totalQuestionsAnswered =
+        Number(prev?.totalQuestionsAnswered || 0) + normalized.length;
+      const perfectGames =
+        Number(prev?.perfectGames || 0) +
+        (Number(score) === normalized.length ? 1 : 0);
+      const accuracy =
+        totalQuestionsAnswered > 0 ? totalCorrect / totalQuestionsAnswered : 0;
+      tx.set(
+        statsRef,
+        {
+          displayName,
+          totalGames,
+          totalCorrect,
+          totalQuestionsAnswered,
+          perfectGames,
+          accuracy,
+          lastPlayedAt: playedAt,
+        },
+        { merge: true }
+      );
+    });
+  }
 
   // 2) Aggregated per-question counters
   const perQuestionDeltas = new Map();
@@ -257,6 +313,8 @@ function injectStyles() {
     }
     .trivia-btn-secondary { border: 2px solid #666; background: transparent; color: var(--giants-cream, #f7f3e8); }
     .trivia-btn-primary { border: 2px solid var(--giants-orange, #fd5a1e); background: var(--giants-orange, #fd5a1e); color: #111; }
+    .trivia-auth-bar { font-size: 0.78rem; color: #888; text-align: center; margin: 0 0 0.65rem; line-height: 1.45; }
+    .trivia-auth-bar .trivia-auth-action { color: var(--giants-orange, #fd5a1e); background: none; border: none; text-decoration: underline; cursor: pointer; padding: 0; font-weight: 700; font-size: inherit; }
   `;
   document.head.appendChild(s);
 }
@@ -280,6 +338,9 @@ async function openTriviaModal() {
   modal.style.display = "flex";
   modal.classList.add("trivia-open");
 
+  /** @type {null | (() => void)} */
+  let authUnsub = null;
+
   let bank;
   let round;
   try {
@@ -301,6 +362,32 @@ async function openTriviaModal() {
     return;
   }
 
+  authUnsub = onAuthStateChanged(auth, () => syncAuthBar());
+
+  function syncAuthBar() {
+    const bar = document.getElementById("triviaAuthBar");
+    if (!bar) return;
+    const u = auth.currentUser;
+    if (u) {
+      const nm = escapeHtml(displayNameFromUser(u));
+      bar.innerHTML = `Signed in as ${nm} · <button type="button" class="trivia-auth-action" id="triviaSignOut">Sign out</button>`;
+      const outBtn = document.getElementById("triviaSignOut");
+      if (outBtn)
+        outBtn.onclick = () => {
+          signOutTrivia().catch((err) => console.warn("Sign out failed:", err));
+        };
+    } else {
+      bar.innerHTML = `Sign in with Google to count on the leaderboard. <button type="button" class="trivia-auth-action" id="triviaSignIn">Sign in</button>`;
+      const inBtn = document.getElementById("triviaSignIn");
+      if (inBtn)
+        inBtn.onclick = () => {
+          signInWithGoogle().catch((err) =>
+            console.warn("Sign-in failed:", err)
+          );
+        };
+    }
+  }
+
   let step = 0;
   let score = 0;
   /** @type {{ question: object, pickedIndex: number, correct: boolean }[]} */
@@ -308,6 +395,10 @@ async function openTriviaModal() {
   let analyticsPersistedForRound = false;
 
   function closeTriviaModal() {
+    if (authUnsub) {
+      authUnsub();
+      authUnsub = null;
+    }
     modal.style.display = "none";
     modal.classList.remove("trivia-open");
     modal.innerHTML = "";
@@ -333,6 +424,7 @@ async function openTriviaModal() {
       <div style="display:flex;justify-content:flex-end;margin:-0.25rem 0 0.35rem;">
         <button type="button" id="triviaCloseTop" style="font-size:0.82rem;color:#888;background:none;border:none;cursor:pointer;padding:0.2rem 0;">Close</button>
       </div>
+      <div id="triviaAuthBar" class="trivia-auth-bar"></div>
       <h2 style="margin-top:0;">Play Giants Trivia!</h2>
       <p class="trivia-meta">Question ${n} of 5 · ${diffLabel}</p>
       <p class="trivia-author">Author: ${escapeHtml(authorLabel)}</p>
@@ -347,21 +439,25 @@ async function openTriviaModal() {
     const choicesEl = document.getElementById("triviaChoices");
     const nextBtn = document.getElementById("triviaNextBtn");
 
+    const paired = shuffleChoicesDisplay(q);
+
     let answered = false;
-    q.choices.forEach((text, idx) => {
+    paired.forEach((item, displayIdx) => {
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.textContent = text;
+      btn.textContent = item.text;
       btn.addEventListener("click", () => {
         if (answered) return;
         answered = true;
-        const correct = idx === q.correctIndex;
+        const pickedOriginal = item.origIdx;
+        const correct = pickedOriginal === q.correctIndex;
         if (correct) score += 1;
-        answers.push({ question: q, pickedIndex: idx, correct });
+        answers.push({ question: q, pickedIndex: pickedOriginal, correct });
         choicesEl.querySelectorAll("button").forEach((b, bi) => {
           b.disabled = true;
-          if (bi === q.correctIndex) b.classList.add("trivia-correct");
-          else if (bi === idx && !correct) b.classList.add("trivia-wrong");
+          const orig = paired[bi].origIdx;
+          if (orig === q.correctIndex) b.classList.add("trivia-correct");
+          else if (bi === displayIdx && !correct) b.classList.add("trivia-wrong");
         });
         nextBtn.disabled = false;
       });
@@ -375,6 +471,7 @@ async function openTriviaModal() {
     };
 
     document.getElementById("triviaCloseTop").onclick = () => closeTriviaModal();
+    syncAuthBar();
   }
 
   function showFireworks() {
@@ -439,6 +536,7 @@ async function openTriviaModal() {
       <div style="display:flex;justify-content:flex-end;margin:-0.25rem 0 0.35rem;">
         <button type="button" id="triviaCloseTopSum" style="font-size:0.82rem;color:#888;background:none;border:none;cursor:pointer;padding:0.2rem 0;">Close</button>
       </div>
+      <div id="triviaAuthBar" class="trivia-auth-bar"></div>
       <h2 style="margin-top:0;">Round complete</h2>
       <p class="trivia-meta">${perfect ? "Perfect game — 5 for 5!" : `You got ${score} out of 5 correct.`}</p>
       <div class="trivia-summary-scroll">${summaryRows}</div>
@@ -452,7 +550,7 @@ async function openTriviaModal() {
     if (perfect) showFireworks();
     if (!analyticsPersistedForRound) {
       analyticsPersistedForRound = true;
-      persistRoundAnalytics(answers, score).catch((e) => {
+      persistRoundAnalytics(answers, score, auth.currentUser).catch((e) => {
         console.warn("Could not persist trivia analytics:", e);
       });
     }
@@ -475,6 +573,7 @@ async function openTriviaModal() {
     };
     document.getElementById("triviaCloseSummary").onclick = () => closeTriviaModal();
     document.getElementById("triviaCloseTopSum").onclick = () => closeTriviaModal();
+    syncAuthBar();
   }
 
   renderQuestion();

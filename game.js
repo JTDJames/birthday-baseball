@@ -161,7 +161,7 @@
     return (letters + "???").slice(0, 3);
   }
 
-  function saveLeaderboardEntry(initials, score) {
+  async function saveLeaderboardEntry(initials, score) {
     const clean = normalizeInitials(initials);
     const entry = {
       initials: clean,
@@ -176,6 +176,39 @@
     }
     syncHighFromStorage();
     populateLeaderboardList();
+
+    const api = window.bbPinballLeaderboard;
+    if (api) {
+      try {
+        await api.submit({ initials: entry.initials, score: entry.score });
+        const remote = await api.fetchTop(LEADERBOARD_MAX);
+        if (remote.length > 0) {
+          setLeaderboard(remote);
+          syncHighFromStorage();
+          populateLeaderboardList();
+        }
+      } catch (e) {
+        console.warn("Pinball leaderboard save (cloud):", e);
+      }
+    }
+    if (overlay) updateOverlay(feedbackText);
+  }
+
+  async function initLeaderboardFromCloud() {
+    syncHighFromStorage();
+    populateLeaderboardList();
+    const api = window.bbPinballLeaderboard;
+    if (!api) return;
+    try {
+      const remote = await api.fetchTop(LEADERBOARD_MAX);
+      if (remote.length > 0) {
+        setLeaderboard(remote);
+        syncHighFromStorage();
+        populateLeaderboardList();
+      }
+    } catch (e) {
+      console.warn("Pinball leaderboard load (cloud):", e);
+    }
   }
 
   function populateLeaderboardList() {
@@ -1536,9 +1569,8 @@
     queuePitch();
   }
 
-  // Populate persistent leaderboard card on initial page load.
-  syncHighFromStorage();
-  populateLeaderboardList();
+  // Populate leaderboard: local first, then merge global top scores from Firestore.
+  void initLeaderboardFromCloud();
 
   playBallBtn.addEventListener("click", pitchNowFromButton);
   closeGameBtn.addEventListener("click", stopGame);
@@ -1560,10 +1592,12 @@
   if (hsSave) {
     hsSave.addEventListener("click", () => {
       const raw = hsInitials ? hsInitials.value : "";
-      saveLeaderboardEntry(raw, pendingFinalScore);
-      hideInitialsPanel();
-      syncHighFromStorage();
-      updateOverlay("Saved! Tap PLAY BALL (WIP) for a new game.");
+      void (async () => {
+        await saveLeaderboardEntry(raw, pendingFinalScore);
+        hideInitialsPanel();
+        syncHighFromStorage();
+        updateOverlay("Saved! Tap PLAY BALL (WIP) for a new game.");
+      })();
     });
   }
   if (hsSkip) {

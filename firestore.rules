@@ -50,12 +50,8 @@ service cloud.firestore {
       allow read, update, delete: if false;
     }
 
-    // Trivia analytics event log: one document per completed 5-question round.
-    match /trivia_game_sessions/{id} {
-      allow create: if request.resource.data.keys().hasOnly([
-          'score', 'totalQuestions', 'perfect', 'playedAt', 'gameType', 'answers'
-        ])
-        && request.resource.data.gameType == 'giants_trivia'
+    function triviaSessionBase() {
+      return request.resource.data.gameType == 'giants_trivia'
         && request.resource.data.score is int
         && request.resource.data.score >= 0
         && request.resource.data.score <= 5
@@ -64,8 +60,77 @@ service cloud.firestore {
         && request.resource.data.playedAt is timestamp
         && request.resource.data.answers is list
         && request.resource.data.answers.size() == 5;
+    }
+
+    // Trivia analytics event log: one document per completed 5-question round.
+    match /trivia_game_sessions/{id} {
+      allow create: if triviaSessionBase()
+        && request.resource.data.keys().hasOnly([
+          'score', 'totalQuestions', 'perfect', 'playedAt', 'gameType', 'answers'
+        ]);
+
+      allow create: if triviaSessionBase()
+        && request.auth != null
+        && request.auth.uid == request.resource.data.playerId
+        && request.resource.data.keys().hasOnly([
+          'score', 'totalQuestions', 'perfect', 'playedAt', 'gameType', 'answers',
+          'playerId', 'playerDisplayName'
+        ])
+        && request.resource.data.playerId is string
+        && request.resource.data.playerDisplayName is string
+        && request.resource.data.playerDisplayName.size() <= 120;
+
       allow read: if true;
       allow update, delete: if false;
+    }
+
+    // Per signed-in player: lifetime totals for trivia leaderboard (client transaction).
+    match /trivia_player_stats/{userId} {
+      allow read: if true;
+
+      allow create: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly([
+          'displayName', 'totalGames', 'totalCorrect', 'totalQuestionsAnswered',
+          'perfectGames', 'accuracy', 'lastPlayedAt'
+        ])
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() <= 120
+        && request.resource.data.totalGames == 1
+        && request.resource.data.totalQuestionsAnswered == 5
+        && request.resource.data.totalCorrect is int
+        && request.resource.data.totalCorrect >= 0
+        && request.resource.data.totalCorrect <= 5
+        && request.resource.data.perfectGames is int
+        && request.resource.data.perfectGames == (request.resource.data.totalCorrect == 5 ? 1 : 0)
+        && (request.resource.data.accuracy is float || request.resource.data.accuracy is int)
+        && request.resource.data.accuracy >= 0
+        && request.resource.data.accuracy <= 1
+        && request.resource.data.lastPlayedAt is timestamp;
+
+      allow update: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly([
+          'displayName', 'totalGames', 'totalCorrect', 'totalQuestionsAnswered',
+          'perfectGames', 'accuracy', 'lastPlayedAt'
+        ])
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() <= 120
+        && request.resource.data.totalGames is int
+        && request.resource.data.totalCorrect is int
+        && request.resource.data.totalQuestionsAnswered is int
+        && request.resource.data.perfectGames is int
+        && (request.resource.data.accuracy is float || request.resource.data.accuracy is int)
+        && request.resource.data.accuracy >= 0
+        && request.resource.data.accuracy <= 1
+        && request.resource.data.lastPlayedAt is timestamp
+        && request.resource.data.totalGames == resource.data.totalGames + 1
+        && request.resource.data.totalQuestionsAnswered == resource.data.totalQuestionsAnswered + 5
+        && request.resource.data.totalCorrect - resource.data.totalCorrect >= 0
+        && request.resource.data.totalCorrect - resource.data.totalCorrect <= 5
+        && request.resource.data.perfectGames == resource.data.perfectGames + ((request.resource.data.totalCorrect - resource.data.totalCorrect) == 5 ? 1 : 0);
+
+      allow delete: if false;
     }
 
     // Rolling per-question counters for right/wrong answers + challenge volume.
@@ -138,6 +203,20 @@ service cloud.firestore {
         && request.resource.data.lastUpdatedAt is timestamp;
 
       allow delete: if false;
+    }
+
+    // Pinball mini-game: one document per score submission (public read, create-only).
+    match /pinball_leaderboard/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['initials', 'score', 'at'])
+        && request.resource.data.initials is string
+        && request.resource.data.initials.size() == 3
+        && request.resource.data.initials.matches('^[A-Z?]{3}$')
+        && request.resource.data.score is int
+        && request.resource.data.score >= 0
+        && request.resource.data.score <= 9999999
+        && request.resource.data.at is timestamp;
+      allow update, delete: if false;
     }
   }
 }

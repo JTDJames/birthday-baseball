@@ -637,22 +637,64 @@
       /* Mini-game WIP: remove class `mini-game-hidden` from <body> to show this section again */
       body.mini-game-hidden #miniGameCard,
       body.mini-game-hidden #triviaStatsBtn,
+      body.mini-game-hidden #triviaLeaderboardBtn,
       body.mini-game-hidden #gameModal {
         display: none !important;
         visibility: hidden;
         pointer-events: none;
       }
 
+      .photos-frame {
+        display: none;
+        margin-top: 1rem;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 100%;
+        border: 3px solid var(--giants-orange);
+        border-radius: 12px;
+        overflow: hidden;
+        background: rgba(13, 13, 13, 0.55);
+      }
+
+      .photos-frame-inner {
+        overflow: hidden;
+      }
+
+      .photos-frame-row {
+        display: flex;
+        gap: 0.65rem;
+        width: max-content;
+        padding: 0.5rem 0;
+        animation: mosaicScroll var(--row-duration, 88s) linear infinite;
+      }
+
+      .photos-frame-tile {
+        flex: 0 0 auto;
+        width: clamp(130px, 38vw, 220px);
+        aspect-ratio: 4 / 3;
+        border-radius: 8px;
+        border: 1px solid rgba(247, 243, 232, 0.22);
+        background-color: #141414;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.98;
+      }
+
       @media (prefers-reduced-motion: reduce) {
         .party-item,
         .pennant,
         .crowd-ticker-track,
-        .bg-carousel-row {
+        .bg-carousel-row,
+        .photos-frame-row {
           animation: none !important;
         }
       }
 
       @media (max-width: 720px) {
+        .photos-frame {
+          display: block;
+        }
+
         .party-item {
           opacity: 0.22;
           font-size: 1rem !important;
@@ -663,7 +705,6 @@
           border-right-width: 6px;
           border-top-width: 11px;
         }
-
       }
     </style>
   </head>
@@ -767,6 +808,16 @@
         </div>
       </section>
 
+      <section
+        class="photos-frame"
+        id="photosFrame"
+        aria-label="Photo collage"
+      >
+        <div class="photos-frame-inner">
+          <div id="photosFrameStrip"></div>
+        </div>
+      </section>
+
       <p class="splash-banner" aria-live="polite">
         Splash Hits: <span id="splashCount" class="splash-num">0</span>
         <span style="font-weight: 600; font-size: 0.92em;"> (interest submissions)</span>
@@ -805,6 +856,13 @@
           style="margin-top:0.6rem; width:100%; padding:0.6rem 1rem; font-size:0.9rem; font-weight:700; color:var(--giants-cream); background:transparent; border:2px solid var(--giants-orange); border-radius:10px; cursor:pointer;"
         >
           View Trivia Stats
+        </button>
+        <button
+          id="triviaLeaderboardBtn"
+          type="button"
+          style="margin-top:0.5rem; width:100%; padding:0.6rem 1rem; font-size:0.9rem; font-weight:700; color:var(--giants-cream); background:transparent; border:2px solid var(--giants-orange); border-radius:10px; cursor:pointer;"
+        >
+          Trivia Leaderboard
         </button>
       </div>
 
@@ -898,13 +956,16 @@
 
     </main>
     <script type="module" src="./firebase-init.js"></script>
+    <script type="module" src="./pinball-leaderboard.js"></script>
     <script type="module" src="./firestore-test.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <script src="./calendar.js"></script>
-    <script src="./game.js"></script>
+    <script defer src="./game.js"></script>
     <script type="module" src="./interest.js"></script>
     <script type="module" src="./trivia.js"></script>
+    <script type="module" src="./trivia-leaderboard.js"></script>
     <script type="module" src="./stats.js"></script>
+    <script type="module" src="./photos-collage.js"></script>
     <script type="module">
       const tickerTrack = document.querySelector(".crowd-ticker-track");
       if (tickerTrack) {
@@ -943,99 +1004,6 @@
           "https://www.youtube-nocookie.com/embed/-OF2Toly2KI?mute=1&playsinline=1&rel=0&modestbranding=1";
       }
 
-      const carouselImagePaths = [
-        "./photos/baseball-collage/20171001_151411.jpg",
-        "./photos/baseball-collage/IMG-20250518-WA0006.jpg",
-        "./photos/baseball-collage/PXL_20210901_050223674.jpg",
-        "./photos/baseball-collage/PXL_20240428_014504506.MP.jpg",
-        "./photos/baseball-collage/PXL_20240420_191548631.MP.jpg",
-        "./photos/baseball-collage/PXL_20240420_040555852.jpg",
-        "./photos/baseball-collage/IMG_1867.JPG",
-        "./photos/baseball-collage/IMG_20210424_195846858.jpg",
-        "./photos/baseball-collage/original_793e72df-4a44-4a5b-bdb5-ecbb2f73bb7b_PXL_20240615_040254192.jpg",
-        "./photos/baseball-collage/PXL_20220430_213700320.MP.jpg",
-        "./photos/baseball-collage/IMG-20250518-WA0002.jpg",
-        "./photos/baseball-collage/PXL_20230910_034715998.jpg",
-        "./photos/baseball-collage/PXL_20250518_210234709~2.jpg",
-        "./photos/baseball-collage/PXL_20250518_203945325.jpg",
-        "./photos/baseball-collage/PXL_20210904_011622015.MP.jpg",
-        "./photos/baseball-collage/PXL_20250518_221040354.jpg",
-        "./photos/baseball-collage/Screenshot_20250518-214341.png",
-        "./photos/baseball-collage/PXL_20220507_223034282.MP.jpg",
-        "./photos/baseball-collage/imagejpeg_0_02.jpg",
-        "./photos/baseball-collage/PXL_20230604_014547839.jpg",
-        "./photos/baseball-collage/LRM_EXPORT_20160724_181946.jpg",
-        "./photos/baseball-collage/PXL_20230826_220732028.jpg",
-        "./photos/baseball-collage/PXL_20210822_231006613.jpg",
-        "./photos/baseball-collage/IMG_20190929_145935671_HDR.jpg",
-        "./photos/baseball-collage/PXL_20240824_191838871~2.jpg",
-        "./photos/baseball-collage/IMG_20210706_210652_01.jpg",
-        "./photos/baseball-collage/-ewjugx.jpg",
-        "./photos/baseball-collage/PXL_20250408_023320556.jpg",
-        "./photos/baseball-collage/PXL_20240928_012649897.jpg",
-        "./photos/baseball-collage/IMG_6768.jpg",
-        "./photos/baseball-collage/PXL_20250426_023107545.jpg",
-        "./photos/baseball-collage/PXL_20240427_013919619.jpg",
-        "./photos/baseball-collage/PXL_20250404_215530904~2.jpg",
-        "./photos/baseball-collage/PXL_20240616_000824621.MP.jpg",
-        "./photos/baseball-collage/IMG_20190929_125256958.jpg",
-        "./photos/baseball-collage/PXL_20240913_030844352~2.jpg",
-        "./photos/baseball-collage/824689930978028.jpg",
-        "./photos/baseball-collage/PXL_20250518_222855718_exported_0~2.jpg",
-        "./photos/baseball-collage/20180809_211200.jpg",
-        "./photos/baseball-collage/PXL_20250518_202546899.jpg",
-        "./photos/baseball-collage/PXL_20240913_024416511.jpg",
-        "./photos/baseball-collage/PXL_20250518_195915432.jpg",
-        "./photos/baseball-collage/PXL_20210930_032725542.MP.jpg",
-        "./photos/baseball-collage/PXL_20240615_233832880.jpg",
-        "./photos/baseball-collage/PXL_20240407_230102518.RAW-01.COVER.jpg",
-        "./photos/baseball-collage/IMG-20250518-WA0010.jpg",
-        "./photos/baseball-collage/PXL_20240601_033939210.MP.jpg",
-        "./photos/baseball-collage/20180518_215025.jpg",
-        "./photos/baseball-collage/PXL_20220430_214207429.MP.jpg",
-        "./photos/baseball-collage/PXL_20250518_195050561.jpg",
-        "./photos/baseball-collage/20180210_121454.jpg",
-        "./photos/baseball-collage/PXL_20240615_013511154.MP~2.jpg"
-      ];
-
-      const carouselContainer = document.getElementById("bgCarousel");
-
-      if (carouselContainer && carouselImagePaths.length > 0) {
-        const shuffledImagePaths = [...carouselImagePaths];
-        for (let i = shuffledImagePaths.length - 1; i > 0; i -= 1) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffledImagePaths[i], shuffledImagePaths[j]] = [shuffledImagePaths[j], shuffledImagePaths[i]];
-        }
-
-        const visibleTilesPerRow = 9;
-        const rowCount = 5;
-        const grid = document.createElement("div");
-        grid.className = "bg-carousel-grid";
-        carouselContainer.appendChild(grid);
-
-        const makeTile = (path) => {
-          const tile = document.createElement("div");
-          tile.className = "bg-carousel-tile";
-          tile.style.backgroundImage = `url("${encodeURI(path)}")`;
-          return tile;
-        };
-
-        for (let rowIdx = 0; rowIdx < rowCount; rowIdx += 1) {
-          const row = document.createElement("div");
-          row.className = `bg-carousel-row${rowIdx % 2 ? " reverse" : ""}`;
-          row.style.setProperty("--row-duration", `${74 + rowIdx * 9}s`);
-
-          // Duplicate sequences for seamless marquee scrolling.
-          for (let copyIdx = 0; copyIdx < 3; copyIdx += 1) {
-            for (let colIdx = 0; colIdx < visibleTilesPerRow; colIdx += 1) {
-              const imageIdx = (rowIdx * visibleTilesPerRow + colIdx + copyIdx * 7) % shuffledImagePaths.length;
-              row.appendChild(makeTile(shuffledImagePaths[imageIdx]));
-            }
-          }
-
-          grid.appendChild(row);
-        }
-      }
     </script>
   </body>
 </html>
