@@ -141,6 +141,8 @@
       }
 
       .crowd-ticker-track {
+        display: inline-block;
+        width: max-content;
         white-space: nowrap;
         color: var(--giants-orange);
         font-size: 0.82rem;
@@ -1118,8 +1120,15 @@
           phrases[j] = temp;
         }
 
-        const line = `${phrases.join(" • ")} •`;
-        tickerTrack.textContent = `${line} ${line}`;
+        // Duplicate the ticker text into two equal spans so the CSS loop
+        // boundary doesn't show a visible "jump back" when the animation resets.
+        const line = `${phrases.join(" • ")} • `;
+        tickerTrack.textContent = "";
+        const seg1 = document.createElement("span");
+        seg1.textContent = line;
+        const seg2 = document.createElement("span");
+        seg2.textContent = line;
+        tickerTrack.append(seg1, seg2);
       }
 
       const iframe = document.getElementById("rustyYoutube");
