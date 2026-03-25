@@ -334,7 +334,7 @@
       </div>
       <div style="margin-top:6px;padding-top:6px;border-top:1px solid #2a2a2a;color:#8a8a8a;">
         BASES <strong id="dmd-bases" style="color:#ffb347;letter-spacing:0.12em;">0 0 0</strong>
-        <span id="dmd-msg" style="margin-left:8px;color:#e8e0d0;font-weight:600;max-width:280px;display:inline-block;vertical-align:top;"></span>
+        <span id="dmd-msg" style="margin-left:8px;color:#e8e0d0;font-weight:600;max-width:280px;display:block;height:48px;overflow:hidden;"></span>
       </div>`;
     gameContainer.innerHTML = "";
     gameContainer.appendChild(overlay);
@@ -1649,11 +1649,8 @@
     });
   }
 
-  gameModal.addEventListener("click", (event) => {
-    if (event.target === gameModal) {
-      stopGame();
-    }
-  });
+  // Prevent accidental exits on mobile: only the explicit Close Game button
+  // stops gameplay. Taps outside the play boundary are ignored.
 
   function shouldIgnoreSwingTarget(event) {
     if (event.target === closeGameBtn) return true;
