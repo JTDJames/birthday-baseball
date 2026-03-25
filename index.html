@@ -415,6 +415,10 @@
       .view-photos-footer {
         text-align: center;
         margin-top: 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
       }
 
       .view-photos-btn {
@@ -426,6 +430,11 @@
         color: var(--giants-cream);
         background: rgba(17, 17, 17, 0.82);
         cursor: pointer;
+      }
+
+      .view-photos-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
       }
 
       #closePhotosBtn {
@@ -1056,6 +1065,16 @@
       <div class="view-photos-footer">
         <button id="viewPhotosBtn" class="view-photos-btn" type="button">
           View Photos
+        </button>
+        <button
+          id="submitOwnPhotoBtn"
+          class="view-photos-btn"
+          type="button"
+          disabled
+          aria-disabled="true"
+          title="Coming soon"
+        >
+          Submit Your Own Photo (Coming Soon)
         </button>
       </div>
 
