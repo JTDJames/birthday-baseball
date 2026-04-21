@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Save the Date - JJ Birthday Baseball Day</title>
+    <title>RSVP - JJ Birthday Baseball Day</title>
     <style>
       :root {
         --giants-orange: #fd5a1e;
@@ -654,7 +654,7 @@
         color: var(--giants-orange);
       }
 
-      .interest {
+      .rsvp-card {
         margin-top: 1.25rem;
         border: 2px solid var(--giants-orange);
         border-radius: 12px;
@@ -665,21 +665,42 @@
         margin-right: auto;
       }
 
-      .interest h2 {
+      .rsvp-card h2 {
         margin: 0 0 0.35rem;
         color: var(--giants-orange);
         font-size: 1.35rem;
         text-align: center;
       }
 
-      .interest .interest-lede {
+      .rsvp-intro {
+        max-width: 420px;
+        margin: 0 auto 0.85rem;
+        padding: 0 0.35rem;
+        font-size: 0.95rem;
+        color: #ddd;
+        line-height: 1.45;
+        text-align: center;
+      }
+
+      .rsvp-ticket-box {
+        margin: 0 0 1rem;
+        padding: 0.65rem 0.75rem;
+        border-radius: 8px;
+        border: 1px dashed rgba(253, 90, 30, 0.45);
+        background: rgba(0, 0, 0, 0.35);
+        font-size: 0.9rem;
+        color: #e8e4dc;
+        line-height: 1.45;
+      }
+
+      .rsvp-card .rsvp-lede {
         margin: 0 0 1rem;
         text-align: center;
         font-size: 0.98rem;
         color: #ddd;
       }
 
-      .interest label {
+      .rsvp-card label {
         display: block;
         margin-bottom: 0.3rem;
         font-weight: 700;
@@ -687,7 +708,7 @@
         color: var(--giants-cream);
       }
 
-      .interest input {
+      .rsvp-card input {
         width: 100%;
         padding: 0.65rem 0.75rem;
         margin-bottom: 0.85rem;
@@ -698,12 +719,66 @@
         font-size: 1rem;
       }
 
-      .interest input:focus {
+      .rsvp-card input:focus {
         outline: none;
         border-color: var(--giants-orange);
       }
 
-      .interest button[type="submit"] {
+      .rsvp-card select,
+      .rsvp-card textarea {
+        width: 100%;
+        padding: 0.65rem 0.75rem;
+        margin-bottom: 0.85rem;
+        border-radius: 8px;
+        border: 2px solid #444;
+        background: #111;
+        color: var(--giants-cream);
+        font-size: 1rem;
+        font-family: inherit;
+      }
+
+      .rsvp-card select:focus,
+      .rsvp-card textarea:focus {
+        outline: none;
+        border-color: var(--giants-orange);
+      }
+
+      .rsvp-card textarea {
+        min-height: 4rem;
+        resize: vertical;
+      }
+
+      .rsvp-google-btn {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        border: 2px solid var(--giants-orange);
+        background: #111;
+        color: var(--giants-cream);
+        font-weight: 800;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+
+      .rsvp-google-btn:hover {
+        border-color: var(--giants-orange);
+        filter: brightness(1.08);
+      }
+
+      .rsvp-signout-btn {
+        display: block;
+        margin: 0 auto 0.75rem;
+        padding: 0.45rem 0.85rem;
+        border-radius: 8px;
+        border: 2px solid #555;
+        background: transparent;
+        color: #ccc;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+
+      .rsvp-card button[type="submit"] {
         width: 100%;
         margin-top: 0.25rem;
         padding: 0.75rem 1rem;
@@ -716,12 +791,12 @@
         font-size: 1rem;
       }
 
-      .interest button[type="submit"]:hover {
+      .rsvp-card button[type="submit"]:hover {
         filter: brightness(1.08);
       }
 
-      .interest .interest-hint,
-      .interest .interest-status {
+      .rsvp-card .rsvp-hint,
+      .rsvp-card .rsvp-status {
         margin: 0.75rem 0 0;
         font-size: 0.85rem;
         color: #aaa;
@@ -729,7 +804,7 @@
         line-height: 1.4;
       }
 
-      .interest .interest-status {
+      .rsvp-card .rsvp-status {
         color: var(--giants-cream);
         font-weight: 600;
       }
@@ -870,50 +945,77 @@
           <span class="party-item mitt r5 flash-1">🥎</span>
         </div>
         <div class="hero-content">
-        <div class="tag">Save the Date</div>
+        <div class="tag">RSVP</div>
         <div class="tag-dot-row" aria-hidden="true">
           <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
         </div>
         <h1>JJ Birthday Baseball Day</h1>
         <p class="date">Saturday, May 9, 2026</p>
         <p class="welcome">
-          Two-part day in Giants colors - come hang out before first
-          pitch and/or join for the game.
+          Two-part day in Giants colors — come hang out before first pitch
+          and/or join for the game.
         </p>
-        <section class="interest" aria-labelledby="interest-heading">
-          <h2 id="interest-heading">I'm interested!</h2>
-          <p class="interest-lede">
-            Drop your full name and number so we can follow up about the day.
-          </p>
-          <!-- Optional: set data-rsvp-email so Submit opens the guest's mail app addressed to you. Otherwise we copy text to the clipboard. -->
-          <form id="interestForm" data-rsvp-email="" novalidate>
-            <label for="interest-name">Full name</label>
+        <p class="rsvp-intro">
+          <strong>RSVP is only for the game</strong> (Giants vs. Pirates) so we
+          can line up tickets. You don’t need to RSVP for the park hang — just
+          show up if you’d like.
+        </p>
+        <section class="rsvp-card" aria-labelledby="rsvp-heading">
+          <h2 id="rsvp-heading">Game RSVP</h2>
+          <div id="rsvpAuthPanel"></div>
+          <form id="rsvpForm" hidden novalidate>
+            <p class="rsvp-ticket-box" id="rsvpTicketPrice">
+              <strong>Expected ticket price</strong> (fees included — estimate):
+              <em>TBD; JJ will update this soon.</em>
+            </p>
+            <label for="rsvp-first">First name</label>
             <input
-              id="interest-name"
-              name="name"
+              id="rsvp-first"
+              name="firstName"
               type="text"
-              autocomplete="name"
+              autocomplete="given-name"
               required
-              maxlength="120"
-              placeholder="Your full name"
+              maxlength="80"
+              placeholder="First name"
             />
-            <label for="interest-phone">Phone</label>
+            <label for="rsvp-last">Last name</label>
             <input
-              id="interest-phone"
+              id="rsvp-last"
+              name="lastName"
+              type="text"
+              autocomplete="family-name"
+              required
+              maxlength="80"
+              placeholder="Last name"
+            />
+            <label for="rsvp-email">Email</label>
+            <input
+              id="rsvp-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              inputmode="email"
+              required
+              maxlength="254"
+              placeholder="For sending your ticket"
+            />
+            <label for="rsvp-phone">Phone (US)</label>
+            <input
+              id="rsvp-phone"
               name="phone"
               type="tel"
               inputmode="tel"
               autocomplete="tel"
               required
               maxlength="32"
-              placeholder="(555) 555-5555"
+              placeholder="For Venmo / coordination"
             />
-            <button type="submit">Submit</button>
+            <button type="submit">Save game RSVP</button>
           </form>
-          <p class="interest-hint" id="interestHint">
-            Submit saves your name and phone so the host can follow up.
+          <p class="rsvp-hint">
+            One RSVP per Google account — sign in on any device to edit.
           </p>
-          <p class="interest-status" id="interestStatus" role="status" aria-live="polite"></p>
+          <p class="rsvp-status" id="rsvpStatus" role="status" aria-live="polite"></p>
         </section>
 
         </div>
@@ -930,8 +1032,8 @@
       </section>
 
       <p class="splash-banner" aria-live="polite">
-        Splash Hits: <span id="splashCount" class="splash-num">0</span>
-        <span style="font-weight: 600; font-size: 0.92em;"> (interest submissions)</span>
+        Game ticket RSVPs: <span id="splashGameCount" class="splash-num">0</span>
+        <span style="font-weight: 600; font-size: 0.92em;"> (headcount)</span>
       </p>
 
       <div class="rusty-video">
@@ -1104,7 +1206,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <script src="./calendar.js"></script>
     <script defer src="./game.js"></script>
-    <script type="module" src="./interest.js"></script>
+    <script type="module" src="./rsvp.js?v=3"></script>
     <script type="module" src="./trivia.js?v=4"></script>
     <script type="module" src="./trivia-leaderboard.js"></script>
     <script type="module" src="./stats.js"></script>

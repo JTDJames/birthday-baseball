@@ -4,5 +4,16 @@
   },
   "storage": {
     "rules": "storage.rules"
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "AGENTS.md",
+      ".cursor/**",
+      "photos/*.exe"
+    ]
   }
 }

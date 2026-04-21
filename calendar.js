@@ -1,5 +1,5 @@
 /**
- * Save the Date — add events to calendar (.ics download + Google Calendar link).
+ * Add events to calendar (.ics download + Google Calendar link).
  * Event times match index.html (Sat May 9, 2026). Stored as UTC for broad client support.
  */
 (function () {
@@ -9,7 +9,7 @@
       id: "park-hang-20260509",
       title: "JJ Birthday Baseball — Park hang",
       description:
-        "Casual pregame meet-up in the park to chill, snack, and enjoy the day together. (Save the Date — JJ Birthday Baseball Day)",
+        "Casual pregame meet-up in the park to chill, snack, and enjoy the day together. (JJ Birthday Baseball Day)",
       location: "SF Bay Area (details to follow)",
       startUtc: "20260509T210000Z",
       endUtc: "20260509T230000Z",

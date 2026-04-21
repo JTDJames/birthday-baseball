@@ -83,7 +83,54 @@ service cloud.firestore {
       allow read, update, delete: if false;
     }
 
-    // Public splash counter (no PII). Updated in the same batch as a new interest_submissions doc.
+    // RSVP (auth): game ticket headcount — one doc per user; document id == uid.
+    function rsvpSubmissionFieldsValid() {
+      return request.resource.data.ownerUid is string
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.firstName is string
+        && request.resource.data.firstName.size() >= 1
+        && request.resource.data.firstName.size() <= 80
+        && request.resource.data.lastName is string
+        && request.resource.data.lastName.size() >= 1
+        && request.resource.data.lastName.size() <= 80
+        && request.resource.data.email is string
+        && request.resource.data.email.size() >= 5
+        && request.resource.data.email.size() <= 254
+        && request.resource.data.email.matches('.+@.+')
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() >= 10
+        && request.resource.data.phone.size() <= 40
+        && request.resource.data.submittedAt is timestamp
+        && request.resource.data.updatedAt is timestamp;
+    }
+
+    function rsvpSubmissionKeys() {
+      return request.resource.data.keys().hasOnly([
+        'ownerUid', 'firstName', 'lastName', 'email', 'phone',
+        'submittedAt', 'updatedAt'
+      ]);
+    }
+
+    match /rsvp_submissions/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && rsvpSubmissionKeys()
+        && rsvpSubmissionFieldsValid()
+        && request.resource.data.ownerUid == uid
+        && request.resource.data.submittedAt == request.resource.data.updatedAt;
+
+      allow update: if request.auth != null
+        && request.auth.uid == uid
+        && resource.data.ownerUid == uid
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.submittedAt == resource.data.submittedAt
+        && rsvpSubmissionKeys()
+        && rsvpSubmissionFieldsValid();
+    }
+
+    // Public counters (no PII). splash: legacy interest phase. splash_game: game ticket RSVPs (+1 per first-time submit from client).
     match /stats/{docId} {
       allow read: if true;
       allow create: if docId == 'splash'
@@ -93,6 +140,19 @@ service cloud.firestore {
       allow update: if docId == 'splash'
         && request.resource.data.keys().hasOnly(['count'])
         && request.resource.data.count is int
+        && request.resource.data.count == resource.data.count + 1;
+      allow create: if docId == 'splash_game'
+        && request.auth != null
+        && request.resource.data.keys().hasOnly(['count'])
+        && request.resource.data.count is int
+        && request.resource.data.count >= 0
+        && request.resource.data.count <= 1;
+      allow update: if docId == 'splash_game'
+        && request.auth != null
+        && request.resource.data.keys().hasOnly(['count'])
+        && request.resource.data.count is int
+        && request.resource.data.count >= 0
+        && request.resource.data.count <= 10000
         && request.resource.data.count == resource.data.count + 1;
       allow delete: if false;
     }

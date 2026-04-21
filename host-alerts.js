@@ -10,8 +10,8 @@ const enableNotificationsBtn = document.getElementById("enableNotifications");
 const testAlertBtn = document.getElementById("testAlert");
 const resetBaselineBtn = document.getElementById("resetBaseline");
 
-const SPLASH_REF = doc(db, "stats", "splash");
-const BASELINE_KEY = "hostAlerts.lastSplashCount";
+const SPLASH_REF = doc(db, "stats", "splash_game");
+const BASELINE_KEY = "hostAlerts.lastSplashGameCount";
 
 let initialized = false;
 
@@ -58,7 +58,7 @@ function playBeep() {
 function notifyIfAllowed(text) {
   if (!("Notification" in window)) return;
   if (Notification.permission !== "granted") return;
-  new Notification("New Splash Hit", { body: text });
+  new Notification("New game ticket RSVP", { body: text });
 }
 
 function getBaseline() {
@@ -116,7 +116,7 @@ onSnapshot(
         addFeedEvent(`Baseline set at ${safeCount}.`);
       }
       initialized = true;
-      setStatus("Connected. Watching for new submissions...");
+      setStatus("Connected. Watching for new game ticket RSVPs…");
       return;
     }
 
@@ -128,7 +128,7 @@ onSnapshot(
 
     if (safeCount > baseline) {
       const delta = safeCount - baseline;
-      const message = `${delta} new submission${delta > 1 ? "s" : ""}. Total Splash Hits: ${safeCount}.`;
+      const message = `${delta} new ticket RSVP${delta > 1 ? "s" : ""}. Total: ${safeCount}.`;
       playBeep();
       notifyIfAllowed(message);
       addFeedEvent(message);
@@ -146,6 +146,6 @@ onSnapshot(
   function (err) {
     console.error(err);
     setStatus("Could not connect to live updates.");
-    addFeedEvent("Connection error while watching Splash Hits.");
+    addFeedEvent("Connection error while watching game RSVP count.");
   }
 );
