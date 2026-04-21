@@ -3,3 +3,7 @@ node_modules/
 *firebase-adminsdk*.json
 *-firebase-adm*.json
 photos/*.zip
+# Local / accidental uploads (never commit)
+photos/*.exe
+photos/**/*.pdf
+.firebase/
