@@ -1,16 +1,14 @@
-import { db, auth } from "./firebase-init.js";
-import { signInWithGoogle, signOutTrivia } from "./trivia-auth.js";
+import { db } from "./firebase-init.js";
 import {
   Timestamp,
+  collection,
   doc,
   getDoc,
   onSnapshot,
   writeBatch,
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
 const form = document.getElementById("rsvpForm");
-const authPanel = document.getElementById("rsvpAuthPanel");
 const statusEl = document.getElementById("rsvpStatus");
 const splashGameEl = document.getElementById("splashGameCount");
 
@@ -55,101 +53,9 @@ function syncSplashGameBanner() {
   );
 }
 
-function renderSignedOut() {
-  if (!authPanel) return;
-  authPanel.hidden = false;
-  authPanel.innerHTML = `
-    <p class="rsvp-lede" style="margin-bottom:0.75rem;">Sign in once so you can RSVP for the game and update your details later.</p>
-    <button type="button" class="rsvp-google-btn" id="rsvpSignInGoogle">Sign in with Google</button>
-  `;
-  const btn = document.getElementById("rsvpSignInGoogle");
-  if (btn) {
-    btn.addEventListener("click", async () => {
-      btn.disabled = true;
-      setStatus("");
-      try {
-        await signInWithGoogle();
-      } catch (err) {
-        console.error(err);
-        setStatus("Sign-in did not finish. Try again.");
-      } finally {
-        btn.disabled = false;
-      }
-    });
-  }
-  if (form) form.hidden = true;
-}
-
-function fillFormFromDoc(data) {
-  if (!form) return;
-  const first = form.querySelector('[name="firstName"]');
-  const last = form.querySelector('[name="lastName"]');
-  const email = form.querySelector('[name="email"]');
-  const phone = form.querySelector('[name="phone"]');
-  if (first) first.value = data.firstName || "";
-  if (last) last.value = data.lastName || "";
-  if (email) email.value = data.email || "";
-  if (phone) phone.value = data.phone || "";
-}
-
-async function renderSignedIn(user) {
-  if (!authPanel || !form) return;
-  authPanel.hidden = false;
-  const label = user.displayName || user.email || "Guest";
-  authPanel.innerHTML = `
-    <p class="rsvp-lede" style="margin-bottom:0.5rem;">Signed in as <strong>${escapeHtml(
-      label
-    )}</strong></p>
-    <button type="button" class="rsvp-signout-btn" id="rsvpSignOut">Sign out</button>
-  `;
-  document.getElementById("rsvpSignOut")?.addEventListener("click", () => {
-    signOutTrivia().catch((e) => console.warn(e));
-  });
-
-  form.hidden = false;
-  setStatus("Loading your RSVP…");
-  try {
-    const ref = doc(db, "rsvp_submissions", user.uid);
-    const snap = await getDoc(ref);
-    if (snap.exists()) {
-      fillFormFromDoc(snap.data());
-      setStatus("Update your details anytime — saves here.");
-    } else {
-      form.reset();
-      setStatus(
-        "RSVP is for the game only (tickets). The park hang does not need an RSVP."
-      );
-    }
-  } catch (e) {
-    console.error(e);
-    setStatus("Could not load your RSVP. Check connection or rules.");
-  }
-}
-
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
-
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    renderSignedOut();
-    setStatus("");
-    return;
-  }
-  renderSignedIn(user);
-});
-
 if (form) {
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
-    const user = auth.currentUser;
-    if (!user) {
-      setStatus("Please sign in first.");
-      return;
-    }
 
     const firstName = (
       (form.querySelector('[name="firstName"]') || {}).value || ""
@@ -188,44 +94,34 @@ if (form) {
       return;
     }
 
-    const rsvpRef = doc(db, "rsvp_submissions", user.uid);
+    const submissionRef = doc(collection(db, "rsvp_submissions"));
     const splashRef = doc(db, "stats", "splash_game");
 
     setStatus("Saving…");
     try {
-      const priorSnap = await getDoc(rsvpRef);
-      const isFirstRsvp = !priorSnap.exists();
-
       const now = Timestamp.now();
-      const submittedAt = priorSnap.exists()
-        ? priorSnap.data().submittedAt
-        : now;
-
       const payload = {
-        ownerUid: user.uid,
         firstName,
         lastName,
         email,
         phone,
-        submittedAt,
-        updatedAt: now,
+        submittedAt: now,
       };
 
       const batch = writeBatch(db);
-      batch.set(rsvpRef, payload);
+      batch.set(submissionRef, payload);
 
-      if (isFirstRsvp) {
-        const splashSnap = await getDoc(splashRef);
-        if (!splashSnap.exists()) {
-          batch.set(splashRef, { count: 1 });
-        } else {
-          const c = Number(splashSnap.data().count || 0);
-          batch.update(splashRef, { count: c + 1 });
-        }
+      const splashSnap = await getDoc(splashRef);
+      if (!splashSnap.exists()) {
+        batch.set(splashRef, { count: 1 });
+      } else {
+        const c = Number(splashSnap.data().count || 0);
+        batch.update(splashRef, { count: c + 1 });
       }
 
       await batch.commit();
-      setStatus("Saved — thanks! You can edit anytime while signed in.");
+      setStatus("Thanks — your game RSVP is saved. JJ will follow up about tickets.");
+      form.reset();
     } catch (err) {
       console.error(err);
       const code = err && err.code ? err.code : "";

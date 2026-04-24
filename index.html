@@ -748,36 +748,6 @@
         resize: vertical;
       }
 
-      .rsvp-google-btn {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border-radius: 8px;
-        border: 2px solid var(--giants-orange);
-        background: #111;
-        color: var(--giants-cream);
-        font-weight: 800;
-        cursor: pointer;
-        font-size: 1rem;
-      }
-
-      .rsvp-google-btn:hover {
-        border-color: var(--giants-orange);
-        filter: brightness(1.08);
-      }
-
-      .rsvp-signout-btn {
-        display: block;
-        margin: 0 auto 0.75rem;
-        padding: 0.45rem 0.85rem;
-        border-radius: 8px;
-        border: 2px solid #555;
-        background: transparent;
-        color: #ccc;
-        font-weight: 700;
-        cursor: pointer;
-        font-size: 0.9rem;
-      }
-
       .rsvp-card button[type="submit"] {
         width: 100%;
         margin-top: 0.25rem;
@@ -962,8 +932,7 @@
         </p>
         <section class="rsvp-card" aria-labelledby="rsvp-heading">
           <h2 id="rsvp-heading">Game RSVP</h2>
-          <div id="rsvpAuthPanel"></div>
-          <form id="rsvpForm" hidden novalidate>
+          <form id="rsvpForm" novalidate>
             <p class="rsvp-ticket-box" id="rsvpTicketPrice">
               <strong>Expected ticket price</strong> (fees included — estimate):
               <em>TBD; JJ will update this soon.</em>
@@ -1013,7 +982,7 @@
             <button type="submit">Save game RSVP</button>
           </form>
           <p class="rsvp-hint">
-            One RSVP per Google account — sign in on any device to edit.
+            No account needed. If your plans change, message JJ so ticket counts stay accurate.
           </p>
           <p class="rsvp-status" id="rsvpStatus" role="status" aria-live="polite"></p>
         </section>
@@ -1206,7 +1175,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <script src="./calendar.js"></script>
     <script defer src="./game.js"></script>
-    <script type="module" src="./rsvp.js?v=3"></script>
+    <script type="module" src="./rsvp.js?v=4"></script>
     <script type="module" src="./trivia.js?v=4"></script>
     <script type="module" src="./trivia-leaderboard.js"></script>
     <script type="module" src="./stats.js"></script>
