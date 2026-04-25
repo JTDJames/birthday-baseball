@@ -98,18 +98,58 @@ service cloud.firestore {
         && request.resource.data.phone is string
         && request.resource.data.phone.size() >= 10
         && request.resource.data.phone.size() <= 40
+        && request.resource.data.responseStatus is string
+        && (
+          request.resource.data.responseStatus == 'yes'
+          || request.resource.data.responseStatus == 'maybe'
+          || request.resource.data.responseStatus == 'no'
+        )
+        && request.resource.data.viewerKeyHash is string
+        && request.resource.data.viewerKeyHash.size() == 64
         && request.resource.data.submittedAt is timestamp;
     }
 
     function rsvpSubmissionKeys() {
       return request.resource.data.keys().hasOnly([
-        'firstName', 'lastName', 'email', 'phone', 'submittedAt'
+        'firstName', 'lastName', 'email', 'phone',
+        'responseStatus', 'viewerKeyHash', 'submittedAt'
       ]);
     }
 
     match /rsvp_submissions/{id} {
       allow create: if rsvpSubmissionKeys() && rsvpSubmissionFieldsValid();
       allow read, update, delete: if false;
+    }
+
+    // Public-safe guest list rows: first name + last initial + responseStatus + hash for RSVP gate check.
+    function rsvpGuestListFieldsValid() {
+      return request.resource.data.firstName is string
+        && request.resource.data.firstName.size() >= 1
+        && request.resource.data.firstName.size() <= 80
+        && request.resource.data.lastInitial is string
+        && request.resource.data.lastInitial.size() == 1
+        && request.resource.data.lastInitial.matches('^[A-Z]$')
+        && request.resource.data.responseStatus is string
+        && (
+          request.resource.data.responseStatus == 'yes'
+          || request.resource.data.responseStatus == 'maybe'
+          || request.resource.data.responseStatus == 'no'
+        )
+        && request.resource.data.viewerKeyHash is string
+        && request.resource.data.viewerKeyHash.size() == 64
+        && request.resource.data.submittedAt is timestamp;
+    }
+
+    function rsvpGuestListKeys() {
+      return request.resource.data.keys().hasOnly([
+        'firstName', 'lastInitial', 'responseStatus', 'viewerKeyHash', 'submittedAt'
+      ]);
+    }
+
+    match /rsvp_guest_list/{id} {
+      allow create: if rsvpGuestListKeys() && rsvpGuestListFieldsValid();
+      allow read: if true;
+      allow update, delete: if false;
     }
 
     // Public counters (no PII). splash: legacy interest phase. splash_game: game ticket RSVPs (+1 per submit, same batch as rsvp create).

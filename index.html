@@ -497,6 +497,97 @@
         text-underline-offset: 0.15em;
       }
 
+      .splash-banner-btn {
+        border: none;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+        padding: 0;
+      }
+
+      .splash-banner-btn:hover .splash-num,
+      .splash-banner-btn:focus-visible .splash-num {
+        color: #ffd7c3;
+      }
+
+      .guest-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 1300;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.78);
+        padding: 1rem;
+      }
+
+      .guest-modal.open {
+        display: flex;
+      }
+
+      .guest-modal-card {
+        width: min(600px, 100%);
+        max-height: 88vh;
+        overflow: auto;
+        border: 2px solid var(--giants-orange);
+        border-radius: 12px;
+        background: #191919;
+        padding: 1rem;
+      }
+
+      .guest-gate-row {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .guest-gate-row input {
+        flex: 1;
+        padding: 0.55rem 0.7rem;
+        border-radius: 8px;
+        border: 2px solid #444;
+        background: #111;
+        color: var(--giants-cream);
+      }
+
+      .guest-gate-row button {
+        padding: 0.55rem 0.8rem;
+        border-radius: 8px;
+        border: 2px solid var(--giants-orange);
+        background: var(--giants-orange);
+        color: var(--giants-black);
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .guest-list-columns {
+        margin-top: 0.8rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 0.8rem;
+      }
+
+      .guest-col {
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 0.65rem;
+      }
+
+      .guest-col h3 {
+        margin: 0 0 0.4rem;
+        color: var(--giants-orange);
+        font-size: 1rem;
+      }
+
+      .guest-col ol {
+        margin: 0;
+        padding-left: 1.2rem;
+      }
+
+      .guest-col li {
+        margin: 0.2rem 0;
+      }
+
       .rusty-video {
         margin-top: 1.25rem;
         max-width: 560px;
@@ -979,6 +1070,12 @@
               maxlength="32"
               placeholder="For Venmo / coordination"
             />
+            <label for="rsvp-response">For the game, I am:</label>
+            <select id="rsvp-response" name="responseStatus" required>
+              <option value="yes">Yes</option>
+              <option value="maybe">Maybe</option>
+              <option value="no">No</option>
+            </select>
             <button type="submit">Save game RSVP</button>
           </form>
           <p class="rsvp-hint">
@@ -1001,9 +1098,34 @@
       </section>
 
       <p class="splash-banner" aria-live="polite">
-        Game ticket RSVPs: <span id="splashGameCount" class="splash-num">0</span>
-        <span style="font-weight: 600; font-size: 0.92em;"> (headcount)</span>
+        <button id="openGuestListBtn" class="splash-banner-btn" type="button">
+          Game ticket RSVPs: <span id="splashGameCount" class="splash-num">0</span>
+          <span style="font-weight: 600; font-size: 0.92em;"> (tap to view guest list)</span>
+        </button>
       </p>
+
+      <div id="guestListModal" class="guest-modal" aria-hidden="true">
+        <div class="guest-modal-card" role="dialog" aria-modal="true" aria-labelledby="guestListTitle">
+          <h2 id="guestListTitle" style="margin:0 0 0.55rem; color:var(--giants-orange);">Guest List</h2>
+          <p style="margin:0 0 0.7rem; color:#ccc; font-size:0.9rem;">RSVP first, then enter your RSVP email to view names.</p>
+          <div class="guest-gate-row">
+            <input id="guestGateEmail" type="email" placeholder="Your RSVP email" autocomplete="email" />
+            <button id="guestGateCheckBtn" type="button">View</button>
+            <button id="guestListCloseBtn" type="button" style="background:transparent; color:var(--giants-cream); border-color:#555;">Close</button>
+          </div>
+          <p id="guestListStatus" style="margin:0.65rem 0 0; font-size:0.88rem; color:#bbb;"></p>
+          <div id="guestListContent" class="guest-list-columns" hidden>
+            <section class="guest-col">
+              <h3 id="guestYesHeading">Yes (0)</h3>
+              <ol id="guestYesList"></ol>
+            </section>
+            <section class="guest-col">
+              <h3 id="guestMaybeHeading">Maybe (0)</h3>
+              <ol id="guestMaybeList"></ol>
+            </section>
+          </div>
+        </div>
+      </div>
 
       <div class="rusty-video">
         <h2>Rusty cam</h2>
@@ -1175,7 +1297,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <script src="./calendar.js"></script>
     <script defer src="./game.js"></script>
-    <script type="module" src="./rsvp.js?v=4"></script>
+    <script type="module" src="./rsvp.js?v=5"></script>
     <script type="module" src="./trivia.js?v=4"></script>
     <script type="module" src="./trivia-leaderboard.js"></script>
     <script type="module" src="./stats.js"></script>
